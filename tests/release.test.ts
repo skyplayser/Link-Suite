@@ -23,6 +23,18 @@ describe("Asset-Wahl je Plattform und Programm", () => {
     expect(SOURCES.suite.repo).toBe(LAUNCHER_REPO);
     expect(SOURCES.lj.asset("linux", "x64", "1")).toBeNull();
   });
+  it("VD-Link (öffentlich seit 1.0.0): Intel heißt x64", () => {
+    expect(SOURCES.vd.asset("darwin", "arm64", "0.2.0")).toBe("VD-Link-macos-arm64.dmg");
+    expect(SOURCES.vd.asset("darwin", "x64", "0.2.0")).toBe("VD-Link-macos-x64.dmg");
+    expect(SOURCES.vd.asset("win32", "x64", "0.2.0")).toBe("VD-Link-windows.exe");
+    expect(SOURCES.vd.bundleIds).toEqual(["de.nextphilm.vdlink"]);
+    const r = pickRelease(rel("skyplayser/VD-Link", ["VD-Link-macos-arm64.dmg", "VD-Link-macos-x64.dmg", "VD-Link-windows.exe"], "v0.2.0"), SOURCES.vd, "darwin", "x64")!;
+    expect(r).toMatchObject({ version: "0.2.0", asset: "VD-Link-macos-x64.dmg", sha256: H });
+    expect(r.url).toBe("https://github.com/skyplayser/VD-Link/releases/download/v0.2.0/VD-Link-macos-x64.dmg");
+    const info = { bundleId: "de.nextphilm.vdlink", version: "0.2.0", executable: "VD-Link", name: "VD-Link" };
+    expect(bundleMatches(info, SOURCES.vd, "VD-Link.app", "0.2.0").ok).toBe(true);
+    expect(bundleMatches({ ...info, bundleId: "de.nextphilm.vjlink" }, SOURCES.vd, "VD-Link.app", "0.2.0").ok).toBe(false);
+  });
   it("LJL Link: Zip mit Version, nur macOS", () => {
     expect(SOURCES.ljl.asset("darwin", "arm64", "0.3.1")).toBe("LJL-Link-0.3.1-macOS.zip");
     expect(SOURCES.ljl.asset("win32", "x64", "0.3.1")).toBeNull();
@@ -59,7 +71,8 @@ describe("Asset-Wahl je Plattform und Programm", () => {
   });
   it("Quellen nur über eigene Kennungen; Dateiart", () => {
     expect(sourceById("lj")!.repo).toBe("skyplayser/LJ-Link");
-    expect(sourceById("vd")).toBeNull();
+    expect(sourceById("vd")!.repo).toBe("skyplayser/VD-Link");
+    expect(sourceById("net")).toBeNull();
     expect(sourceById("toString")).toBeNull();
     expect(sourceById("__proto__")).toBeNull();
     expect(kindOf("a.dmg")).toBe("dmg"); expect(kindOf("a.zip")).toBe("zip"); expect(kindOf("a.exe")).toBe("exe"); expect(kindOf("a.pkg")).toBeNull();
@@ -131,6 +144,7 @@ describe("Prüfungen vor der Verwendung", () => {
     expect(unsafeZipEntries(["../evil", "/etc/passwd", "a/../../b", "C:\\x", "ok/file"])).toEqual(["../evil", "/etc/passwd", "a/../../b", "C:\\x"]);
   });
   // POSIX-Pfade, Symlinks bzw. .app-Bundles (macOS); unter Windows echt in der VM geprüft
+  // POSIX-Pfade (Symlinks brauchen unter Windows besondere Rechte; LJL-Zip gibt es nur für macOS)
   it.skipIf(process.platform === "win32")("Symlinks nur innerhalb des Entpack-Ordners", () => {
     const root = "/t/x";
     expect(symlinkInside(root, "/t/x/A.app/Contents/Frameworks/F.framework", "Versions/Current/F", path.join, path.resolve)).toBe(true);

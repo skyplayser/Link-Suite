@@ -3,6 +3,9 @@
 import fs from "node:fs";
 import path from "node:path";
 
+/** posix oder win32 (für Tests beider Systeme auf jeder Plattform). */
+type PlatformPath = typeof path.win32;
+
 export type DevStatus =
   | "no-folder"     // Ordner fehlt
   | "no-package"    // kein (lesbares) package.json
@@ -46,11 +49,13 @@ function isDir(p: string): boolean { try { return fs.statSync(p).isDirectory(); 
 function mtime(p: string): number { try { return fs.statSync(p).mtimeMs; } catch { return 0; } }
 
 /** Relativer Pfad innerhalb von `base` (kein „..“, nicht absolut); sonst null. */
-export function insideRel(base: string, rel: unknown): string | null {
-  if (typeof rel !== "string" || !rel || rel.length > 512 || rel.includes("\0") || path.isAbsolute(rel)) return null;
-  const abs = path.resolve(base, rel);
-  const r = path.relative(base, abs);
-  return r && !r.startsWith("..") && !path.isAbsolute(r) ? abs : null;
+export function insideRel(base: string, rel: unknown, P: PlatformPath = path): string | null {
+  if (typeof rel !== "string" || !rel || rel.length > 512 || rel.includes("\0") || P.isAbsolute(rel)) return null;
+  // Windows: Laufwerksangaben („C:foo“) und UNC sind nie relativ zum Projekt
+  if (P === path.win32 || P.sep === "\\") { if (/^[A-Za-z]:/.test(rel) || rel.startsWith("\\\\")) return null; }
+  const abs = P.resolve(base, rel);
+  const r = P.relative(base, abs);
+  return r && r !== ".." && !r.startsWith(".." + P.sep) && !r.startsWith("../") && !P.isAbsolute(r) ? abs : null;
 }
 
 /**

@@ -393,6 +393,7 @@ let updTimer: NodeJS.Timeout | undefined;
 const phases = new Map<string, string>();
 if (!demo && !SHOT) installer.loadCache(store.launcher.releaseCache);
 installer.readSelfResult();
+installer.cleanupSync(); // Reste früherer Downloads (z. B. eine noch gesperrte .exe) beim Start aufräumen
 // Demo und Screenshots: feste Releases ohne Netz (damit die Update-Pillen zu sehen sind)
 if (demo || SHOT) installer.setDemo(DEMO_RELEASES);
 

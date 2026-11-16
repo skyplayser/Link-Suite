@@ -125,6 +125,7 @@ describe("Entwicklerprojekt: startbar?", () => {
   });
 
   // POSIX-Pfade, Symlinks bzw. .app-Bundles (macOS); unter Windows echt in der VM geprüft
+  // POSIX-Pfade; die Windows-Variante steht unten mit path.win32
   it.skipIf(process.platform === "win32")("insideRel", () => {
     expect(insideRel("/p", "a/b")).toBe("/p/a/b");
     expect(insideRel("/p", "../x")).toBeNull();
@@ -134,6 +135,7 @@ describe("Entwicklerprojekt: startbar?", () => {
   });
 
   // POSIX-Pfade, Symlinks bzw. .app-Bundles (macOS); unter Windows echt in der VM geprüft
+  // Symlinks brauchen unter Windows besondere Rechte
   it.skipIf(process.platform === "win32")("Symlink dist → /bin mit path.txt=sh startet nie /bin/sh (QA Befund 2)", () => {
     pkg("symbin", { name: "net-link", main: "main.js", scripts: { start: "electron ." } });
     write("symbin/main.js", "//");
@@ -169,6 +171,7 @@ describe("Entwicklerprojekt: startbar?", () => {
   });
 
   // POSIX-Pfade, Symlinks bzw. .app-Bundles (macOS); unter Windows echt in der VM geprüft
+  // Symlinks brauchen unter Windows besondere Rechte
   it.skipIf(process.platform === "win32")("Projektordner selbst als Symlink: alles gegen den realen Ordner geprüft, Start im realen Ordner", () => {
     pkg("realproj", { name: "crew-link", main: "dist/main/main.js", scripts: { dev: "x" } });
     electron("realproj");
@@ -182,7 +185,9 @@ describe("Entwicklerprojekt: startbar?", () => {
     expect(realInside(path.join(root, "realproj"), "/bin/sh")).toBeNull();
   });
 
-  it("node_modules/electron als Symlink nach außen → eigener Befund „Electron liegt außerhalb“, nicht „fehlt“", () => {
+  // Symlinks brauchen unter Windows besondere Rechte (ohne sie entsteht kein Link, dann meldet die Prüfung zu Recht
+  // „Electron fehlt“ statt „außerhalb“ – kein Fehler der Erkennung)
+  it.skipIf(process.platform === "win32")("node_modules/electron als Symlink nach außen → eigener Befund „Electron liegt außerhalb“, nicht „fehlt“", () => {
     write("shared/electron/package.json", "{}");
     write("shared/electron/path.txt", "Electron.app/Contents/MacOS/Electron");
     write("shared/electron/dist/Electron.app/Contents/MacOS/Electron", "#!/bin/sh\n");
@@ -198,5 +203,19 @@ describe("Entwicklerprojekt: startbar?", () => {
     pkg("noel2", { name: "crew-link", main: "main.js", scripts: { dev: "x" } });
     write("noel2/node_modules/.keep");
     expect(assessDevProject(at("noel2"), "crew-link").status).toBe("no-electron");
+  });
+});
+
+describe("insideRel unter Windows (path.win32, auf jeder Plattform)", () => {
+  const W = path.win32;
+  it("innen ja, .. / anderes Laufwerk / laufwerksrelativ / UNC nein", () => {
+    expect(insideRel("C:\\Users\\dj\\VD-Link", "dist\\main.cjs", W)).toBe("C:\\Users\\dj\\VD-Link\\dist\\main.cjs");
+    expect(insideRel("C:\\Users\\dj\\VD-Link", "dist/main.cjs", W)).toBe("C:\\Users\\dj\\VD-Link\\dist\\main.cjs");
+    expect(insideRel("C:\\Users\\dj\\VD-Link", "..\\x", W)).toBeNull();
+    expect(insideRel("C:\\Users\\dj\\VD-Link", "a\\..\\..\\x", W)).toBeNull();
+    expect(insideRel("C:\\Users\\dj\\VD-Link", "D:\\x", W)).toBeNull();
+    expect(insideRel("C:\\Users\\dj\\VD-Link", "C:x", W)).toBeNull();
+    expect(insideRel("C:\\Users\\dj\\VD-Link", "\\\\server\\share\\x", W)).toBeNull();
+    expect(insideRel("C:\\Users\\dj\\VD-Link", "..foo\\x", W)).toBe("C:\\Users\\dj\\VD-Link\\..foo\\x");
   });
 });

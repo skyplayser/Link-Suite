@@ -46,7 +46,13 @@ export interface UpdatesSnapshot {
   /** Ergebnis eines Selbst-Updates vom letzten Beenden (aus self-update.log), leer = nichts. */
   selfResult: string;
   demo: boolean;
+  /** GitHub-Kontingent ohne Anmeldung aufgebraucht: bis wann (ms), 0 = nicht. */
+  rateLimitedUntil: number;
+  /** Zeit der letzten gelungenen Prüfung (auch aus dem Zwischenspeicher). */
+  lastGood: number;
 }
+
+class RateLimited extends Error { constructor(readonly until: number) { super("GitHub rate limit"); } }
 
 /** Leerlauf beim Laden: so lange ohne Daten → Abbruch. */
 export const STALL_MS = 60_000;
@@ -124,6 +130,20 @@ export async function readIdle(reader: ReadableStreamDefaultReader<Uint8Array>, 
 
 export const HEADER_MS = 30_000;
 
+export type InstallWay = "self-dmg" | "dmg" | "ljl-zip" | "exe";
+/**
+ * Welcher Weg für welches Paket? Unter Windows immer der Installer (.exe) – nie Ersetzen über .neu/.alt mit ditto,
+ * auch nicht beim Selbst-Update. Unter macOS .dmg (Selbst-Update per Skript) bzw. das LJL-Zip.
+ */
+export function installWay(id: SourceId, asset: string, platform: string): InstallWay | null {
+  const kind = kindOf(asset);
+  if (platform === "win32") return kind === "exe" ? "exe" : null;
+  if (platform !== "darwin") return null;
+  if (kind === "dmg") return id === "suite" ? "self-dmg" : "dmg";
+  if (kind === "zip" && id === "ljl") return "ljl-zip";
+  return null;
+}
+
 export interface InstallerDeps {
   version: string;
   dataDir: string;
@@ -159,6 +179,8 @@ export class Installer {
   private readonly aborts = new Map<SourceId, AbortController>();
   private readonly etags = new Map<string, { etag: string; json: unknown }>();
   readonly platform: string;
+  private rateLimitedUntil = 0;
+  private lastGood = 0;
   /** Reste, die nicht gelöscht werden konnten (für die Meldung). */
   private leftover: string[] = [];
   readonly arch = process.arch;
@@ -189,7 +211,7 @@ export class Installer {
       };
       Object.assign(this.entries.get(src.id)!, { check: "ok", latest: rel, cached: true });
     }
-    if (at) this.checkedAt = Math.min(at, Date.now() - 3_600_001); // zählt nicht als frische Prüfung
+    if (at) { this.checkedAt = Math.min(at, Date.now() - 3_600_001); this.lastGood = at; } // zählt nicht als frische Prüfung
   }
 
   /** Für launcher.json: gelungene Prüfungen (ohne Prüfsummenlisten). */
@@ -205,6 +227,7 @@ export class Installer {
     return {
       entries: [...this.entries.values()].map(e => ({ ...e })), checkedAt: this.checkedAt, checking: !!this.checking, platform: this.platform, arch: this.arch,
       selfBlocked: this.selfBlocker(), selfResult: this.selfResult, demo: this.demo,
+      rateLimitedUntil: this.rateLimitedUntil > Date.now() ? this.rateLimitedUntil : 0, lastGood: this.lastGood,
     };
   }
 
@@ -251,21 +274,36 @@ export class Installer {
   check(force = false): Promise<void> {
     if (this.checking) return this.checking;
     if (!force && Date.now() - this.checkedAt < 3_600_000) return Promise.resolve();
+    // Kontingent aufgebraucht: bis zum Zurücksetzen gar nicht fragen (keine Wiederholungs-Schleife)
+    if (this.rateLimitedUntil > Date.now()) { this.d.onChange(); return Promise.resolve(); }
     this.checking = (async () => {
+      const before = new Map([...this.entries].map(([id, e]) => [id, e.check]));
       for (const e of this.entries.values()) e.check = "checking";
       this.d.onChange();
-      await Promise.all((Object.values(SOURCES) as ReleaseSource[]).map(async src => {
+      let limited = 0, okAny = false;
+      // nacheinander: bei 403 „rate limit“ sofort aufhören, statt weitere Anfragen zu verbrauchen
+      for (const src of Object.values(SOURCES) as ReleaseSource[]) {
+        if (limited) { this.set(src.id, { check: this.entries.get(src.id)!.latest ? "ok" : "error", error: "rate limit" }); continue; }
         try {
           const json = await this.latestJson(src.repo);
-          if (json === null) { this.set(src.id, { check: "missing", latest: null, error: "" }); return; }
+          okAny = true;
+          if (json === null) { this.set(src.id, { check: "missing", latest: null, error: "", cached: false }); continue; }
           const rel = pickRelease(json, src, this.platform, this.arch);
           this.set(src.id, { check: rel ? "ok" : "error", latest: rel, error: rel ? "" : "bad release", cached: false });
         } catch (err) {
+          if (err instanceof RateLimited) {
+            limited = err.until;
+            this.d.log?.("github rate limit", `until ${new Date(err.until).toISOString()}`);
+            const e = this.entries.get(src.id)!;
+            this.set(src.id, { check: e.latest ? "ok" : (before.get(src.id) === "missing" ? "missing" : "error"), error: "rate limit" });
+            continue;
+          }
           this.set(src.id, { check: "error", error: (err as Error).message });
         }
-      }));
+      }
+      if (limited) this.rateLimitedUntil = limited;
       this.checkedAt = Date.now();
-      this.d.saveCache?.(this.cacheData());
+      if (okAny && !limited) { this.lastGood = this.checkedAt; this.d.saveCache?.(this.cacheData()); }
     })();
     return this.checking.finally(() => { this.checking = null; this.d.onChange(); });
   }
@@ -281,6 +319,10 @@ export class Installer {
     });
     if (res.status === 304 && cached) return cached.json;
     if (res.status === 404) return null;
+    if ((res.status === 403 || res.status === 429) && res.headers.get("x-ratelimit-remaining") === "0") {
+      const reset = Number(res.headers.get("x-ratelimit-reset"));
+      throw new RateLimited(Number.isFinite(reset) && reset > 0 ? Math.min(reset * 1000, Date.now() + 3_600_000) : Date.now() + 3_600_000);
+    }
     if (!res.ok) throw new Error(`GitHub ${res.status}`);
     const text = await res.text();
     if (text.length > 2_000_000) throw new Error("too large");
@@ -377,12 +419,12 @@ export class Installer {
       const v = installVerdict({ expected: rel.sha256, actual: hash, sizeOk: sizeOk((await fsp.stat(file)).size, rel.size), sig: sigRes, require: REQUIRE_SIGNATURE });
       if (!v.ok) throw new Error(this.d.say(`inst.err.${v.reason}`));
       this.set(id, { phase: "install" });
-      const kind = kindOf(rel.asset);
+      const way = installWay(id, rel.asset, this.platform);
       let msg = "";
-      if (kind === "dmg" && id === "suite") { msg = await this.selfUpdate(file, rel, dir); keepDir = true; }
-      else if (kind === "dmg") msg = await this.installDmg(id, file, rel);
-      else if (kind === "zip" && id === "ljl") msg = await this.installLjl(file, rel, dir);
-      else if (kind === "exe") {
+      if (way === "self-dmg") { msg = await this.selfUpdate(file, rel, dir); keepDir = true; }
+      else if (way === "dmg") msg = await this.installDmg(id, file, rel);
+      else if (way === "ljl-zip") msg = await this.installLjl(file, rel, dir);
+      else if (way === "exe") {
         // Installer sichtbar über die Shell; die Karte zeigt „Installer geöffnet …“, bis die Version wechselt (max. 10 min)
         await this.runWindowsInstaller(id, file);
         this.set(id, { phase: "waiting", progress: 1, message: "" });
@@ -397,7 +439,10 @@ export class Installer {
       this.set(id, { phase: aborted ? "cancelled" : "failed", message: aborted ? this.d.say("inst.cancelled") : (err as Error).message });
     } finally {
       this.aborts.delete(id);
-      if (!keepDir) await rmOwn(dir).catch(() => {});
+      // Download-Ordner sofort aufräumen; hält Windows die .exe noch fest, später erneut (und beim nächsten Start)
+      if (!keepDir) await rmOwn(dir).catch(() => {
+        for (const ms of [30_000, 120_000]) setTimeout(() => { void rmOwn(dir).catch(e => this.d.log?.("cleanup failed", (e as Error).message)); }, ms).unref();
+      });
     }
   }
 
@@ -448,6 +493,8 @@ export class Installer {
    * Platz, alte löschen. Bei Fehler zurück. LJ Link: LJ-Link-PRO.app wird durch den Namen aus dem Image ersetzt.
    */
   private async place(srcApp: string, targetDir: string, oldApp: string | null, check: (p: string) => Promise<boolean>): Promise<string> {
+    // Nur macOS: unter Windows ersetzt immer der NSIS-Installer selbst (auch beim Selbst-Update)
+    if (this.platform === "win32") throw new Error("place() is macOS only");
     const name = path.basename(srcApp);
     const dest = path.join(targetDir, name);
     const staging = path.join(targetDir, `.${name}.neu`);

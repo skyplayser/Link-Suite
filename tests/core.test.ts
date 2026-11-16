@@ -4,6 +4,7 @@ import { CATALOG, MAIN_ORDER, isProgramId, programByAppName, programByBundleId, 
 import { buildPath, cleanEnv, knownNodeDirs, parseShellProbe, SHELL_MARK, SHELL_PROBE, SHELL_PROBE_FISH, shellProbeFor } from "../src/core/env";
 import { keepSpotlightHit, matchRegistry, mdfindQuery, parseRegQuery, pickBest } from "../src/core/finder";
 import { TEXTS, detectLang, translate } from "../src/core/i18n";
+import path from "node:path";
 import { fromStoredPath, toStoredPath } from "../src/core/paths";
 import { matchProgram, parsePlistJson } from "../src/core/plist";
 import { parsePs, parseTasklist, procsOfApp, procsOfDevProject } from "../src/core/procs";
@@ -290,5 +291,26 @@ describe("Texte", () => {
     expect(translate("en", "gibt.es.nicht")).toBe("gibt.es.nicht");
     expect(detectLang(["fr-FR", "de-AT"])).toBe("de");
     expect(detectLang(["ja"])).toBe("en");
+  });
+});
+
+describe("Pfade unter Windows (path.win32, auf jeder Plattform)", () => {
+  const W = path.win32;
+  it("toStoredPath: Benutzerordner als ~/…, Groß-/Kleinschreibung des Laufwerks egal, anderes Laufwerk absolut", () => {
+    expect(toStoredPath("C:\\Users\\dj\\Projekte\\VJ-Link", "C:\\Users\\dj", W)).toBe("~/Projekte/VJ-Link");
+    expect(toStoredPath("c:\\users\\DJ\\VJ-Link", "C:\\Users\\dj", W)).toBe("~/VJ-Link");
+    expect(toStoredPath("C:\\Users\\dj", "C:\\Users\\dj", W)).toBe("~");
+    expect(toStoredPath("D:\\Show\\VD-Link", "C:\\Users\\dj", W)).toBe("D:\\Show\\VD-Link");
+    expect(toStoredPath("C:\\Users\\djx\\a", "C:\\Users\\dj", W)).toBe("C:\\Users\\djx\\a");
+    expect(toStoredPath("C:\\Users\\dj\\a\\..\\..\\other", "C:\\Users\\dj", W)).toBe("C:\\Users\\other");
+    expect(toStoredPath("relativ\\x", "C:\\Users\\dj", W)).toBeNull();
+  });
+  it("fromStoredPath: ~ auflösen, .. bleibt im Benutzerordner, laufwerksrelative Pfade abgelehnt", () => {
+    expect(fromStoredPath("~/VJ-Link", "C:\\Users\\dj", W)).toBe("C:\\Users\\dj\\VJ-Link");
+    expect(fromStoredPath("~", "C:\\Users\\dj", W)).toBe("C:\\Users\\dj");
+    expect(fromStoredPath("~/../Public", "C:\\Users\\dj", W)).toBeNull();
+    expect(fromStoredPath("D:\\Show\\VD-Link", "C:\\Users\\dj", W)).toBe("D:\\Show\\VD-Link");
+    expect(fromStoredPath("C:Show", "C:\\Users\\dj", W)).toBeNull();
+    expect(fromStoredPath("Show\\x", "C:\\Users\\dj", W)).toBeNull();
   });
 });

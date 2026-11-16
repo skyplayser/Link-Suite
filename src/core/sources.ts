@@ -5,7 +5,7 @@ export const LAUNCHER_REPO = "skyplayser/Link-Suite";
 export const LAUNCHER_BUNDLE_ID = "de.nextphilm.linksuite";
 
 export type Kind = "dmg" | "zip" | "exe";
-export type SourceId = "lj" | "vj" | "ljl" | "suite";
+export type SourceId = "lj" | "vj" | "vd" | "ljl" | "suite";
 
 export interface ReleaseSource {
   id: SourceId;
@@ -22,10 +22,14 @@ export interface ReleaseSource {
 const triple = (base: string) => (platform: string, arch: string): string | null =>
   platform === "darwin" ? `${base}-macos-${arch === "arm64" ? "arm64" : "intel"}.dmg` : platform === "win32" ? `${base}-windows.exe` : null;
 
-/** Quellen der Programme mit öffentlichen Releases (Stand 16.11.2026). VD-Link: Repo privat → „bald verfügbar“. */
+/** Quellen der Programme mit öffentlichen Releases (Stand 16.11.2026). VD-Link ist seit 1.0.0 öffentlich; Intel heißt dort „x64“. */
 export const SOURCES: Readonly<Record<SourceId, ReleaseSource>> = {
   lj: { id: "lj", name: "LJ Link", repo: "skyplayser/LJ-Link", bundleIds: ["dev.ljlinkpro"], asset: triple("LJ-Link") },
   vj: { id: "vj", name: "VJ-Link", repo: "skyplayser/VJ-LINK", bundleIds: ["de.nextphilm.vjlink"], asset: triple("VJ-Link") },
+  vd: {
+    id: "vd", name: "VD-Link", repo: "skyplayser/VD-Link", bundleIds: ["de.nextphilm.vdlink"],
+    asset: (platform, arch) => (platform === "darwin" ? `VD-Link-macos-${arch === "arm64" ? "arm64" : "x64"}.dmg` : platform === "win32" ? "VD-Link-windows.exe" : null),
+  },
   ljl: {
     id: "ljl", name: "LJL Link", repo: "skyplayser/LJL-Link", bundleIds: [], appName: "LJL Link.app",
     asset: (platform, _arch, version) => (platform === "darwin" && /^[0-9][0-9A-Za-z.-]{0,30}$/.test(version) ? `LJL-Link-${version}-macOS.zip` : null),
@@ -33,8 +37,8 @@ export const SOURCES: Readonly<Record<SourceId, ReleaseSource>> = {
   suite: { id: "suite", name: "Link-Suite", repo: LAUNCHER_REPO, bundleIds: [LAUNCHER_BUNDLE_ID], asset: triple("Link-Suite") },
 };
 
-/** Programme, deren Releases es geben wird, die aber noch nicht öffentlich sind. */
-export const SOON_PUBLIC: ReadonlySet<string> = new Set(["vd"]);
+/** Programme, deren Releases es geben wird, die aber noch nicht öffentlich sind (seit 1.0.0 keins mehr). */
+export const SOON_PUBLIC: ReadonlySet<string> = new Set<string>();
 
 export function sourceById(id: unknown): ReleaseSource | null {
   return typeof id === "string" && Object.hasOwn(SOURCES, id) ? SOURCES[id as SourceId] : null;

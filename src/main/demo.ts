@@ -129,6 +129,7 @@ const demoRel = (repo: string, version: string, asset: string, size: number, not
 export const DEMO_RELEASES: { id: SourceId; latest: ReleaseInfo | null }[] = [
   { id: "lj", latest: demoRel("skyplayser/LJ-Link", "1.7.11", "LJ-Link-macos-arm64.dmg", 72_449_190, "Demo: Fehlerbehebungen für die Booth.\n- Wellenformen schneller\n- Cues stabiler") },
   { id: "vj", latest: demoRel("skyplayser/VJ-LINK", "0.1.8", "VJ-Link-macos-arm64.dmg", 135_844_430, "Demo: ver und echo im Suite-Chat.") },
+  { id: "vd", latest: demoRel("skyplayser/VD-Link", "0.2.0", "VD-Link-macos-arm64.dmg", 118_000_000, "Demo: Art-Net, sACN, 3D-Vorschau.") },
   { id: "ljl", latest: demoRel("skyplayser/LJL-Link", "0.3.1", "LJL-Link-0.3.1-macOS.zip", 1_641_371, "Demo: Club-Stick.") },
   { id: "suite", latest: null },
 ];

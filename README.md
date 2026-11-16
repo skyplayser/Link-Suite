@@ -12,14 +12,14 @@
 </p>
 
 <p align="center">
-  <a href="#download-and-install"><img alt="Download Link-Suite 0.3.2 (alpha)" src="https://img.shields.io/badge/Download-Link--Suite%200.3.2-FF5C93?style=for-the-badge"></a>
+  <a href="#download-and-install"><img alt="Download Link-Suite 1.0.0" src="https://img.shields.io/badge/Download-Link--Suite%201.0.0-FF5C93?style=for-the-badge"></a>
 </p>
 
 <p align="center">
   <a href="https://github.com/skyplayser/Link-Suite/releases"><img alt="Latest release" src="https://img.shields.io/github/v/release/skyplayser/Link-Suite?include_prereleases&label=release&color=FFB020"></a>
-  <img alt="Status: alpha 0.3.2" src="https://img.shields.io/badge/status-alpha%200.3.2-FF5C93">
+  <img alt="Version 1.0.0" src="https://img.shields.io/badge/version-1.0.0-FF5C93">
   <img alt="macOS 13+, Apple silicon and Intel" src="https://img.shields.io/badge/macOS%2013%2B-Apple%20silicon%20%7C%20Intel-3DDC84">
-  <img alt="Windows: alpha, tested on Windows 11" src="https://img.shields.io/badge/Windows-alpha%2C%20tested%20on%20Windows%2011-3DDC84">
+  <img alt="Windows 10/11, tested on Windows 11 (in a VM)" src="https://img.shields.io/badge/Windows-tested%20on%20Windows%2011%20(VM)-3DDC84">
   <img alt="Free" src="https://img.shields.io/badge/price-free-B45CFF">
   <a href="LICENSE"><img alt="License: EPL-2.0" src="https://img.shields.io/badge/license-EPL--2.0-22C8F0"></a>
 </p>
@@ -35,12 +35,12 @@
 </p>
 
 <p align="center">
-  <img src="docs/assets/shots/programme-nacht-en.png" alt="The PROGRAMS tab of Link-Suite 0.3.2: a hero with the numbers update, running, installed and in development, then the groups Installed, Development, Available and Coming soon with one card per program">
-  <br><sub>Real screenshot of Link-Suite 0.3.2 in demo mode: made-up folders, versions and people.</sub>
+  <img src="docs/assets/shots/programme-nacht-en.png" alt="The PROGRAMS tab of Link-Suite: a hero with the numbers update, running, installed and in development, then the groups Installed, Development, Available and Coming soon with one card per program">
+  <br><sub>Real screenshot in demo mode (taken with version 0.3.1): made-up folders, versions and people.</sub>
 </p>
 
 The Link-Suite is a family of free programs for event technology: [LJ Link](https://github.com/skyplayser/LJ-Link),
-[LJL Link](https://github.com/skyplayser/LJL-Link), [VJ-Link](https://github.com/skyplayser/VJ-LINK) and VD-Link today,
+[LJL Link](https://github.com/skyplayser/LJL-Link), [VJ-Link](https://github.com/skyplayser/VJ-LINK) and [VD-Link](https://github.com/skyplayser/VD-Link) today,
 NET Link, Crew Link, PL Link and dB Link coming soon. **Link-Suite** is the launcher that holds them together. It shows
 every program of the suite in groups, installs and updates them straight from their GitHub releases, starts the ones on
 this computer, and lists the suite programs it hears on the show network. It also brings the suite chat with
@@ -54,11 +54,10 @@ Link-Suite listens, like every program of the suite. It controls no device and n
 connection to the internet goes to GitHub, to ask for new releases and to download the ones you choose. No telemetry, no
 server of our own, no account.
 
-> [!WARNING]
-> **This is alpha 0.3.2.** On macOS the QA calls it ready for release:
-> installing and updating a real program twice in a row worked. Some parts were only checked in the code or in a developer
-> build (see [What is tested](#what-is-tested)).
-> The Windows version is an alpha too, **tested on Windows 11**.
+> [!NOTE]
+> **Version 1.0.0.** On macOS the QA of 0.3.1 called Link-Suite ready for release: installing and updating a real
+> program twice in a row worked. Some parts were only checked in the code or in a developer build (see
+> [What is tested](#what-is-tested)). The Windows version was **tested on Windows 11 (in a VM)**.
 > Link-Suite is not signed with Apple or Microsoft, so macOS and Windows warn once on the first start
 > ([how to get past it](#first-start-getting-past-the-warning)).
 
@@ -79,7 +78,7 @@ needs you.
 <td width="50%" valign="top">
 
 **⬇️ Install and update from GitHub**<br>
-LJ Link and VJ-Link come straight from their GitHub releases, with one click. Every file is checked with SHA-256 against the
+LJ Link, VJ-Link and VD-Link come straight from their GitHub releases, with one click. Every file is checked with SHA-256 against the
 checksum GitHub gives. Updating works again and again, and a download that stalls stops cleanly instead of hanging.
 Link-Suite updates itself the same way.
 
@@ -179,7 +178,7 @@ Language, day or night, your name and place in the chat and the start animation 
     <td><img src="docs/assets/shots/einstellungen-en.png" alt="SETTINGS tab with interface, suite chat and programs"><br><sub><b>Settings</b> for all suite programs.</sub></td>
   </tr>
 </table>
-<sub>All screenshots: Link-Suite 0.3.2 in demo mode, with made-up folders, versions and people.</sub>
+<sub>All screenshots: demo mode, taken with version 0.3.1, with made-up folders, versions and people.</sub>
 
 ## The programs of the suite
 
@@ -188,7 +187,7 @@ Language, day or night, your name and place in the chat and the start animation 
 | <img src="docs/assets/icons/lj-link.svg" width="28" alt=""> **LJ Link** | Shows the lighting jockey every deck, waveform and cue from Pioneer and Denon gear and sends the tempo to the light desk | released, macOS and Windows | install and update | [GitHub](https://github.com/skyplayser/LJ-Link) · [Website](https://skyplayser.github.io/LJ-Link/) |
 | <img src="docs/assets/icons/ljl-link-256.png" width="28" alt=""> **LJL Link** | Brings the Serato decks from the DJ's Mac into LJ Link, straight from the club's USB stick | alpha, macOS | into a folder or onto the stick | [GitHub](https://github.com/skyplayser/LJL-Link) · [Website](https://skyplayser.github.io/LJL-Link/) |
 | <img src="docs/assets/icons/vj-link.svg" width="28" alt=""> **VJ-Link** | Live visuals run by the light desk, in time with the music | beta, macOS and Windows | install and update | [GitHub](https://github.com/skyplayser/VJ-LINK) · [Website](https://skyplayser.github.io/VJ-LINK/) |
-| <img src="docs/assets/icons/vd-link.svg" width="28" alt=""> **VD-Link** | 3D lighting visualiser for Art-Net and sACN: see the show before the rig hangs | beta | coming soon | – |
+| <img src="docs/assets/icons/vd-link.svg" width="28" alt=""> **VD-Link** | 3D lighting visualiser for Art-Net and sACN: see the show before the rig hangs | beta, macOS and Windows | install and update | [GitHub](https://github.com/skyplayser/VD-Link) |
 | <img src="docs/assets/icons/net-link.svg" width="28" alt=""> **NET Link** | Who is on the show network? Finds IP conflicts, wrong subnets and missing multicast | coming soon | – | – |
 | <img src="docs/assets/icons/crew-link.svg" width="28" alt=""> **Crew Link** | Tonight's timetable: who plays when, one clock for everyone | coming soon | – | – |
 | <img src="docs/assets/icons/pl-link.svg" width="28" alt=""> **PL Link** | Patch and power load: DMX addresses, circuits and packing lists | coming soon | – | – |
@@ -262,7 +261,7 @@ decided by that project, not by Link-Suite. That is why Link-Suite asks first.
 - It does not switch off Gatekeeper or SmartScreen and changes no system setting.
 - It needs no admin rights and asks for no password. Without admin rights, programs go to `~/Applications`.
 
-## State of version 0.3.2
+## State of version 1.0.0
 
 ### What is new in 0.3
 
@@ -280,10 +279,9 @@ decided by that project, not by Link-Suite. That is why Link-Suite asks first.
 | Area | State |
 |---|---|
 | Check for releases | asks GitHub at start and when you press the button; the check at start can be switched off |
-| Install and update | LJ Link and VJ-Link from their GitHub releases |
+| Install and update | LJ Link, VJ-Link and VD-Link from their GitHub releases (VD-Link from 1.0.0 on) |
 | LJL Link | *To the stick*: into a folder or straight onto the club's USB stick, with a short guide; `club.json` still by hand |
 | Self-update | from [its own releases](https://github.com/skyplayser/Link-Suite/releases) (`skyplayser/Link-Suite`); the checked new version is put in place when you quit |
-| VD-Link | “coming soon” |
 | Start programs | installed apps, and developer projects with log bar when the developer view is on |
 | Suite chat, ON THE NETWORK, shared settings | as in 0.1 |
 
@@ -292,7 +290,6 @@ decided by that project, not by Link-Suite. That is why Link-Suite asks first.
 | Planned | When |
 |---|---|
 | A suite signature of its own on every release (`SHA256SUMS.sig`), then required for every install | later |
-| VD-Link through Link-Suite | once its releases are public |
 | *Prepare club stick* with `club.json` for LJL Link | later |
 | Bonjour: find web interfaces of suite programs, *Open in browser* | later |
 | Installers signed with Apple and Microsoft, notarized by Apple | later |
@@ -300,7 +297,7 @@ decided by that project, not by Link-Suite. That is why Link-Suite asks first.
 
 ### What is tested
 
-From the QA of 0.3 and 0.3.1. **Result for macOS: ready for release.**
+From the QA of 0.3 and 0.3.1 and the Windows test of 0.3.2. **Result for macOS: ready for release.** Installing VD-Link, new in 1.0.0, is not covered by these reports.
 
 - **Build and tests:** `npm run check` with 146 unit tests passes; `npm run dist:mac` builds both DMGs.
 - **Install and update, for real:** VJ-Link from GitHub installed, then updated twice in a row – each time clean, without
@@ -326,12 +323,9 @@ Download Link-Suite for your computer. The files come straight from the
 
 | System | File | State |
 |---|---|---|
-| macOS 13 or newer, Apple silicon (M1 and newer) | [`Link-Suite-macos-arm64.dmg`](https://github.com/skyplayser/Link-Suite/releases/latest/download/Link-Suite-macos-arm64.dmg) | alpha |
-| macOS 13 or newer, Intel | [`Link-Suite-macos-intel.dmg`](https://github.com/skyplayser/Link-Suite/releases/latest/download/Link-Suite-macos-intel.dmg) | alpha |
-| Windows 10 / 11, 64 bit | [`Link-Suite-windows.exe`](https://github.com/skyplayser/Link-Suite/releases/latest/download/Link-Suite-windows.exe) | alpha, tested on Windows 11 |
-
-**As a fallback** you can still get the programs straight from their own releases: [LJ Link](https://github.com/skyplayser/LJ-Link/releases/latest) ·
-[VJ-Link](https://github.com/skyplayser/VJ-LINK/releases/latest).
+| macOS 13 or newer, Apple silicon (M1 and newer) | [`Link-Suite-macos-arm64.dmg`](https://github.com/skyplayser/Link-Suite/releases/latest/download/Link-Suite-macos-arm64.dmg) | tested |
+| macOS 13 or newer, Intel | [`Link-Suite-macos-intel.dmg`](https://github.com/skyplayser/Link-Suite/releases/latest/download/Link-Suite-macos-intel.dmg) | built, not tried on an Intel Mac |
+| Windows 10 / 11, 64 bit | [`Link-Suite-windows.exe`](https://github.com/skyplayser/Link-Suite/releases/latest/download/Link-Suite-windows.exe) | tested on Windows 11 (in a VM) |
 
 The single downloads of each program also stay in its GitHub releases. Then open Link-Suite, go to **PROGRAMS** and press
 **Install** on the program you want.
@@ -401,7 +395,7 @@ Network trouble? That is NET Link's job. It is in development; until then the fo
 
 ## For developers
 
-Version **0.3.2**: everything from 0.1 and 0.2 (program list, starting installed apps and developer projects, suite
+Version **1.0.0**: everything from 0.1 and 0.2 (program list, starting installed apps and developer projects, suite
 chat with EMERGENCY, ON THE NETWORK, installing and updating from GitHub, the club stick, the self-update), plus the new
 interface, the start animation with its launcher ending, the macOS polish and the per-user Windows installer.
 Concept, research, design and QA reports are kept outside this repo. Release notes: [`docs/releases/`](docs/releases/) (German).
@@ -424,7 +418,7 @@ Node.js 22+, macOS (tested on Apple silicon). Windows: tested on Windows 11 (in 
 | `npm run dist:mac` | macOS Apple silicon and Intel as `.dmg` |
 | `npm run dist:win` | Windows `.exe` (NSIS) |
 | `.github/workflows/release.yml` | the only way to publish: a tag `v*` builds all three packages, writes `SHA256SUMS` and creates the release with the text from `docs/releases/<tag>.md` |
-| `scripts/release.sh` | checks that `docs/releases/v0.3.2.md` exists, prints local checksums for testing and the tag command; publishes nothing |
+| `scripts/release.sh` | checks that `docs/releases/v<version>.md` exists, prints local checksums for testing and the tag command; publishes nothing |
 
 Copying to `/Applications` is up to you: `ditto release/mac-arm64/Link-Suite.app /Applications/Link-Suite.app`.
 

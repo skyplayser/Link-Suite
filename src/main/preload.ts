@@ -4,7 +4,7 @@ import { contextBridge, ipcRenderer } from "electron";
 
 const IDS = new Set(["lj", "ljl", "vj", "vd", "net", "crew", "pl", "db"]);
 const id = (v: unknown) => (typeof v === "string" && IDS.has(v) ? v : "");
-const SRC = new Set(["lj", "vj", "ljl", "suite"]);
+const SRC = new Set(["lj", "vj", "vd", "ljl", "suite"]);
 const src = (v: unknown) => (typeof v === "string" && SRC.has(v) ? v : "");
 const route = (v: unknown) => (v === "app" || v === "dev" ? v : "");
 const num = (v: unknown) => (typeof v === "number" && Number.isFinite(v) && v >= 0 ? v : 0);

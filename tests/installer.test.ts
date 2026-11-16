@@ -51,7 +51,8 @@ describe("Installer", () => {
   it("Leerlauf-Grenze 60 s", () => { expect(STALL_MS).toBe(60_000); });
 });
 
-import { fetchHeaders, readIdle, rmOwn } from "../src/main/installer";
+import { fetchHeaders, installWay, readIdle, rmOwn } from "../src/main/installer";
+import { SOURCES } from "../src/core/sources";
 
 describe("Löschen und Ersetzen mit app.asar (QA 0.3 Nr. 1)", () => {
   const mkApp = (root: string, name: string, ver: string) => {
@@ -141,5 +142,51 @@ describe("Windows-Installer über die Shell (QA Windows B1/R2, Harness)", () => 
     const seen = ["1.7.10", "1.7.10", "1.7.11"];
     const { x } = win({ installedVersion: async () => seen.shift() ?? "1.7.11" });
     expect(await x.waitForVersion("lj", "1.7.11")).toContain("inst.done");
+  });
+});
+
+describe("Unter Windows immer der Installer, nie Ersetzen über .neu/.alt (1.0.0)", () => {
+  it("Weg je Quelle und Plattform", () => {
+    for (const src of Object.values(SOURCES)) {
+      const exe = src.asset("win32", "x64", "1.0.0");
+      if (exe) expect(installWay(src.id, exe, "win32")).toBe("exe");
+      expect(installWay(src.id, "X.dmg", "win32")).toBeNull();
+      expect(installWay(src.id, "X.zip", "win32")).toBeNull();
+    }
+    expect(installWay("suite", "Link-Suite-macos-arm64.dmg", "darwin")).toBe("self-dmg");
+    expect(installWay("vd", "VD-Link-macos-x64.dmg", "darwin")).toBe("dmg");
+    expect(installWay("ljl", "LJL-Link-0.3.1-macOS.zip", "darwin")).toBe("ljl-zip");
+    expect(installWay("lj", "LJ-Link-windows.exe", "darwin")).toBeNull();
+  });
+  it("place() verweigert unter Windows", async () => {
+    const ins = new Installer({
+      version: "1.0.0", dataDir: fs.mkdtempSync(path.join(os.tmpdir(), "linksuite-w-")), installedPath: () => null, isRunning: async () => false,
+      askQuit: async () => false, pickLjlTarget: async () => null, onChange() {}, say: k => k, platform: "win32",
+    });
+    const place = (ins as unknown as { place(a: string, b: string, c: null, d: () => Promise<boolean>): Promise<string> }).place.bind(ins);
+    await expect(place("C:\\x\\A.app", "C:\\Programs", null, async () => true)).rejects.toThrow(/macOS only/);
+  });
+});
+
+import { vi } from "vitest";
+describe("GitHub-Kontingent aufgebraucht (Windows-Test 0.3.2)", () => {
+  it("403 mit x-ratelimit-remaining 0: sofort aufhören, Zwischenspeicher behalten, keine Wiederholung", async () => {
+    const calls: string[] = [];
+    vi.stubGlobal("fetch", async (url: string) => {
+      calls.push(url);
+      return new Response("{}", { status: 403, headers: { "x-ratelimit-remaining": "0", "x-ratelimit-reset": String(Math.floor(Date.now() / 1000) + 600) } });
+    });
+    try {
+      const { ins } = make();
+      ins.loadCache({ at: 1_700_000_000_000, entries: { vj: { version: "0.1.8", tag: "v0.1.8", asset: "VJ-Link-macos-arm64.dmg", url: "https://github.com/skyplayser/VJ-LINK/releases/download/v0.1.8/VJ-Link-macos-arm64.dmg", size: 10, sha256: "a".repeat(64) } } });
+      await ins.check(true);
+      expect(calls).toHaveLength(1);
+      const s = ins.snapshot();
+      expect(s.rateLimitedUntil).toBeGreaterThan(Date.now());
+      expect(s.lastGood).toBe(1_700_000_000_000);
+      expect(s.entries.find(e => e.id === "vj")).toMatchObject({ check: "ok", cached: true });
+      await ins.check(true);
+      expect(calls).toHaveLength(1); // keine Schleife bis zum Zurücksetzen
+    } finally { vi.unstubAllGlobals(); }
   });
 });

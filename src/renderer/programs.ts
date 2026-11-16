@@ -181,8 +181,11 @@ export class ProgramsView {
     const u = this.upd;
     const gh = $("gh-when");
     const down = !u?.checking && this.ghDown();
-    gh.textContent = u?.checking ? t("progs.checkingGh") : down ? t("gh.unreachable") : u?.checkedAt ? t("progs.checked", { time: hhmm(u.checkedAt) }) : "";
-    gh.classList.toggle("warn", down);
+    const limited = !!u?.rateLimitedUntil;
+    gh.textContent = u?.checking ? t("progs.checkingGh")
+      : limited ? (u!.lastGood ? t("gh.ratelimit", { time: hhmm(u!.lastGood) }) : t("gh.ratelimit0"))
+      : down ? t("gh.unreachable") : u?.checkedAt ? t("progs.checked", { time: hhmm(u.checkedAt) }) : "";
+    gh.classList.toggle("warn", down || limited);
     ($("check-all") as HTMLButtonElement).disabled = !!u?.checking;
     $("scan-when").textContent = this.scanningNow ? t("progs.scanning") : this.snap?.scannedAt ? t("progs.scanned", { time: hhmm(this.snap.scannedAt) }) : "";
     ($("rescan") as HTMLButtonElement).disabled = this.scanningNow;
@@ -298,6 +301,8 @@ export class ProgramsView {
 
   /** Laden/Prüfen/Einsetzen: feste Zeile gleicher Höhe statt der Knöpfe (Design 0.3 P2.8). */
   private loadRow(p: Program, e: UpdateEntry): HTMLElement[] {
+    // Installer offen (Windows): nur der Hinweis, kein Balken, kein Abbrechen (überlappte sonst)
+    if (e.phase === "waiting") return [h("div", { class: "prog-load" }, h("span", { class: "lbl", text: t("inst.phase.waiting") }))];
     const bar = h("i");
     const full = e.phase !== "download";
     bar.style.width = `${full ? 100 : Math.round(e.progress * 100)}%`; // CSSOM, kein style-Attribut
@@ -401,7 +406,8 @@ export class ProgramsView {
       } else if (st.dev && st.dev.need[0]?.have && !p.stickOnly) {
         side.push(btn("reveal", this.revealLabel(), "folder", false, "", () => void api.reveal(p.id, "dev")));
       }
-      const inst = this.installButton(p, st);
+      // LJL unter Windows: immer „Auf den Stick“ (Erklärung im Club-Stick-Tab), nie wechselnd mit „Seite öffnen“
+      const inst = p.stickOnly && this.snap?.platform === "win32" ? null : this.installButton(p, st);
       if (!inst && p.stickOnly && !st.app) {
         side.push(btn("stick", t("prog.prepareStick"), "usb", false, "", () => this.goTab("stick")));
       }

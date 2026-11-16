@@ -438,6 +438,8 @@ export const TEXTS: Record<string, Entry> = {
   "g.avail.hint": { de: "Release auf GitHub, noch nicht hier", en: "Released on GitHub, not here yet" },
   "g.soon": { de: "Kommt bald", en: "Coming soon" },
   "g.soon.hint": { de: "in dieser Reihenfolge", en: "in this order" },
+  "gh.ratelimit": { de: "GitHub-Abfragen für diese Stunde aufgebraucht, letzter Stand von {time}", en: "GitHub requests used up for this hour, last state from {time}" },
+  "gh.ratelimit0": { de: "GitHub-Abfragen für diese Stunde aufgebraucht", en: "GitHub requests used up for this hour" },
   "gh.unreachable": { de: "GitHub nicht erreichbar", en: "GitHub not reachable" },
   "pill.updateShort": { de: "UPDATE", en: "UPDATE" },
   "meta.chan": { de: "· {stage} {v} bereit", en: "· {stage} {v} ready" },
