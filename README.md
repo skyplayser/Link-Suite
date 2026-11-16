@@ -19,9 +19,7 @@
   <a href="https://github.com/skyplayser/Link-Suite/releases"><img alt="Latest release" src="https://img.shields.io/github/v/release/skyplayser/Link-Suite?include_prereleases&label=release&color=FFB020"></a>
   <img alt="Status: alpha 0.3.2" src="https://img.shields.io/badge/status-alpha%200.3.2-FF5C93">
   <img alt="macOS 13+, Apple silicon and Intel" src="https://img.shields.io/badge/macOS%2013%2B-Apple%20silicon%20%7C%20Intel-3DDC84">
-  <!-- WINDOWS-STAND (badge). Active: version A. To switch, delete line A and take line B out of the comment. -->
-  <img alt="Windows: alpha, untested" src="https://img.shields.io/badge/Windows-alpha%2C%20untested-8A93A6">
-  <!-- B: <img alt="Windows: tested on Windows 11" src="https://img.shields.io/badge/Windows-tested%20on%20Windows%2011-3DDC84"> -->
+  <img alt="Windows: alpha, tested on Windows 11" src="https://img.shields.io/badge/Windows-alpha%2C%20tested%20on%20Windows%2011-3DDC84">
   <img alt="Free" src="https://img.shields.io/badge/price-free-B45CFF">
   <a href="LICENSE"><img alt="License: EPL-2.0" src="https://img.shields.io/badge/license-EPL--2.0-22C8F0"></a>
 </p>
@@ -60,9 +58,7 @@ server of our own, no account.
 > **This is alpha 0.3.2.** On macOS the QA calls it ready for release:
 > installing and updating a real program twice in a row worked. Some parts were only checked in the code or in a developer
 > build (see [What is tested](#what-is-tested)).
-> <!-- WINDOWS-STAND (warning). Active: version A. To switch, delete sentence A and take sentence B out of the comment. -->
-> The Windows version is an **alpha and untested**.
-> <!-- B: The Windows version was tested on Windows 11. -->
+> The Windows version is an alpha too, **tested on Windows 11**.
 > Link-Suite is not signed with Apple or Microsoft, so macOS and Windows warn once on the first start
 > ([how to get past it](#first-start-getting-past-the-warning)).
 
@@ -321,27 +317,20 @@ From the QA of 0.3 and 0.3.1. **Result for macOS: ready for release.**
   at start.
 - **Not tested:** the self-update (there was no release of Link-Suite yet), Link-Suite between two real computers or in a
   club.
-<!-- WINDOWS-STAND (tested). Active: version A. To switch, delete line A and take line B out of the comment. -->
-- **Windows:** not tested yet.
-<!-- B: - **Windows:** tested on Windows 11 . -->
+- **Windows:** tested on Windows 11, in a VM: install, update (also with the admin prompt), start, uninstall.
 
 ## Download and install
 
 Download Link-Suite for your computer. The files come straight from the
 [latest release](https://github.com/skyplayser/Link-Suite/releases/latest); all versions and changes are on the [releases page](https://github.com/skyplayser/Link-Suite/releases).
 
-<!-- WINDOWS-STAND (download table). Active: version A. To switch, delete row A and the paragraph A below,
-     and take row B out of the comment. -->
 | System | File | State |
 |---|---|---|
 | macOS 13 or newer, Apple silicon (M1 and newer) | [`Link-Suite-macos-arm64.dmg`](https://github.com/skyplayser/Link-Suite/releases/latest/download/Link-Suite-macos-arm64.dmg) | alpha |
 | macOS 13 or newer, Intel | [`Link-Suite-macos-intel.dmg`](https://github.com/skyplayser/Link-Suite/releases/latest/download/Link-Suite-macos-intel.dmg) | alpha |
-| Windows 10 / 11, 64 bit | [`Link-Suite-windows.exe`](https://github.com/skyplayser/Link-Suite/releases/latest/download/Link-Suite-windows.exe) | **alpha, untested** |
-<!-- B: | Windows 10 / 11, 64 bit | [`Link-Suite-windows.exe`](https://github.com/skyplayser/Link-Suite/releases/latest/download/Link-Suite-windows.exe) | alpha, tested on Windows 11 | -->
+| Windows 10 / 11, 64 bit | [`Link-Suite-windows.exe`](https://github.com/skyplayser/Link-Suite/releases/latest/download/Link-Suite-windows.exe) | alpha, tested on Windows 11 |
 
-<!-- A (remove when Windows is tested): -->
-**On Windows**, as long as the Windows version of Link-Suite is untested, you can still get the programs straight from
-their own releases: [LJ Link](https://github.com/skyplayser/LJ-Link/releases/latest) ·
+**As a fallback** you can still get the programs straight from their own releases: [LJ Link](https://github.com/skyplayser/LJ-Link/releases/latest) ·
 [VJ-Link](https://github.com/skyplayser/VJ-LINK/releases/latest).
 
 The single downloads of each program also stay in its GitHub releases. Then open Link-Suite, go to **PROGRAMS** and press
@@ -419,7 +408,7 @@ Concept, research, design and QA reports are kept outside this repo. Release not
 
 ### Requirements
 
-Node.js 22+, macOS (tested on Apple silicon). Windows: built; the test on Windows 11 is still running.
+Node.js 22+, macOS (tested on Apple silicon). Windows: tested on Windows 11 (in a VM).
 
 ### Commands
 

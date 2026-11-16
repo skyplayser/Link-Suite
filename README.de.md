@@ -19,9 +19,7 @@
   <a href="https://github.com/skyplayser/Link-Suite/releases"><img alt="Neueste Version" src="https://img.shields.io/github/v/release/skyplayser/Link-Suite?include_prereleases&label=Release&color=FFB020"></a>
   <img alt="Stand: Alpha 0.3.2" src="https://img.shields.io/badge/Stand-Alpha%200.3.2-FF5C93">
   <img alt="macOS 13+, Apple-Chip und Intel" src="https://img.shields.io/badge/macOS%2013%2B-Apple--Chip%20%7C%20Intel-3DDC84">
-  <!-- WINDOWS-STAND (Badge). Aktiv: Fassung A. Zum Umschalten Zeile A löschen und Zeile B aus dem Kommentar holen. -->
-  <img alt="Windows: Alpha, ungetestet" src="https://img.shields.io/badge/Windows-Alpha%2C%20ungetestet-8A93A6">
-  <!-- B: <img alt="Windows: getestet auf Windows 11" src="https://img.shields.io/badge/Windows-getestet%20auf%20Windows%2011-3DDC84"> -->
+  <img alt="Windows: Alpha, getestet auf Windows 11" src="https://img.shields.io/badge/Windows-Alpha%2C%20getestet%20auf%20Windows%2011-3DDC84">
   <img alt="Kostenlos" src="https://img.shields.io/badge/Preis-kostenlos-B45CFF">
   <a href="LICENSE"><img alt="Lizenz: EPL-2.0" src="https://img.shields.io/badge/Lizenz-EPL--2.0-22C8F0"></a>
 </p>
@@ -61,9 +59,7 @@ Server, kein Konto.
 > **Das ist die Alpha 0.3.2.** Für macOS sagt die QA: release-fertig. Ein echtes
 > Programm ließ sich installieren und zweimal hintereinander aktualisieren. Manches ist nur im Code oder in einem
 > Entwickler-Build geprüft (siehe [Was geprüft ist](#was-geprüft-ist)).
-> <!-- WINDOWS-STAND (Warnung). Aktiv: Fassung A. Zum Umschalten Satz A löschen und Satz B aus dem Kommentar holen. -->
-> Die Windows-Version ist eine **Alpha und ungetestet**.
-> <!-- B: Die Windows-Version ist auf Windows 11 getestet. -->
+> Die Windows-Version ist ebenfalls eine Alpha, **getestet auf Windows 11**.
 > Link-Suite ist nicht bei Apple oder Microsoft signiert. Deshalb warnen macOS und Windows einmal beim ersten Start
 > ([so geht es weiter](#erster-start-die-warnung-überspringen)).
 
@@ -323,27 +319,20 @@ Aus der QA von 0.3 und 0.3.1. **Ergebnis für macOS: release-fertig.**
 - **Nur im Code, nicht live:** Dock-Fortschritt und Mitteilungen, das DMG-Fenster im Finder, der helle Systemmodus beim Start.
 - **Nicht geprüft:** das Selbst-Update (es gab noch kein Release von Link-Suite), Link-Suite zwischen zwei echten Rechnern
   oder im Club.
-<!-- WINDOWS-STAND (geprüft). Aktiv: Fassung A. Zum Umschalten Zeile A löschen und Zeile B aus dem Kommentar holen. -->
-- **Windows:** noch nicht getestet.
-<!-- B: - **Windows:** getestet auf Windows 11 . -->
+- **Windows:** getestet auf Windows 11, in einer VM: Installieren, Aktualisieren (auch mit Admin-Abfrage), Starten, Deinstallieren.
 
 ## Herunterladen und installieren
 
 Lade Link-Suite für deinen Rechner. Die Dateien kommen direkt aus dem [neuesten Release](https://github.com/skyplayser/Link-Suite/releases/latest); alle
 Versionen und Änderungen stehen auf der [Release-Seite](https://github.com/skyplayser/Link-Suite/releases).
 
-<!-- WINDOWS-STAND (Download-Tabelle). Aktiv: Fassung A. Zum Umschalten Zeile A und den Absatz A unten löschen
-     und Zeile B aus dem Kommentar holen. -->
 | System | Datei | Stand |
 |---|---|---|
 | macOS 13 oder neuer, Apple-Chip (M1 und neuer) | [`Link-Suite-macos-arm64.dmg`](https://github.com/skyplayser/Link-Suite/releases/latest/download/Link-Suite-macos-arm64.dmg) | Alpha |
 | macOS 13 oder neuer, Intel | [`Link-Suite-macos-intel.dmg`](https://github.com/skyplayser/Link-Suite/releases/latest/download/Link-Suite-macos-intel.dmg) | Alpha |
-| Windows 10 / 11, 64 Bit | [`Link-Suite-windows.exe`](https://github.com/skyplayser/Link-Suite/releases/latest/download/Link-Suite-windows.exe) | **Alpha, ungetestet** |
-<!-- B: | Windows 10 / 11, 64 Bit | [`Link-Suite-windows.exe`](https://github.com/skyplayser/Link-Suite/releases/latest/download/Link-Suite-windows.exe) | Alpha, getestet auf Windows 11 | -->
+| Windows 10 / 11, 64 Bit | [`Link-Suite-windows.exe`](https://github.com/skyplayser/Link-Suite/releases/latest/download/Link-Suite-windows.exe) | Alpha, getestet auf Windows 11 |
 
-<!-- A (löschen, sobald Windows getestet ist): -->
-**Unter Windows** kannst du die Programme weiter direkt aus ihren eigenen Releases laden, solange die Windows-Version von
-Link-Suite ungetestet ist: [LJ Link](https://github.com/skyplayser/LJ-Link/releases/latest) ·
+**Als Rückfall** kannst du die Programme weiter direkt aus ihren eigenen Releases laden: [LJ Link](https://github.com/skyplayser/LJ-Link/releases/latest) ·
 [VJ-Link](https://github.com/skyplayser/VJ-LINK/releases/latest).
 
 Die Einzel-Downloads der Programme bleiben auch in ihren GitHub-Releases. Dann Link-Suite öffnen, **PROGRAMME** wählen und
@@ -423,7 +412,7 @@ Konzept, Recherche, Design und QA-Berichte liegen außerhalb dieses Repos. Relea
 
 ### Voraussetzungen
 
-Node.js 22+, macOS (Apple-Chip getestet). Windows: gebaut; der Test auf Windows 11 läuft noch.
+Node.js 22+, macOS (Apple-Chip getestet). Windows: getestet auf Windows 11 (in einer VM).
 
 ### Befehle
 
