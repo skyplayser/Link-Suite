@@ -205,7 +205,8 @@ describe("Versionen", () => {
 });
 
 describe("Pfade für die Einstellungen", () => {
-  it("unter dem Benutzerordner als ~/…, sonst absolut", () => {
+  // POSIX-Pfade, Symlinks bzw. .app-Bundles (macOS); unter Windows echt in der VM geprüft
+  it.skipIf(process.platform === "win32")("unter dem Benutzerordner als ~/…, sonst absolut", () => {
     expect(toStoredPath("/Users/dj/VJ-Link", "/Users/dj")).toBe("~/VJ-Link");
     expect(toStoredPath("/Users/dj/a/b/../c", "/Users/dj")).toBe("~/a/c");
     expect(toStoredPath("/Users/dj", "/Users/dj")).toBe("~");
@@ -213,7 +214,8 @@ describe("Pfade für die Einstellungen", () => {
     expect(toStoredPath("/Users/djX/a", "/Users/dj")).toBe("/Users/djX/a");
     expect(toStoredPath("relativ", "/Users/dj")).toBeNull();
   });
-  it("lesen: ~ auflösen, nicht aus dem Benutzerordner hinaus, relative und kaputte → null", () => {
+  // POSIX-Pfade, Symlinks bzw. .app-Bundles (macOS); unter Windows echt in der VM geprüft
+  it.skipIf(process.platform === "win32")("lesen: ~ auflösen, nicht aus dem Benutzerordner hinaus, relative und kaputte → null", () => {
     expect(fromStoredPath("~/VJ-Link", "/Users/dj")).toBe("/Users/dj/VJ-Link");
     expect(fromStoredPath("~", "/Users/dj")).toBe("/Users/dj");
     expect(fromStoredPath("/opt/x", "/Users/dj")).toBe("/opt/x");

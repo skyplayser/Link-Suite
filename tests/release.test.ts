@@ -130,7 +130,8 @@ describe("Prüfungen vor der Verwendung", () => {
     expect(unsafeZipEntries(["LJL Link.app/", "LJL Link.app/Contents/Info.plist", "__MACOSX/._x"])).toEqual([]);
     expect(unsafeZipEntries(["../evil", "/etc/passwd", "a/../../b", "C:\\x", "ok/file"])).toEqual(["../evil", "/etc/passwd", "a/../../b", "C:\\x"]);
   });
-  it("Symlinks nur innerhalb des Entpack-Ordners", () => {
+  // POSIX-Pfade, Symlinks bzw. .app-Bundles (macOS); unter Windows echt in der VM geprüft
+  it.skipIf(process.platform === "win32")("Symlinks nur innerhalb des Entpack-Ordners", () => {
     const root = "/t/x";
     expect(symlinkInside(root, "/t/x/A.app/Contents/Frameworks/F.framework", "Versions/Current/F", path.join, path.resolve)).toBe(true);
     expect(symlinkInside(root, "/t/x/A.app", "../../../etc", path.join, path.resolve)).toBe(false);

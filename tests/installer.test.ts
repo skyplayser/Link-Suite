@@ -70,7 +70,8 @@ describe("Löschen und Ersetzen mit app.asar (QA 0.3 Nr. 1)", () => {
     await expect(rmOwn(other)).rejects.toThrow(/refuse/);
     expect(fs.existsSync(other)).toBe(true);
   });
-  it("zwei Updates hintereinander: kein .alt/.neu bleibt, zweites klappt", async () => {
+  // POSIX-Pfade, Symlinks bzw. .app-Bundles (macOS); unter Windows echt in der VM geprüft
+  it.skipIf(process.platform === "win32")("zwei Updates hintereinander: kein .alt/.neu bleibt, zweites klappt", async () => {
     const { ins } = make();
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), "linksuite-place-"));
     const target = path.join(dir, "Applications");

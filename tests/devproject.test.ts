@@ -124,7 +124,8 @@ describe("Entwicklerprojekt: startbar?", () => {
     expect(a.stale).toBe(true);
   });
 
-  it("insideRel", () => {
+  // POSIX-Pfade, Symlinks bzw. .app-Bundles (macOS); unter Windows echt in der VM geprüft
+  it.skipIf(process.platform === "win32")("insideRel", () => {
     expect(insideRel("/p", "a/b")).toBe("/p/a/b");
     expect(insideRel("/p", "../x")).toBeNull();
     expect(insideRel("/p", "/etc")).toBeNull();
@@ -132,7 +133,8 @@ describe("Entwicklerprojekt: startbar?", () => {
     expect(insideRel("/p", 3)).toBeNull();
   });
 
-  it("Symlink dist → /bin mit path.txt=sh startet nie /bin/sh (QA Befund 2)", () => {
+  // POSIX-Pfade, Symlinks bzw. .app-Bundles (macOS); unter Windows echt in der VM geprüft
+  it.skipIf(process.platform === "win32")("Symlink dist → /bin mit path.txt=sh startet nie /bin/sh (QA Befund 2)", () => {
     pkg("symbin", { name: "net-link", main: "main.js", scripts: { start: "electron ." } });
     write("symbin/main.js", "//");
     write("symbin/node_modules/electron/package.json", "{}");
@@ -166,7 +168,8 @@ describe("Entwicklerprojekt: startbar?", () => {
     expect(a.status).toBe("needs-build"); // nur über das eigene Skript, nach Rückfrage
   });
 
-  it("Projektordner selbst als Symlink: alles gegen den realen Ordner geprüft, Start im realen Ordner", () => {
+  // POSIX-Pfade, Symlinks bzw. .app-Bundles (macOS); unter Windows echt in der VM geprüft
+  it.skipIf(process.platform === "win32")("Projektordner selbst als Symlink: alles gegen den realen Ordner geprüft, Start im realen Ordner", () => {
     pkg("realproj", { name: "crew-link", main: "dist/main/main.js", scripts: { dev: "x" } });
     electron("realproj");
     write("realproj/dist/main/main.js", "//");
