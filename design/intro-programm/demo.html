@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Gleiche CSP wie die strengsten Programme (PL Link, NET Link): keine Inline-Skripte, keine Inline-Styles. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:">
+<title>Link-Suite · Startanimation je Programm (Demo)</title>
+<!-- demo.html?app=lj|ljl|vj|vd|net|cr|pl|db &t=<ms> &theme=light &reduced=1 &speed=0.25 &lang=en &html=0 &hide=1 &once=session
+     vj: HTML-Logo (Zeichen + Text wie VJ-Link startscreen.ts:91–93), lj/ljl: Icon-Kachel (wie LJ Link .hero-logo),
+     sonst SVG-Logo (wie NET/Crew/dB #start-logo). hide=1: Ziel unsichtbar → Rückfall in die Mitte. -->
+<link rel="stylesheet" href="demo.css">
+<link rel="stylesheet" href="program-intro.css">
+</head>
+<body>
+<!-- Schicht liegt ab dem ersten Bild deckend da; der Baustein übernimmt sie -->
+<div id="lsi" class="lsi-layer"><div class="lsi-bg"></div></div>
+<div id="screen"></div>
+<script type="module" src="demo.js"></script>
+</body>
+</html>

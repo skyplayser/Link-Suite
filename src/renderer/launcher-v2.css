@@ -1,0 +1,156 @@
+/* Übernommen aus design/launcher-v2.css (Abschnitte A–H, unverändert), lädt nach launcher.css. */
+/* Link-Suite (Suite-Launcher) – Feinschliff PROGRAMME, Design 0.3. Stand 16.11.2026.
+   Ergänzt src/renderer/launcher.css (wird NACH launcher.css geladen; ersetzt dort nichts außer den genannten Werten).
+   Beschreibung, Reihenfolge und Begründung: die UI-Unterlagen (außerhalb des Repos). Prototyp: design/intro-launcher.html.
+   Regeln wie immer: Pink = bedienen (eine Pink-Fläche je Karte, höchstens), Suite-Farben = Zustand. */
+
+/* ================================================================ A · Hero „Schaufenster“ oben auf PROGRAMME
+   Fläche wie VD-Link Startbildschirm (VD style.css:125–127: Verlauf + Karte), aber flach (eine Zeile hoch). */
+.hero{position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:18px 28px;padding:18px 22px;
+  border:1px solid var(--line);border-radius:var(--r-start);overflow:hidden;
+  background:radial-gradient(520px 200px at 0% 0%,rgba(255,59,59,.10),transparent 70%),radial-gradient(520px 220px at 100% 100%,rgba(34,200,240,.08),transparent 70%),var(--panel)}
+[data-theme=light] .hero{background:radial-gradient(520px 200px at 0% 0%,rgba(255,59,59,.07),transparent 70%),radial-gradient(520px 220px at 100% 100%,rgba(34,200,240,.07),transparent 70%),var(--panel);box-shadow:0 1px 2px rgba(20,24,33,.05)}
+.hero-txt{display:flex;flex-direction:column;gap:6px;min-width:0}
+/* Die fünf Suite-Farbquadrate (wie im VD-Link-Logo) – Marke, kein Zustand */
+.hero-mark{display:flex;gap:5px}
+.hero-mark i{width:10px;height:10px;border-radius:3px;display:block}
+.hero-mark i:nth-child(1){background:var(--sA)} .hero-mark i:nth-child(2){background:var(--sB)} .hero-mark i:nth-child(3){background:var(--sC)}
+.hero-mark i:nth-child(4){background:var(--sD)} .hero-mark i:nth-child(5){background:var(--sE)}
+.hero h1{margin:0;font-size:20px;line-height:1.2;font-weight:800;letter-spacing:-.01em;color:var(--strong)}
+.hero-sub{margin:0;color:var(--dim);font-size:12.5px}
+/* Kurzstatus: große Monospace-Zahl, kleine Beschriftung. Farbe = Zustand, nur wenn > 0 */
+.hero-stats{display:flex;gap:6px;margin:0}
+.stat{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-width:78px;padding:8px 12px;border-radius:var(--r-l);background:var(--bg);border:1px solid var(--line)}
+[data-theme=light] .stat{background:var(--raise)}
+.stat dd{margin:0;font:700 20px/1 var(--mono);color:var(--text)}
+.stat dt{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);font-weight:600;white-space:nowrap}
+.stat.warn dd{color:var(--amber-ink)} .stat.ok dd{color:var(--green-ink)} .stat.dev dd{color:var(--violet-ink)}
+.stat.zero dd{color:var(--dim)}
+.hero-act{display:grid;grid-template-columns:auto auto;gap:6px 8px;align-items:center;justify-items:end}
+.hero-act .when{font:11px var(--mono);color:var(--dim);white-space:nowrap}
+.hero-act .btn{width:100%}
+
+/* ================================================================ B · Gruppen: INSTALLIERT · ENTWICKLUNG · VERFÜGBAR · KOMMT BALD */
+.group{display:flex;flex-direction:column;gap:8px}
+.ghead{display:flex;align-items:baseline;gap:8px;margin:2px 0 0}
+.ghead h2{margin:0}
+.ghead .n{font:600 10px var(--mono);color:var(--dim);background:var(--raise);border-radius:var(--r-xs);padding:1px 6px}
+.ghead .hintline{margin-left:auto;font-size:11.5px;color:var(--dim)}
+.ghead::after{content:"";flex:1;height:1px;background:var(--line);align-self:center;order:2}
+.ghead .hintline{order:3}
+
+/* ================================================================ C · Raster mit gleich hohen Karten */
+.progs.v2{grid-template-columns:repeat(auto-fill,minmax(360px,1fr));grid-auto-rows:1fr;align-items:stretch;gap:12px}
+.progs.v2 .prog{grid-template-columns:var(--icon-l) minmax(0,1fr);height:100%;padding:14px 14px 12px;transition:border-color .12s,background-color .12s}
+.progs.v2 .prog-body{gap:4px;height:100%}
+/* Kopf: Name links, GENAU EINE Zustands-Pille rechts oben (nie umbrechen) */
+.progs.v2 .prog-head{flex-wrap:nowrap}
+.progs.v2 .prog-head .pills{margin-left:auto;flex-wrap:nowrap;overflow:hidden}
+.progs.v2 .prog-line{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* Eine Zeile für Version und Weg (Monospace): „1.7.10 → 1.7.11 · /Applications/LJ-Link-PRO.app“ */
+.prog-meta{display:flex;align-items:center;gap:6px;min-width:0;font:11.5px var(--mono);color:var(--dim);white-space:nowrap;margin-top:2px}
+.prog-meta .vers b{color:var(--text);font-weight:600}
+.prog-meta .vers .to{color:var(--amber-ink);font-weight:600}
+.prog-meta .vers .chan{color:var(--dim);text-transform:uppercase;font-size:10.5px;letter-spacing:.04em;margin-left:4px}
+.prog-meta .sep{color:var(--line);flex:none}
+.prog-meta .vers{flex:none}
+.prog-meta .path{min-width:0;overflow:hidden;display:flex;align-items:center;gap:5px}
+.prog-meta .path span{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.prog-meta svg.ico{width:13px;height:13px}
+/* Knopfzeile immer unten (gleiche Höhe ⇒ Knöpfe aller Karten auf einer Linie) */
+.progs.v2 .prog-act{margin-top:auto;padding-top:8px;flex-wrap:nowrap;min-height:38px}
+.progs.v2 .prog-act .btn{height:30px;padding:0 12px}
+.progs.v2 .prog-act .btn.main{min-width:112px}
+.progs.v2 .prog-act .btn.more{width:30px;padding:0}
+/* „Starten“ ist KEINE Pink-Fläche: normaler Knopf, Play-Symbol pink. Pink-Fläche bleibt für Aktualisieren/Installieren.
+   Gewählte Karte ohne anderen Hauptknopf: Starten wird pink (eine Pink-Fläche auf dem Bildschirm, wo der Fokus ist). */
+.btn.go svg.ico{color:var(--accent-text)}
+.btn.go:hover{border-color:var(--accent-edge);color:var(--accent-text)}
+.prog.sel:not(:has(.btn.primary)) .btn.go{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.prog.sel:not(:has(.btn.primary)) .btn.go svg.ico{color:var(--on-accent)}
+/* Hover der Karte: Rand heller, Fläche einen Hauch angehoben, Icon minimal größer (ohne Bewegung bei reduzierter Bewegung) */
+.progs.v2 .prog:hover{border-color:var(--dim);background:linear-gradient(180deg,var(--raise),var(--panel) 70%)}
+.progs.v2 .prog .prog-icon{transition:transform .16s cubic-bezier(.2,.8,.2,1)}
+.progs.v2 .prog:hover .prog-icon{transform:scale(1.04)}
+[data-theme=light] .progs.v2 .prog{box-shadow:0 1px 2px rgba(20,24,33,.05)}
+[data-theme=light] .progs.v2 .prog:hover{background:var(--panel);box-shadow:0 4px 14px rgba(20,24,33,.08)}
+/* Laden/Installieren: ersetzt die Knopfzeile, gleiche Höhe (Karte springt nicht) */
+.prog-load{display:flex;align-items:center;gap:8px;flex:1;min-width:0}
+.prog-load .lbl{font-size:11.5px;color:var(--dim);white-space:nowrap}
+.prog-load .pct{font:600 11.5px var(--mono);color:var(--text);min-width:38px;text-align:right}
+.prog-load .progress{flex:1;margin:0}
+
+/* Kleine Karten „Kommt bald“: gleich hoch, eine Pille, eine Zeile „fehlt: …“ */
+.progs.v2.soon-grid{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+.progs.v2 .prog.small{grid-template-columns:var(--icon-s) minmax(0,1fr);padding:12px}
+.progs.v2 .prog.small .prog-meta{font-size:11px}
+
+/* Leerer Zustand einer Gruppe */
+.group .empty{border:1px dashed var(--line);border-radius:var(--r-card);padding:22px 20px}
+
+/* Inhalt nicht endlos breit: auf großen Fenstern mittig, sonst bleibt unten/rechts Leere */
+.pane.v2{gap:12px}
+.pane.v2>*{flex:none}                    /* Hero und Gruppen nie stauchen (sonst schneidet .hero den Untertitel ab) */
+.pane.v2>.foot{margin-top:auto}
+.pane.v2>.hero,.pane.v2>.group{width:100%;max-width:1560px;margin-left:auto;margin-right:auto}
+
+@media (prefers-reduced-motion:reduce){
+  .progs.v2 .prog,.progs.v2 .prog .prog-icon{transition:none}
+  .progs.v2 .prog:hover .prog-icon{transform:none}
+}
+@media (max-width:1100px){
+  .hero{grid-template-columns:minmax(0,1fr)}
+  .hero-act{justify-items:start}
+}
+
+/* ================================================================ D · Startanimation für den Launcher (Schicht über dem Programm)
+   Ablauf und Schnittstelle: die UI-Unterlagen (außerhalb des Repos) Teil 2. Bilder liegen position:fixed an ihrem ZIEL (FLIP),
+   die Animation bewegt nur transform/translate/opacity/clip-path. */
+.intro-layer{position:fixed;inset:0;z-index:2000;pointer-events:auto;cursor:pointer;contain:strict;background:none} /* ersetzt launcher.css §16 background:var(--bg) – die Fläche ist jetzt .ibg */
+.intro-layer .ibg{position:absolute;inset:0;background:radial-gradient(900px 520px at 15% 0%,rgba(255,59,59,.08),transparent 60%),radial-gradient(800px 520px at 90% 100%,rgba(34,200,240,.06),transparent 60%),var(--bg)}
+[data-theme=light] .intro-layer .ibg{background:radial-gradient(900px 520px at 15% 0%,rgba(255,59,59,.06),transparent 60%),radial-gradient(800px 520px at 90% 100%,rgba(34,200,240,.06),transparent 60%),var(--bg)}
+.intro-layer img{position:fixed;display:block;opacity:0;will-change:transform,opacity;pointer-events:none;user-select:none;-webkit-user-drag:none;transform-origin:50% 50%}
+.intro-layer .skip{position:fixed;right:18px;bottom:14px;color:var(--dim);font-size:11.5px;opacity:.75}
+.intro-layer .skip kbd{font:10.5px var(--mono);border:1px solid var(--line);border-radius:3px;padding:0 4px}
+.intro-layer.gone{opacity:0;pointer-events:none;transition:opacity .15s linear}
+/* Während der Animation: Ziele unsichtbar, bis ihr Bild landet (die Animation setzt sie per WAAPI wieder sichtbar) */
+html.intro-run #top-logo{visibility:hidden}
+
+/* ================================================================ E · macOS-Fenster (titleBarStyle "hiddenInset", trafficLightPosition {x:16,y:20})
+   Das Programm setzt <html class="mac"> (process.platform === "darwin") und im Vollbild zusätzlich "fullscreen". */
+html.mac .top{-webkit-app-region:drag;padding-left:80px;min-height:54px}          /* Platz für die drei Ampel-Knöpfe (16 + 52 + Luft) */
+html.mac .top button,html.mac .top a,html.mac .top input,html.mac .top select,html.mac .top .chip,html.mac .top .logo{-webkit-app-region:no-drag}
+html.mac.fullscreen .top{padding-left:14px}                                          /* im Vollbild gibt es keine Ampel */
+html.mac:not(.focused) .top{background:color-mix(in srgb,var(--panel) 70%,var(--bg))} /* inaktives Fenster: Kopf eine Spur zurück, wie macOS */
+html.mac:not(.focused) .tabs button.on,html.mac:not(.focused) .tabs button[aria-selected=true]{box-shadow:inset 0 -2px 0 var(--line)}
+
+/* ================================================================ F · Barrierefreiheit: erhöhter Kontrast, weniger Transparenz */
+@media (prefers-contrast:more){
+  :root{--dim:#A3ABBC;--line:#3A4152;--grey-ink:#A3ABBC}                             /* #A3ABBC auf --panel 7,7:1 */
+  [data-theme=light]{--dim:#3E4656;--line:#A9B0BD;--grey-ink:#3E4656}                 /* #3E4656 auf --bg 8,3:1 */
+  .pill{box-shadow:inset 0 0 0 1px var(--line)}
+  .prog,.stat,.hero{border-width:1px;border-color:var(--dim)}
+  .hero,[data-theme=light] .hero{background:var(--panel)}
+  :focus-visible{outline-width:3px!important}
+}
+@media (prefers-reduced-transparency:reduce){
+  .hero,[data-theme=light] .hero{background:var(--panel)}
+  .intro-layer .ibg{background:var(--bg)}
+  .progs.v2 .prog:hover{background:var(--raise)}
+}
+
+/* ================================================================ G · Willkommen beim ersten Start (einmalig, über dem Hero) */
+.welcome{flex:none;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:16px;align-items:start;padding:16px 18px;border:1px solid var(--cyan-line);border-left:3px solid var(--cyan);border-radius:var(--r-card);background:linear-gradient(90deg,var(--cyan-soft),transparent 60%),var(--panel)}
+.welcome>img{width:52px;height:52px;display:block}
+.welcome h2{margin:0 0 8px;font-size:15px;letter-spacing:0;text-transform:none;color:var(--strong);font-weight:700}
+.welcome ol{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.welcome li{display:grid;grid-template-columns:20px minmax(0,1fr);gap:8px;font-size:12px;color:var(--dim)}
+.welcome li b{display:block;color:var(--text);font-size:12.5px;margin-bottom:2px}
+.welcome li svg.ico{width:18px;height:18px;color:var(--cyan-ink);margin-top:1px}
+.welcome .acts{display:flex;flex-direction:column;gap:6px;align-items:stretch}
+@media (max-width:1100px){.welcome ol{grid-template-columns:1fr}.welcome{grid-template-columns:minmax(0,1fr)}.welcome>img{display:none}}
+
+/* ================================================================ H · Mac-Gefühl: Bedienflächen nicht markierbar (Text, Pfade, Logs, Chat bleiben markierbar) */
+.top,.tabs,.btn,.pill,.chip,.seg,.ghead,.hero-stats,.prog-head,.prog-line,.prog-icon,.menu{-webkit-user-select:none;user-select:none}
+.prog-meta .path,code,.cmd,.when{-webkit-user-select:text;user-select:text}
+img{-webkit-user-drag:none}

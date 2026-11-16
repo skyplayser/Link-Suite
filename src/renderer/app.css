@@ -1,0 +1,54 @@
+/* Ergänzungen zu launcher.css, nur was das Programm zusätzlich braucht (Design: launcher.css gilt unverändert). */
+/* Griff der Log-Leiste: die Fläche über ::before (launcher.css) ist ziehbar */
+.log-grip{position:absolute;left:0;right:0;top:0;height:8px;cursor:ns-resize;z-index:2}
+.log-grip:focus-visible{outline-offset:-2px}
+/* Menü der Karte über allem, was darunter liegt */
+.prog .menu-wrap{position:relative}
+.prog-act .menu{z-index:60}
+/* Dialoge: Hinweis-Text in Monospace-Kästen umbrechen lassen */
+.cmd.wrap{white-space:pre-wrap;overflow-wrap:anywhere}
+/* Kleine Unterzeile unter einer Pille in der Tabelle */
+table.net td .muted.small{margin-left:6px}
+/* Leerer Zustand in IM NETZ mit Knopf */
+.empty .btn{margin-top:4px}
+/* Gewählter Startweg im ⋯-Menü (menuitemradio) */
+.menu button[role=menuitemradio][aria-checked=true]{color:var(--accent-text)}
+.menu button[role=menuitemradio][aria-checked=true] svg.ico{color:var(--accent-text)}
+/* Befund des Entwicklerordners in den Einstellungen */
+.set-label small.ok{color:var(--green-ink)}
+.set-label small.warn{color:var(--amber-ink)}
+/* Abschneiden mit „…“: text-overflow wirkt nicht auf den Flex-Behälter .route-path, daher ein eigenes Element */
+.route-path .trunc{min-width:0;flex:0 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.route{min-width:0}
+.route .route-path{max-width:100%}
+/* Versionshinweise im Detail (Text aus GitHub, nur textContent) */
+.notes.relnotes{white-space:pre-wrap;overflow-wrap:anywhere;padding:8px 12px;max-height:240px;overflow:auto;font-size:11.5px}
+.prog-act .btns{gap:6px;flex-wrap:nowrap;align-items:center}
+.prog-act .progress{min-width:120px;margin-top:0}
+/* PROGRAMME: Kopf-Chip „läuft“ doppelt mit der Hero-Kennzahl → dort ausblenden (Design 0.3 P3.13) */
+body.tab-programs-on #chip-running{display:none}
+.hero-act .when.warn{color:var(--amber-ink)}
+/* QA 0.3 Nr. 3: Pille nie abschneiden, lieber den Namen mit „…“ */
+.progs.v2 .prog-head .pills{flex:none;overflow:visible}
+.progs.v2 .prog-head h3{min-width:0;overflow:hidden;text-overflow:ellipsis}
+/* QA 0.3 Nr. 5: schmale Fenster (Mindestmaß 960 × 620) – Netz-Chip weg (der Tab zeigt die Zahl), Hero kompakt */
+@media (max-width:1100px){
+  #chip-net{display:none}
+  .hero{grid-template-columns:auto auto;justify-content:space-between}
+  .hero-txt{grid-column:1/-1}
+  .hero-act{justify-items:end}
+  .hero-act .btn{width:auto}
+}
+/* QA 0.3 Nr. 8: große Fenster – breitere Karten statt vieler schmaler Spalten */
+@media (min-width:1700px){.progs.v2:not(.soon-grid){grid-template-columns:repeat(auto-fill,minmax(440px,1fr))}}
+.progs.v2.soon-grid{grid-template-columns:repeat(auto-fill,minmax(290px,1fr))}
+/* Plattform und Entwickleransicht (QA Windows B2, U1) */
+html[data-os=win] .mac-only{display:none!important}
+html:not(.devview) .dev-only{display:none!important}
+/* U2: Gruppenköpfe ohne wiederholenden Hinweis rechts */
+.ghead .hintline{display:none}
+/* U3: EMERGENCY räumlich von „Senden“ trennen */
+.chat-form .chat-emergency{margin-left:16px;position:relative}
+.chat-form .chat-emergency::before{content:"";position:absolute;left:-9px;top:4px;bottom:4px;width:1px;background:var(--line)}
+/* QA Windows: Scrollleiste der Einstellungen am Fensterrand, Inhalt bleibt höchstens 860 px breit */
+.set-content{max-width:none;padding-right:max(28px,calc(100% - 860px))}

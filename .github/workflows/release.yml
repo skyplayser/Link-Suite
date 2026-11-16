@@ -1,0 +1,74 @@
+name: Release
+
+# Der einzige Weg zur Veröffentlichung: Tag v* pushen (oder von Hand unter Actions). Baut die macOS-Images (Apple-Chip,
+# Intel) und den Windows-Installer, erzeugt SHA256SUMS und veröffentlicht alles als GitHub-Release mit dem Text aus
+# docs/releases/<tag>.md. SHA256SUMS.sig (Suite-Schlüssel) signiert der Entwickler offline und lädt sie nach; der private
+# Schlüssel kommt nie zu GitHub. Actions sind auf Commit-SHA gepinnt (Kommentar = Version).
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release-Tag, z. B. v0.2.0'
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  dist:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-latest
+            script: dist:mac
+            files: release/*.dmg
+          - os: windows-latest
+            script: dist:win
+            files: release/*.exe
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - run: npm run ${{ matrix.script }}
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: installer-${{ runner.os }}
+          path: ${{ matrix.files }}
+          retention-days: 7
+
+  release:
+    needs: dist
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          pattern: installer-*
+          path: out
+          merge-multiple: true
+      - name: SHA256SUMS
+        run: cd out && sha256sum Link-Suite-* > SHA256SUMS && cat SHA256SUMS
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.inputs.tag || github.ref_name }}
+        run: |
+          ls -la out
+          NOTES="docs/releases/$TAG.md"
+          test -f "$NOTES" || { echo "fehlt: $NOTES"; exit 1; }
+          if gh release view "$TAG" >/dev/null 2>&1; then echo "Release $TAG gibt es schon – nichts überschrieben"; exit 1; fi
+          gh release create "$TAG" --target "$GITHUB_SHA" --title "Link-Suite $TAG" --notes-file "$NOTES" out/Link-Suite-* out/SHA256SUMS

@@ -1,0 +1,27 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+/* Prüfbild: DMG mit Icons und Finder-Beschriftung (hell/dunkel) + Menüleisten-Symbol auf hellem und dunklem Balken */
+body{margin:0;padding:20px;background:#07080B;font:12px system-ui,-apple-system,sans-serif;color:#8A93A6;display:flex;flex-direction:column;gap:14px}
+.row{display:flex;gap:20px}
+.dmg{position:relative;width:660px;height:400px;background:url(../dmg-background.png) 0 0/660px 400px;border-radius:10px;overflow:hidden;border:1px solid #2A2F3D}
+.ic{position:absolute;width:100px;height:100px;margin:-50px 0 0 -50px;top:200px}
+.ic.a{left:170px}.ic.b{left:490px}
+.folder{border-radius:14px;background:linear-gradient(#6CB8F5,#3D8FE0);display:grid;place-items:center;color:#fff;font-size:34px}
+.lbl{position:absolute;top:266px;width:128px;margin:-8px 0 0 -64px;text-align:center;font-size:13px;line-height:16px}
+.lbl.a{left:170px}.lbl.b{left:490px}
+.light .lbl{color:#000}.dark .lbl{color:#fff}
+.bar{display:flex;align-items:center;gap:14px;height:24px;padding:0 12px;border-radius:6px;font-size:13px}
+.bar.l{background:#ECECEC;color:#000}.bar.d{background:#2B2B2E;color:#fff}
+.bar img{width:19px;height:18px}
+.bar.d img{filter:invert(1)}
+.big img{width:152px;height:144px;image-rendering:pixelated;background:#fff;border:1px solid #2A2F3D}
+</style></head><body>
+<div class="row">
+ <div><div>Finder hell (schwarze Beschriftung)</div><div class="dmg light"><img class="ic a" src="../icons/link-suite.svg"><div class="ic b folder">A</div><div class="lbl a">Link-Suite</div><div class="lbl b">Programme</div></div></div>
+ <div><div>Finder dunkel (weiße Beschriftung)</div><div class="dmg dark"><img class="ic a" src="../icons/link-suite.svg"><div class="ic b folder">A</div><div class="lbl a">Link-Suite</div><div class="lbl b">Programme</div></div></div>
+</div>
+<div class="row" style="align-items:center">
+ <div class="bar l"><span>Menüleiste hell</span><img src="../tray-Template@2x.png"><span>12:04</span></div>
+ <div class="bar d"><span>Menüleiste dunkel (macOS färbt das Template weiß)</span><img src="../tray-Template@2x.png"><span>12:04</span></div>
+ <div class="big"><img src="../tray-Template.png"></div><div class="big"><img src="../tray-Template@2x.png"></div><span>1× und 2×, vergrößert</span>
+</div>
+</body></html>

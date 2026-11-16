@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'none'; connect-src 'none'; media-src 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Über Link-Suite</title>
+<link rel="stylesheet" href="/src/renderer/launcher.css">
+<link rel="stylesheet" href="/src/renderer/about.css">
+</head>
+<body class="about-win">
+<main class="ab">
+  <img class="ab-icon" src="./icons/link-suite.svg" alt="">
+  <div class="ab-logo"><img class="only-dark" src="./icons/logo-horizontal-on-dark.svg" alt="Link-Suite"><img class="only-light" src="./icons/logo-horizontal-on-light.svg" alt="Link-Suite"></div>
+  <p class="ab-claim" id="ab-claim"></p>
+  <p class="ab-ver mono" id="ab-ver"></p>
+  <div class="pills" id="ab-pills"></div>
+  <p class="ab-copy" id="ab-copy">© 2026 Philipp Spruck / NEXTPHILM · EPL-2.0</p>
+  <div class="btns"><button class="btn" type="button" id="ab-lic"></button><button class="btn" type="button" id="ab-gh">GitHub</button></div>
+  <pre class="notes ab-notes" id="ab-notes" hidden></pre>
+  <p class="ab-tech mono" id="ab-tech"></p>
+</main>
+<script type="module" src="/src/renderer/about.ts"></script>
+</body>
+</html>

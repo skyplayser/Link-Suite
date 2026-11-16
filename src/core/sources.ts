@@ -1,0 +1,45 @@
+// Quellen der Releases je Programm (Version 0.2+): ohne Node-Module, damit auch die Oberfläche sie nutzen kann
+// (QA 0.3 Nr. 9: kein node:crypto im Renderer-Bundle). Prüflogik mit Krypto: release.ts.
+/** Repo des Launchers selbst (Selbst-Update). Bei 404: „noch keine Veröffentlichung“. */
+export const LAUNCHER_REPO = "skyplayser/Link-Suite";
+export const LAUNCHER_BUNDLE_ID = "de.nextphilm.linksuite";
+
+export type Kind = "dmg" | "zip" | "exe";
+export type SourceId = "lj" | "vj" | "ljl" | "suite";
+
+export interface ReleaseSource {
+  id: SourceId;
+  name: string;
+  repo: string;
+  /** macOS-Kennungen, die im Image stehen dürfen; leer = über den Namen (LJL Link). */
+  bundleIds: string[];
+  /** Name der App im Image bzw. Zip (nur für Quellen ohne Kennung). */
+  appName?: string;
+  /** Datei für Plattform/Chip; null = gibt es hier nicht. `version` für Namen mit Version (LJL Link). */
+  asset(platform: string, arch: string, version: string): string | null;
+}
+
+const triple = (base: string) => (platform: string, arch: string): string | null =>
+  platform === "darwin" ? `${base}-macos-${arch === "arm64" ? "arm64" : "intel"}.dmg` : platform === "win32" ? `${base}-windows.exe` : null;
+
+/** Quellen der Programme mit öffentlichen Releases (Stand 16.11.2026). VD-Link: Repo privat → „bald verfügbar“. */
+export const SOURCES: Readonly<Record<SourceId, ReleaseSource>> = {
+  lj: { id: "lj", name: "LJ Link", repo: "skyplayser/LJ-Link", bundleIds: ["dev.ljlinkpro"], asset: triple("LJ-Link") },
+  vj: { id: "vj", name: "VJ-Link", repo: "skyplayser/VJ-LINK", bundleIds: ["de.nextphilm.vjlink"], asset: triple("VJ-Link") },
+  ljl: {
+    id: "ljl", name: "LJL Link", repo: "skyplayser/LJL-Link", bundleIds: [], appName: "LJL Link.app",
+    asset: (platform, _arch, version) => (platform === "darwin" && /^[0-9][0-9A-Za-z.-]{0,30}$/.test(version) ? `LJL-Link-${version}-macOS.zip` : null),
+  },
+  suite: { id: "suite", name: "Link-Suite", repo: LAUNCHER_REPO, bundleIds: [LAUNCHER_BUNDLE_ID], asset: triple("Link-Suite") },
+};
+
+/** Programme, deren Releases es geben wird, die aber noch nicht öffentlich sind. */
+export const SOON_PUBLIC: ReadonlySet<string> = new Set(["vd"]);
+
+export function sourceById(id: unknown): ReleaseSource | null {
+  return typeof id === "string" && Object.hasOwn(SOURCES, id) ? SOURCES[id as SourceId] : null;
+}
+
+export function kindOf(asset: string): Kind | null {
+  return asset.endsWith(".dmg") ? "dmg" : asset.endsWith(".zip") ? "zip" : asset.endsWith(".exe") ? "exe" : null;
+}

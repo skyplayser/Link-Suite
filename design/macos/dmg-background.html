@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<!-- DMG-Fenster der Link-Suite, 660 × 400 pt. Gerendert als design/dmg-background.png (1×) und @2x.
+     Lage der Icons (Mitte, pt) MUSS zu package.json build.dmg.contents passen: App (170, 200), Programme (490, 200),
+     iconSize 100. Die Plaketten unter den Icons tragen die Finder-Beschriftung: #6F7587 hat zu Weiß 4,59:1 und zu
+     Schwarz 4,57:1 – Finder schreibt im Hellmodus schwarz, im Dunkelmodus weiß, beide bleiben lesbar.
+     Neu rendern: cd VD-Link && npx electron <render.cjs> design/macos/dmg-background.html design/dmg-background.png 660 400 1 (und 2). -->
+<style>
+html,body{margin:0;width:660px;height:400px;overflow:hidden}
+body{position:relative;background:radial-gradient(420px 260px at 8% 0%,rgba(255,59,59,.12),transparent 70%),radial-gradient(420px 260px at 100% 100%,rgba(34,200,240,.10),transparent 70%),#0C0E13;
+  font:13px/1.35 system-ui,-apple-system,"Segoe UI",sans-serif;color:#DCE1EA}
+.logo{position:absolute;left:0;right:0;top:34px;display:flex;justify-content:center}
+.logo img{height:30px;display:block}
+.claim{position:absolute;left:0;right:0;top:74px;text-align:center;color:#9AA3B5;font-size:12.5px}
+/* Kachel-Rahmen hinter den Icons (Suite-Kachel), Mitte = Icon-Mitte */
+.slot{position:absolute;width:132px;height:132px;margin:-66px 0 0 -66px;border-radius:28px;border:1px dashed #2A2F3D}
+.slot.app{left:170px;top:200px}.slot.apps{left:490px;top:200px}
+/* Plakette für die Finder-Beschriftung (Mitte ≈ Icon-Mitte + 50 + 16) */
+.plate{position:absolute;width:128px;height:22px;margin:-11px 0 0 -64px;border-radius:11px;background:#6F7587;top:266px}
+.plate.app{left:170px}.plate.apps{left:490px}
+/* Pfeil = bedienen (ziehen) → Pink */
+.arrow{position:absolute;left:250px;top:186px;width:160px;height:28px}
+.drag{position:absolute;left:250px;width:160px;top:160px;text-align:center;color:#FF5C93;font-weight:700;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase}
+.foot{position:absolute;left:28px;right:28px;bottom:22px;display:grid;gap:5px;text-align:center}
+.foot .main{color:#DCE1EA;font-size:12.5px}
+.foot .main span{color:#9AA3B5}
+.foot .note{color:#9AA3B5;font-size:11px}
+.foot .note i{display:inline-block;width:6px;height:6px;border-radius:50%;background:#FFB020;margin-right:6px;vertical-align:1px}
+</style>
+</head>
+<body>
+<div class="logo"><img src="../icons/logo-horizontal-on-dark.svg" alt="Link-Suite"></div>
+<div class="claim">Kostenlose Programme für Veranstaltungstechnik · Free software for event technology</div>
+<div class="slot app"></div><div class="slot apps"></div>
+<div class="plate app"></div><div class="plate apps"></div>
+<div class="drag">ziehen · drag</div>
+<svg class="arrow" viewBox="0 0 160 28" aria-hidden="true"><path d="M8 14H146" stroke="#FF5C93" stroke-width="3" stroke-linecap="round" stroke-dasharray="1 9"/><path d="M138 5l12 9-12 9" fill="none" stroke="#FF5C93" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+<div class="foot">
+  <div class="main">Link-Suite in „Programme“ ziehen, dann dort öffnen. <span>· Drag to Applications, open it there.</span></div>
+  <div class="note"><i></i>Nicht signiert: beim ersten Start Systemeinstellungen → Datenschutz &amp; Sicherheit → „Dennoch öffnen“ · Unsigned: System Settings → Privacy &amp; Security → Open Anyway</div>
+</div>
+</body>
+</html>

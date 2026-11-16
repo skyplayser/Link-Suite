@@ -1,0 +1,501 @@
+/* Übernommen aus design/launcher.css (Abschnitte 1–19, unverändert; Abschnitt 99 nur fürs Muster, nicht übernommen). */
+/* Link-Suite (Suite-Launcher) – Design-Tokens und Bausteine. Stand 15.11.2026, Design 0.1 (Version 0.1 „Starten“).
+   Grundlage: VJ-Link src/renderer/style.css und VD-Link src/style.css (gleiche Klassen- und Variablennamen),
+   Tag-Werte und Hilfsklassen wie NET Link design/net-link.css, Konzept Link-Suite/Konzepte/Suite-Launcher.
+   Beschreibung, Herkunft je Baustein (Datei:Zeile) und Bildschirmaufbau: die Design-Unterlagen (außerhalb des Repos).
+   Regeln: Pink (--accent) = bedienen, nie Zustand. Suite-Farben = Zustand und Kategorie, nie Knopf.
+   #FFD60A nur für EMERGENCY. Keine Webfonts, keine CDNs, Icons als Inline-SVG. Keine style-Attribute im Programm
+   (CSP style-src 'self'); Breiten von Fortschrittsbalken setzt das Programm per element.style.
+   Tag-Modus: <html data-theme="light">. Ohne Attribut gilt Nacht. „System“ setzt das Programm per matchMedia. */
+
+/* ================================================================ 1 · Tokens (Nacht) */
+:root{
+  /* Flächen – Suite, wie VJ-Link style.css:2 / VD-Link style.css:3 */
+  --bg:#0C0E13; --panel:#151821; --raise:#1E222E; --line:#2A2F3D; --text:#DCE1EA; --dim:#7E879A; --strong:#F2F3F7;
+  /* Bedienen – Suite-Regel 15.11.2026: Pink-Fläche immer #FF5C93 (beide Modi), darauf dunkle Schrift #141821 (6,09:1).
+     --accent-text = kleiner pinker Text, Links, Symbole; --accent-edge = Auswahlrand, Tab-Strich; --focus = Fokusring.
+     Alle drei: Nacht #FF5C93, Tag #CC0045 (Namen wie NET Link) */
+  --accent:#FF5C93; --on-accent:#141821; --accent-text:#FF5C93; --accent-edge:#FF5C93; --focus:#FF5C93; --accent-soft:rgba(255,92,147,.14); --accent-line:rgba(255,92,147,.55);
+  /* Zustand und Kategorie – Suite-Farben. *-ink = als Schrift (Kontrast ≥ 4,5:1 auf --panel und --raise) */
+  --red:#FF3B3B; --amber:#FFB020; --green:#3DDC84; --cyan:#22C8F0; --violet:#B45CFF; --grey:#8A93A6;
+  --red-ink:#FF7A7A; --amber-ink:#FFB020; --green-ink:#3DDC84; --cyan-ink:#22C8F0; --violet-ink:#C08BFF; --grey-ink:#8A93A6;
+  --red-soft:rgba(255,59,59,.10); --amber-soft:rgba(255,176,32,.10); --green-soft:rgba(61,220,132,.12);
+  --cyan-soft:rgba(34,200,240,.08); --violet-soft:rgba(180,92,255,.10); --grey-soft:rgba(138,147,166,.12);
+  --red-line:rgba(255,59,59,.55); --amber-line:rgba(255,176,32,.5); --cyan-line:rgba(34,200,240,.42);
+  --sA:#FF3B3B; --sB:#FFB020; --sC:#3DDC84; --sD:#22C8F0; --sE:#B45CFF;
+  --emergency:#FFD60A;
+  /* Aliase, damit Code aus VJ-Link/VD-Link (Chat, Updater) ohne Umbau läuft – VJ style.css:3 */
+  --live:var(--red); --ok:var(--green); --warn:var(--amber);
+  /* Log (Prozess-Ausgabe): stdout grau, stderr rot-orange (VJ style.css:787 .upd-msg.warn) */
+  --log-bg:#08090C; --log-out:#9AA3B5; --log-err:#FF8A5C; --log-sys:#DCE1EA;
+  /* Kachel der Programm-Icons (Suite-README) – nur für Platzhalter ohne eigenes Icon */
+  --tile-a:#1A1E2A; --tile-b:#0D1016; --tile-line:#2A2F3D;
+  /* Schrift */
+  --sans:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  /* Radien, Schatten, Maße */
+  --r-xs:3px; --r-s:4px; --r-m:6px; --r-l:8px; --r-xl:10px; --r-card:12px; --r-modal:14px; --r-start:16px;
+  --shadow-pop:0 16px 40px rgba(0,0,0,.5); --shadow-modal:0 30px 80px rgba(0,0,0,.55);
+  --scrim:rgba(5,6,10,.66);
+  --detail-w:340px; --log-h:230px; --icon-l:64px; --icon-s:44px;
+  color-scheme:dark;
+}
+
+/* ================================================================ 1b · Tokens (Tag) – Werte wie NET Link net-link.css:46–57 */
+[data-theme=light]{
+  --bg:#EEF0F4; --panel:#FFFFFF; --raise:#F3F4F7; --line:#D9DDE5; --text:#141821; --dim:#5E677A; --strong:#141821;
+  /* Pink-Fläche bleibt #FF5C93 mit #141821 darauf – NICHT #D63B73. Pink als Schrift/Linie: #CC0045 (5,75:1 auf Weiß) */
+  --accent-text:#CC0045; --accent-edge:#CC0045; --focus:#CC0045; --accent-soft:rgba(255,92,147,.16); --accent-line:rgba(204,0,69,.55);
+  --red-ink:#C62828; --amber-ink:#A15C00; --green-ink:#14804A; --cyan-ink:#0A7491; --violet-ink:#7A35C2; --grey-ink:#5E677A;
+  --red-soft:rgba(198,40,40,.08); --amber-soft:rgba(161,92,0,.09); --green-soft:rgba(20,128,74,.09);
+  --cyan-soft:rgba(10,116,145,.07); --violet-soft:rgba(122,53,194,.08); --grey-soft:rgba(94,103,122,.09);
+  --red-line:rgba(198,40,40,.5); --amber-line:rgba(161,92,0,.45); --cyan-line:rgba(10,116,145,.4);
+  --log-bg:#FAFBFC; --log-out:#4A5263; --log-err:#B4500C; --log-sys:#141821;
+  --shadow-pop:0 12px 32px rgba(20,24,33,.16); --shadow-modal:0 30px 80px rgba(20,24,33,.22);
+  --scrim:rgba(20,24,33,.35);
+  color-scheme:light;
+}
+
+/* ================================================================ 2 · Grundlagen (VJ style.css:8–14, VD style.css:9–17) */
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--text);font:13px/1.4 var(--sans);display:flex;flex-direction:column;overflow:hidden}
+h2{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);font-weight:600;margin:18px 0 8px}
+h1.page{font-size:20px;margin:0 0 4px;color:var(--strong)}
+.muted{color:var(--dim)} .small{font-size:11.5px} .mono{font-family:var(--mono)} .num{font-variant-numeric:tabular-nums}
+.grow{flex:1}
+button,select,input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+[hidden]{display:none!important}
+.only-light{display:none!important}
+[data-theme=light] .only-light{display:revert!important}
+[data-theme=light] .only-dark{display:none!important}
+input[type=checkbox],input[type=radio]{accent-color:var(--accent);width:16px;height:16px;margin:0}
+.input{background:var(--raise);border:1px solid var(--line);border-radius:var(--r-m);padding:6px 9px;color:var(--text);min-width:0}
+.input:focus-visible{outline:2px solid var(--focus);outline-offset:0;border-color:transparent}
+.input.mono{font-family:var(--mono);font-size:12px}
+svg.ico{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+svg.ico.fill{fill:currentColor;stroke:none}
+.dot{width:6px;height:6px;border-radius:50%;background:currentColor;display:inline-block;flex:none}
+kbd{font:10.5px var(--mono);border:1px solid var(--line);border-radius:var(--r-xs);padding:0 4px;color:var(--dim)}
+code{font:12px var(--mono)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ================================================================ 3 · Kopf (VJ style.css:16–22, VD style.css:20–25) */
+.top{display:flex;align-items:center;gap:6px 16px;padding:10px 14px;background:var(--panel);border-bottom:1px solid var(--line);flex-wrap:wrap;flex:none}
+/* Logo „Link-Suite“: echtes SVG aus Suite/SVG, je Modus eine Datei. Ziel der Startanimation (#top-logo) */
+.logo{display:flex;align-items:center;flex:none}
+.logo img{height:22px;width:auto;display:block}
+.logo.intro-wait{visibility:hidden}
+.logo.intro-in{animation:logo-in .2s ease-out both}
+@keyframes logo-in{from{opacity:0}to{opacity:1}}
+.tabs{display:flex;gap:2px;background:var(--bg);padding:3px;border-radius:var(--r-m)}
+.tabs button{background:none;border:0;padding:6px 14px;border-radius:var(--r-s);color:var(--dim);font-weight:600;font-size:11px;letter-spacing:.06em;cursor:pointer;white-space:nowrap;text-transform:uppercase}
+.tabs button:hover{color:var(--text)}
+/* aktiver Tab wie VJ/VD (raise + text), dazu Pink-Strich unten = „hier bedienst du“ (wie NET Link) */
+.tabs button.on,.tabs button[aria-selected=true]{background:var(--raise);color:var(--text);box-shadow:inset 0 -2px 0 var(--accent-edge)}
+.tabs button .count{font:600 10px var(--mono);margin-left:6px;color:var(--dim);letter-spacing:0}
+.status{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-left:auto}
+/* Status-Chip im Kopf (nur Anzeige, oder Knopf mit Wirkung) */
+.chip{font:11px var(--mono);padding:3px 9px;border-radius:999px;background:var(--bg);border:1px solid var(--line);color:var(--dim);display:inline-flex;align-items:center;gap:6px;white-space:nowrap;min-height:24px}
+.chip b{color:var(--text);font-weight:600}
+.chip .dot.green{color:var(--green)} .chip .dot.grey{color:var(--grey)} .chip .dot.amber{color:var(--amber)}
+button.chip{cursor:pointer} button.chip:hover{border-color:var(--dim);color:var(--text)}
+.iconbtn{background:var(--raise);border:1px solid var(--line);border-radius:7px;padding:6px 8px;cursor:pointer;display:inline-grid;place-items:center;color:var(--text);position:relative;flex:none}
+.iconbtn:hover{border-color:var(--dim)}
+.iconbtn svg.ico{width:17px;height:17px}
+.iconbtn.on{border-color:var(--accent-edge);color:var(--accent-text)}
+.iconbtn.small{padding:3px 5px;border-radius:var(--r-m)}
+.iconbtn.small svg.ico{width:14px;height:14px}
+.iconbtn.ghost{background:none;border-color:transparent}
+.iconbtn.ghost:hover{border-color:var(--line)}
+
+/* ================================================================ 4 · Knöpfe, Segmente, Menü (VJ style.css:30–31,745; VD style.css:30–41,59–61) */
+.btn{background:var(--raise);border:1px solid var(--line);border-radius:var(--r-s);padding:7px 12px;font-weight:700;font-size:11px;letter-spacing:.06em;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;color:var(--text);white-space:nowrap;line-height:1.2}
+.btn:hover{border-color:var(--dim)}
+.btn:active{transform:translateY(1px)}
+.btn:disabled,.btn[aria-disabled=true]{opacity:.45;cursor:default;transform:none;border-color:var(--line)}
+.btn svg.ico{width:14px;height:14px}
+/* Hauptknopf: Pink-Fläche #FF5C93, Schrift und Symbole #141821 (Suite-Regel 15.11.2026). Nur einer je Karte / Dialog */
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn.primary:hover{filter:brightness(1.07);border-color:var(--accent)}
+.btn.primary:disabled{filter:grayscale(.35)}
+.btn.ghost{background:transparent}
+.btn.small{padding:4px 8px;font-size:10.5px;letter-spacing:.03em}
+.btn.more{padding:6px 8px;letter-spacing:0}
+.btn.more svg.ico{width:16px;height:16px}
+/* Umschalter in Werkzeugleisten (z. B. Auto-Scroll an): Rand Pink, nie Fläche */
+.btn.on,.btn[aria-pressed=true]{border-color:var(--accent-edge);color:var(--accent-text)}
+/* Es gibt bewusst KEIN roten Knopf: „Stoppen“, „Abbrechen“, „Leeren“ sind normale .btn (Rot = nur Fehler) */
+.btns{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.linkish{background:none;border:0;color:var(--dim);font-size:11.5px;cursor:pointer;padding:2px 0;text-decoration:underline;text-underline-offset:2px}
+.linkish:hover{color:var(--text)}
+.linkish.strong{color:var(--text)}
+.seg{display:inline-flex;gap:2px;background:var(--bg);padding:2px;border-radius:7px;border:1px solid var(--line)}
+.seg button{background:none;border:0;border-radius:5px;padding:5px 11px;color:var(--dim);font-weight:600;font-size:12px;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
+.seg button:hover:not(:disabled){color:var(--text)}
+.seg button svg.ico{width:14px;height:14px}
+.seg button.on,.seg button[aria-checked=true],.seg button[aria-pressed=true]{background:var(--text);color:var(--bg)}
+.seg button:disabled{opacity:.45;cursor:default}
+.seg.small button{padding:3px 8px;font-size:11px}
+.menu-wrap{position:relative;display:inline-flex}
+.menu{position:absolute;top:calc(100% + 6px);right:0;z-index:50;min-width:230px;background:var(--panel);border:1px solid var(--line);border-radius:var(--r-l);padding:5px;box-shadow:var(--shadow-pop);display:grid;gap:2px}
+.menu button{background:none;border:0;border-radius:5px;padding:8px 10px;text-align:left;cursor:pointer;display:flex;align-items:center;gap:10px;color:var(--text);white-space:nowrap}
+.menu button:hover,.menu button:focus-visible{background:var(--raise);outline:none}
+.menu button:disabled{opacity:.45;cursor:default}
+.menu button svg.ico{width:16px;height:16px;color:var(--dim)}
+.menu button small{color:var(--dim);font-family:var(--mono);font-size:10.5px;margin-left:auto}
+.menu hr{border:0;border-top:1px solid var(--line);margin:4px 2px}
+.menu-label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);padding:4px 10px 2px}
+
+/* ================================================================ 5 · Pillen = Zustand (VJ style.css:26–28, VD style.css:27–29)
+   Farbe = Zustand, nie Pink. Text in Großbuchstaben, Monospace. Version in derselben Pille („AKTUELL 0.2.0“). */
+.pill{font:11px var(--mono);padding:3px 8px;border-radius:var(--r-xs);background:var(--raise);color:var(--grey-ink);display:inline-flex;align-items:center;gap:6px;white-space:nowrap;border:0;min-height:22px;letter-spacing:.02em}
+.pill.ok{color:var(--green-ink)}          /* AKTUELL x · LÄUFT */
+.pill.warn{color:var(--amber-ink)}        /* UPDATE x */
+.pill.off{color:var(--grey-ink)}          /* NICHT INSTALLIERT · NUR VOM STICK · NUR MACOS · NICHT ÖFFENTLICH · PRÜFUNG FEHLT · NICHT SIGNIERT */
+.pill.dev{color:var(--violet-ink)}        /* IN ENTWICKLUNG · KONZEPT · NOCH NICHT STARTBAR */
+.pill.err{color:var(--red-ink)}           /* START FEHLGESCHLAGEN · EXIT 1 */
+.pill.kind{color:var(--cyan-ink)}         /* ENTWICKLER (Startweg = Kategorie) */
+.pill.run .dot{color:var(--green)}        /* LÄUFT mit Punkt */
+.pill.run .dot{box-shadow:0 0 0 3px var(--green-soft)}
+.pill em{font-style:normal;color:var(--dim)}   /* PID 48211 · 12:04 */
+.pill svg.ico{width:12px;height:12px}
+.pills{display:inline-flex;gap:5px;flex-wrap:wrap;align-items:center}
+/* Version-Hinweis im Muster und in Einstellungen: „ab 0.2“ */
+.ver{font:600 9.5px var(--mono);color:var(--dim);border:1px solid var(--line);border-radius:var(--r-xs);padding:0 4px;letter-spacing:0;white-space:nowrap}
+/* „gilt für alle Suite-Programme“ (suite.json) */
+.suite-tag{display:inline-flex;align-items:center;gap:4px;font:600 9.5px var(--mono);color:var(--dim);letter-spacing:.04em}
+.suite-tag i{width:16px;height:4px;border-radius:2px;display:block;background:linear-gradient(90deg,var(--sA) 0 20%,var(--sB) 0 40%,var(--sC) 0 60%,var(--sD) 0 80%,var(--sE) 0)}
+
+/* ================================================================ 6 · Rahmen Hauptbildschirm */
+#shell{display:flex;flex-direction:column;flex:1;min-height:0}
+main{flex:1;min-height:0;position:relative;display:flex;flex-direction:column}
+.tab{display:none;flex:1;min-height:0;flex-direction:column}
+.tab.on{display:flex}
+/* Inhalt links, Detail-Seitenleiste rechts (erscheint bei Klick auf eine Karte) */
+.split{display:grid;grid-template-columns:minmax(0,1fr);flex:1;min-height:0}
+.split.has-detail{grid-template-columns:minmax(0,1fr) var(--detail-w)}
+.pane{display:flex;flex-direction:column;min-width:0;min-height:0;overflow:auto;padding:16px 20px 14px;gap:12px}
+/* Leiste über einer Liste: Überschrift links, Knöpfe rechts */
+.bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.bar h2{margin:0}
+.bar .when{font:11.5px var(--mono);color:var(--dim)}
+/* Fußzeile jeder Seite: „Netzproblem? → In NET Link prüfen“ links, Version/Lizenz rechts */
+.foot{display:flex;gap:14px;align-items:center;margin-top:auto;padding-top:12px;border-top:1px solid var(--line);color:var(--dim);font-size:11.5px;flex-wrap:wrap}
+.foot .sp{flex:1}
+.foot .linkish{font-size:11.5px}
+.foot .netlink{display:inline-flex;align-items:center;gap:6px}
+.foot .netlink img{width:16px;height:16px}
+
+/* ================================================================ 7 · Programmkarte (Karte wie VD style.css:80–83, Start-Kachel VJ style.css:757–766) */
+.progs{display:grid;grid-template-columns:repeat(auto-fill,minmax(440px,1fr));gap:12px;align-items:start}
+.prog{display:grid;grid-template-columns:var(--icon-l) minmax(0,1fr);gap:14px;padding:14px;border:1px solid var(--line);border-radius:var(--r-card);background:var(--panel);cursor:pointer;position:relative;text-align:left;color:var(--text)}
+.prog:hover{border-color:var(--dim)}
+.prog:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+/* Auswahl (Detail offen) = Pink */
+.prog.sel{border-color:var(--accent-edge);box-shadow:0 0 0 3px var(--accent-soft)}
+/* Fehler beim Start: roter Rand, Fehlertext in .prog-err */
+.prog.err{border-color:var(--red-line)}
+.prog-icon{width:var(--icon-l);height:var(--icon-l);display:block;border-radius:14px}
+.prog-body{display:flex;flex-direction:column;gap:6px;min-width:0}
+.prog-head{display:flex;align-items:center;gap:6px 8px;min-width:0;flex-wrap:wrap}
+.prog-head h3{margin:0;font-size:16px;color:var(--strong);font-weight:700;white-space:nowrap}
+.prog-line{margin:0;color:var(--dim);font-size:12px}
+/* Startweg: App oder Entwickler. Seg nur, wenn es beide gibt; darunter Pfad / Ordner + Skript */
+.route{display:flex;align-items:center;gap:8px;min-width:0;flex-wrap:wrap}
+.route-path{font:11.5px var(--mono);color:var(--dim);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:flex;align-items:center;gap:6px}
+.route-path svg.ico{width:13px;height:13px}
+.route-path b{color:var(--text);font-weight:500}
+.prog-act{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:2px}
+.prog-act .sp{flex:1}
+/* Was fehlt zum Start (Entwicklerprojekt): ✓ vorhanden, – fehlt. Fehlendes ist kein Fehler → grau, nicht rot */
+.need{list-style:none;margin:0;padding:8px 10px;border:1px dashed var(--line);border-radius:var(--r-l);display:grid;gap:3px;font-size:11.5px}
+.need li{display:flex;gap:8px;align-items:baseline}
+.need li::before{content:"–";width:12px;flex:none;color:var(--grey-ink);font-weight:700;text-align:center}
+.need li.have::before{content:"✓";color:var(--green-ink)}
+.need li.miss{color:var(--text)}
+.need li.have{color:var(--dim)}
+.need code{font-size:11px}
+.need .next{margin-top:4px;padding-top:6px;border-top:1px solid var(--line);color:var(--text)}
+.need .next::before{content:"→";color:var(--dim)}
+/* Fehlertext in der Karte (rot nur hier) */
+.prog-err{display:flex;gap:8px;align-items:flex-start;font-size:12px;color:var(--red-ink);background:var(--red-soft);border-radius:var(--r-m);padding:7px 9px}
+.prog-err svg.ico{width:15px;height:15px;margin-top:1px}
+.prog-err span{color:var(--text)}
+/* „Kommt bald“: kleiner, ohne Hauptknopf */
+.soon .progs{grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.prog.small{grid-template-columns:var(--icon-s) minmax(0,1fr);gap:12px;padding:12px;cursor:default}
+.prog.small:hover{border-color:var(--line)}
+.prog.small .prog-icon{width:var(--icon-s);height:var(--icon-s);border-radius:10px}
+.prog.small .prog-head h3{font-size:14px}
+.prog.small .prog-line{font-size:11.5px}
+.prog.small.openable{cursor:pointer}
+.prog.small.openable:hover{border-color:var(--dim)}
+
+/* ================================================================ 8 · Detail-Seitenleiste (NET Link net-link.css:244, Mockup .side) */
+.detail{border-left:1px solid var(--line);background:var(--panel);padding:16px 18px;display:flex;flex-direction:column;gap:14px;overflow:auto;min-height:0;animation:detail-in .18s ease-out}
+@keyframes detail-in{from{transform:translateX(24px);opacity:0}to{transform:none;opacity:1}}
+.detail-head{display:flex;align-items:center;gap:12px}
+.detail-head img{width:40px;height:40px;border-radius:9px}
+.detail-head b{font-size:17px;color:var(--strong);line-height:1.2;display:block}
+.detail-head small{display:block;font-size:11.5px;color:var(--dim)}
+.detail-head .iconbtn{margin-left:auto}
+.sec{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);font-weight:700;margin:0 0 -6px;display:flex;align-items:center;gap:8px}
+/* Schlüssel/Wert wie VD style.css:121–122 */
+.kv{display:grid;grid-template-columns:96px minmax(0,1fr);gap:5px 10px;font-size:12px;margin:0}
+.kv dt{color:var(--dim)}
+.kv dd{margin:0;font-family:var(--mono);color:var(--strong);overflow-wrap:anywhere;font-size:11.5px}
+.kv dd.txt{font-family:var(--sans);font-size:12px}
+.notes{margin:0;background:var(--bg);border:1px solid var(--line);border-radius:var(--r-l);padding:8px 12px 8px 26px;font-size:12px}
+.notes li{margin:2px 0}
+
+/* ================================================================ 9 · Log-Leiste unten (Prozess-Ausgabe eines Entwicklerstarts) */
+.log-dock{flex:none;height:var(--log-h);display:flex;flex-direction:column;border-top:1px solid var(--line);background:var(--panel);min-height:0;position:relative}
+/* Griff zum Größerziehen */
+.log-dock::before{content:"";position:absolute;left:50%;top:3px;width:36px;height:3px;margin-left:-18px;border-radius:2px;background:var(--line)}
+.log-tabs{display:flex;gap:2px;padding:8px 12px 0;flex:none;flex-wrap:wrap}
+.log-tabs button{background:none;border:1px solid transparent;border-bottom:0;border-radius:var(--r-m) var(--r-m) 0 0;padding:5px 10px;color:var(--dim);font-size:11.5px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.log-tabs button.on{background:var(--log-bg);border-color:var(--line);color:var(--text);box-shadow:inset 0 2px 0 var(--accent-edge)}
+.log-tabs button img{width:16px;height:16px;border-radius:4px}
+.log-tabs button .dot.green{color:var(--green)} .log-tabs button .dot.grey{color:var(--grey)} .log-tabs button .dot.red{color:var(--red)}
+.log-head{display:flex;align-items:center;gap:10px;padding:7px 12px;background:var(--log-bg);border-top:1px solid var(--line);flex:none;flex-wrap:wrap;min-width:0}
+.log-head b{color:var(--strong);font-size:12.5px}
+.log-cmd{font:11.5px var(--mono);color:var(--dim);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.log-cmd span{color:var(--text)}
+.log-head .btns{margin-left:auto}
+.log-body{flex:1;min-height:0;overflow:auto;background:var(--log-bg);padding:6px 12px 10px;font:11.5px/1.55 var(--mono);color:var(--log-out);user-select:text;white-space:pre-wrap;overflow-wrap:anywhere;tab-size:4}
+.ln{display:block}
+.ln.out{color:var(--log-out)}
+.ln.err{color:var(--log-err)}
+/* Zeilen des Launchers selbst (Start, Ende, Exit-Code) */
+.ln.sys{color:var(--log-sys);font-weight:600}
+.ln.sys::before{content:"▸ ";color:var(--dim)}
+.ln.exit-ok{color:var(--green-ink);font-weight:600}
+.ln.exit-err{color:var(--red-ink);font-weight:600}
+.ln.exit-stop{color:var(--grey-ink);font-weight:600}
+/* Exit-Code im Kopf nach dem Ende */
+.exit{font:600 11px var(--mono);padding:2px 7px;border-radius:var(--r-xs);background:var(--raise)}
+.exit.ok{color:var(--green-ink)} .exit.err{color:var(--red-ink)} .exit.stop{color:var(--grey-ink)}
+/* Auto-Scroll aus: Knopf „Nach unten“ erscheint unten rechts */
+.log-jump{position:absolute;right:18px;bottom:12px;box-shadow:var(--shadow-pop)}
+/* Seiten-Variante (Panel rechts statt Leiste unten) – gleiche Innenteile */
+.log-dock.side{height:auto;border-top:0;border-left:1px solid var(--line)}
+.log-dock.side::before{display:none}
+
+/* ================================================================ 10 · Hinweisleiste (Cyan), Fehler (Rot), Notiz (VD style.css:90–91) */
+.hint{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;border-radius:var(--r-l);border:1px solid var(--cyan-line);background:var(--cyan-soft);font-size:12px;color:var(--text)}
+.hint>svg.ico{color:var(--cyan-ink);margin-top:1px}
+.hint b{color:var(--cyan-ink)}
+.hint .btn,.hint .linkish{margin-left:auto;flex:none;align-self:center}
+.alert{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;border-radius:var(--r-l);border:1px solid var(--red-line);background:var(--red-soft);font-size:12px;color:var(--text)}
+.alert>svg.ico{color:var(--red-ink);margin-top:1px}
+.alert b{color:var(--red-ink)}
+.alert .btn{margin-left:auto;flex:none;align-self:center}
+.note{background:var(--raise);border:1px solid var(--line);border-left:3px solid var(--grey);border-radius:var(--r-m);padding:9px 12px;color:var(--text);font-size:12px}
+.note b{color:var(--strong)}
+.note.amber{border-left-color:var(--amber)}
+
+/* ================================================================ 11 · Dialoge (VD style.css:184–191) */
+.modal-back{position:fixed;inset:0;z-index:300;background:var(--scrim);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:24px}
+.modal{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-modal);box-shadow:var(--shadow-modal);width:min(560px,100%);max-height:calc(100vh - 48px);display:flex;flex-direction:column;color:var(--text)}
+.modal.wide{width:min(760px,100%)}
+.modal-head{display:flex;align-items:center;gap:14px;padding:16px 20px;border-bottom:1px solid var(--line)}
+.modal-head img{width:44px;height:44px;border-radius:10px;flex:none}
+.modal-title{margin:0;font-size:16px;letter-spacing:0;text-transform:none;color:var(--strong)}
+.modal-head small{display:block;color:var(--dim);font-size:11.5px;margin-top:2px}
+.modal-head .iconbtn{margin-left:auto}
+.modal-body{padding:16px 20px;overflow:auto;display:flex;flex-direction:column;gap:12px}
+.modal-body p{margin:0}
+.modal-foot{display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:14px 20px;border-top:1px solid var(--line);background:var(--bg);border-radius:0 0 var(--r-modal) var(--r-modal);flex-wrap:wrap}
+.modal-foot .muted{margin-right:auto;font-size:11.5px}
+/* Was passiert (Rückfrage): Befehl + Liste der Änderungen */
+.cmd{font:12px var(--mono);background:var(--log-bg);border:1px solid var(--line);border-radius:var(--r-m);padding:8px 10px;color:var(--text);overflow-x:auto;white-space:nowrap}
+.cmd .p{color:var(--dim)}
+.changes{list-style:none;margin:0;padding:0;display:grid;gap:5px;font-size:12px}
+.changes li{display:flex;gap:8px;align-items:baseline}
+.changes li::before{content:"•";color:var(--amber);font-weight:700}
+.changes li.net::before{content:"↓";color:var(--cyan-ink)}
+.changes code{font-size:11.5px;color:var(--strong)}
+/* Prüfschritte: ✓ erledigt · läuft · wartet · Fehler (Mockup .steps, VD .checks style.css:224–226) */
+.checksteps{list-style:none;margin:0;padding:0}
+.checksteps li{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:8px;align-items:center;padding:7px 0;border-bottom:1px dashed var(--line);font-size:12.5px}
+.checksteps li:last-child{border-bottom:0}
+.checksteps li .r{font:11px var(--mono);color:var(--dim);white-space:nowrap}
+.checksteps li.wait{color:var(--dim)}
+.checksteps li.fail{color:var(--red-ink)}
+.checksteps li.fail .r{color:var(--red-ink)}
+.ck{width:18px;height:18px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:800;flex:none}
+.ck.ok{background:var(--green-soft);color:var(--green-ink)}
+.ck.ok::before{content:"✓"}
+.ck.run{border:2px solid var(--line);border-top-color:var(--text);animation:spin .9s linear infinite}
+.ck.wait{border:1px solid var(--line)}
+.ck.fail{background:var(--red-soft);color:var(--red-ink)}
+.ck.fail::before{content:"✕"}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* Fortschritt einer vom Nutzer ausgelösten Aktion: Pink wie VJ style.css:788–789 (.upd-bar) */
+.progress{height:6px;border-radius:3px;background:var(--line);overflow:hidden;margin-top:6px}
+.progress i{display:block;height:100%;width:0;background:var(--accent);border-radius:3px;transition:width .15s}
+
+/* ================================================================ 12 · IM NETZ – Tabelle gruppiert nach Rechner (VD style.css:71–77) */
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:var(--r-l);background:var(--panel);min-height:0;flex:none}
+table{border-collapse:collapse;width:100%}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line);white-space:nowrap;vertical-align:middle}
+th{font:600 10px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--dim);background:var(--panel);position:sticky;top:0;z-index:1}
+td.mono,td .mono{font-family:var(--mono);font-size:12px}
+tr:last-child td{border-bottom:0}
+table.net td.prg{color:var(--strong);font-weight:600}
+table.net td.prg img{width:22px;height:22px;border-radius:5px;vertical-align:middle;margin-right:9px}
+table.net tr.host td{background:var(--raise);color:var(--strong);font-weight:700;font-size:12px;padding:6px 12px}
+table.net tr.host td .muted{font-weight:400;font-family:var(--mono);font-size:11.5px;margin-left:8px}
+table.net tr.host.me td{box-shadow:inset 3px 0 0 var(--grey)}
+table.net tbody tr:not(.host):hover td{background:var(--raise)}
+table.net tr.gone td{color:var(--dim)}
+table.net tr.gone td.prg{color:var(--dim)}
+table.net tr.gone td.prg img{opacity:.5}
+table.net .seen{font:11.5px var(--mono);color:var(--dim)}
+table.net .there{font-size:11px;color:var(--dim);margin-left:6px}
+
+/* ================================================================ 13 · CLUB-STICK – Assistent (Mockup .wiz; Schritte wie LJ Link „Manuell einrichten“ style.css:112) */
+.wiz{display:grid;grid-template-columns:250px minmax(0,1fr);flex:1;min-height:0}
+.wsteps{border-right:1px solid var(--line);padding:16px 12px;background:var(--panel);display:flex;flex-direction:column;gap:4px;overflow:auto}
+.ws{display:flex;gap:10px;align-items:flex-start;padding:10px;border-radius:var(--r-l);background:none;border:0;text-align:left;color:var(--text);cursor:pointer;width:100%}
+.ws:hover:not(:disabled){background:var(--raise)}
+.ws:disabled{cursor:default}
+.ws .n{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line);font-weight:800;font-size:11px;flex:none;color:var(--dim)}
+.ws b{display:block;color:var(--strong);font-size:13px}
+.ws span{display:block;color:var(--dim);font-size:11.5px}
+.ws.done .n{background:var(--green-soft);color:var(--green-ink);border-color:transparent}
+.ws.on{background:var(--raise);box-shadow:inset 3px 0 0 var(--accent-edge)}
+.ws.on .n{background:var(--accent);color:var(--on-accent);border-color:transparent}
+.ws.fail .n{background:var(--red-soft);color:var(--red-ink);border-color:transparent}
+.ws.wait b{color:var(--dim)}
+.wmain{padding:24px 30px;overflow:auto;display:flex;flex-direction:column;gap:14px;max-width:820px}
+.wmain h2.title{margin:0;font-size:22px;letter-spacing:0;text-transform:none;color:var(--strong);font-weight:700}
+.wmain .lead{margin:0;color:var(--dim);max-width:640px}
+.wnav{display:flex;gap:8px;justify-content:flex-end;margin-top:auto;padding-top:10px}
+/* Ziel wählen: zwei Auswahl-Kacheln (Radio), Auswahl = Pink */
+.choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.choice{display:flex;gap:14px;align-items:flex-start;text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:var(--r-xl);padding:14px 16px;cursor:pointer;color:var(--text)}
+.choice:hover{border-color:var(--dim)}
+.choice svg.ico{width:26px;height:26px;color:var(--dim);margin-top:2px}
+.choice b{display:block;font-size:14px;color:var(--strong)}
+.choice small{display:block;color:var(--dim);font-size:11.5px;margin-top:2px}
+.choice[aria-checked=true]{border-color:var(--accent-edge);box-shadow:0 0 0 3px var(--accent-soft)}
+.choice[aria-checked=true] svg.ico{color:var(--accent-text)}
+/* Liste der Wechseldatenträger */
+.drives{display:grid;gap:6px}
+.drive{display:grid;grid-template-columns:18px 22px minmax(0,1fr) auto;gap:10px;align-items:center;padding:9px 12px;border:1px solid var(--line);border-radius:var(--r-l);background:var(--panel);cursor:pointer}
+.drive:hover{border-color:var(--dim)}
+.drive.sel{border-color:var(--accent-edge)}
+.drive svg.ico{color:var(--dim)}
+.drive b{color:var(--strong)}
+.drive small{display:block;color:var(--dim);font:11px var(--mono)}
+.drive .free{font:11.5px var(--mono);color:var(--dim)}
+.field{display:grid;gap:5px}
+.field>label,.field>.lbl{font-size:10.5px;letter-spacing:.08em;color:var(--dim);font-weight:700;text-transform:uppercase}
+.files{border:1px solid var(--line);border-radius:var(--r-l);background:var(--panel);padding:8px 12px;font:12px var(--mono);display:grid;gap:3px}
+.files .muted{font-family:var(--sans);font-size:11.5px}
+
+/* ================================================================ 14 · EINSTELLUNGEN (VD style.css:202–209 .set-nav/.set-row, VJ style.css:432–435) */
+.settings{display:grid;grid-template-columns:200px minmax(0,1fr);flex:1;min-height:0}
+.set-nav{display:flex;flex-direction:column;gap:2px;padding:14px 10px;border-right:1px solid var(--line);background:var(--panel)}
+.set-nav button{background:none;border:0;text-align:left;padding:8px 12px;border-radius:var(--r-m);color:var(--dim);font-weight:600;cursor:pointer}
+.set-nav button:hover{color:var(--text)}
+.set-nav button.on{background:var(--raise);color:var(--text);box-shadow:inset 3px 0 0 var(--accent-edge)}
+.set-content{padding:4px 28px 22px;overflow:auto;max-width:860px}
+.set-content h3{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin:22px 0 4px;display:flex;align-items:center;gap:10px}
+.set-row{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:11px 0;border-bottom:1px solid var(--line)}
+.set-row:last-child{border-bottom:0}
+.set-label{display:grid;gap:2px;min-width:0}
+.set-label b{font-weight:600;color:var(--strong);display:flex;align-items:center;gap:8px}
+.set-label small{font-size:11.5px;color:var(--dim)}
+.set-ctl{display:flex;align-items:center;gap:8px;flex:none}
+.set-ctl .input{width:190px}
+.set-ctl .path{font:11.5px var(--mono);color:var(--text);background:var(--bg);border:1px solid var(--line);border-radius:var(--r-m);padding:5px 9px;max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.set-row.off{opacity:.55}
+.about{display:flex;gap:16px;align-items:center;padding:12px 0}
+.about img{width:56px;height:56px}
+.about b{font-size:15px;color:var(--strong);display:block}
+
+/* ================================================================ 15 · Suite-Chat und EMERGENCY (VJ style.css:926–965, index.html:73–75, 337–363; Tag wie NET Link) */
+.chat-btn{position:relative}
+.chat-btn.on{border-color:var(--accent-edge);color:var(--accent-text)}
+.chat-unread{position:absolute;top:-7px;right:-7px;min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:var(--accent);color:var(--on-accent);font:700 10.5px/18px var(--sans);text-align:center;box-shadow:0 0 0 2px var(--panel)}
+.chat-panel{position:fixed;right:14px;top:64px;z-index:90;width:min(380px,calc(100vw - 28px));max-height:min(560px,calc(100vh - 90px));display:flex;flex-direction:column;gap:8px;padding:12px;border-radius:var(--r-xl);border:1px solid var(--line);background:var(--panel);box-shadow:0 24px 70px rgba(0,0,0,.55);color:var(--text)}
+[data-theme=light] .chat-panel{box-shadow:var(--shadow-modal)}
+.chat-head{display:flex;align-items:center;gap:10px}
+.chat-head strong{flex:1;font-size:12px;letter-spacing:.06em}
+.chat-link{background:none;border:0;padding:2px 0;color:var(--dim);font:inherit;font-size:11.5px;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.chat-link:hover{color:var(--text)}
+.chat-peers{color:var(--dim);font-size:11.5px}
+.chat-list{flex:1;min-height:140px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;padding:2px}
+.chat-msg{max-width:85%;align-self:flex-start;padding:6px 10px;border-radius:var(--r-l);background:var(--raise);overflow-wrap:anywhere;user-select:text}
+.chat-msg.self{align-self:flex-end;background:color-mix(in srgb,var(--accent) 22%,var(--raise))}
+[data-theme=light] .chat-msg.self{background:color-mix(in srgb,var(--accent) 12%,var(--raise))}
+.chat-msg small{display:block;color:var(--dim);font-size:10.5px;margin-bottom:2px}
+.chat-msg.urgent{border:2px solid var(--emergency)}
+.chat-empty{color:var(--dim);font-size:12px;text-align:center;margin:auto 0}
+.chat-form{display:flex;gap:6px}
+.chat-form input{flex:1;min-width:0}
+.chat-nick{display:flex;flex-direction:column;gap:6px}
+.chat-nick label{font-size:10.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+.chat-nick label em{font-style:normal;text-transform:none;letter-spacing:0;font-weight:400}
+.chat-nick input{width:100%}
+.chat-nick .btn{align-self:flex-start;margin-top:4px}
+.chat-status{color:var(--amber-ink);font-size:11.5px}
+.chat-status:empty,.chat-set-status:empty{display:none}
+.chat-set-status{color:var(--amber-ink)}
+.chat-emergency{background:var(--emergency);color:#000;border:0;border-radius:var(--r-s);font-weight:800;font-size:11px;letter-spacing:.04em;padding:0 10px;cursor:pointer}
+.chat-emergency:hover{filter:brightness(1.08)}
+.chat-alert{position:fixed;right:16px;bottom:16px;z-index:1000;width:min(400px,calc(100vw - 32px));padding:14px 16px;border-radius:var(--r-xl);background:var(--panel);color:var(--text);border:4px solid var(--emergency);box-shadow:0 30px 80px rgba(0,0,0,.6);display:flex;flex-direction:column;gap:6px;animation:chat-blink 1s step-end infinite}
+.chat-alert strong{color:#FFD60A;letter-spacing:.1em;font-size:14px}
+[data-theme=light] .chat-alert strong,[data-theme=light].chat-alert strong{color:#000;background:var(--emergency);align-self:flex-start;padding:1px 6px;border-radius:var(--r-xs)}
+.chat-alert-from{color:var(--dim);font-size:12px}
+.chat-alert-text{font-size:20px;font-weight:700;overflow-wrap:anywhere;user-select:text}
+.chat-alert-row{display:flex;align-items:center;justify-content:space-between;gap:8px;color:var(--dim);font-size:12px}
+.chat-alert-row .btn{background:var(--emergency);border-color:var(--emergency);color:#000;padding:7px 18px}
+.chat-alert-btns{display:flex;gap:6px}
+.chat-alert-row .btn.chat-alert-all{background:none;color:#FFD60A;padding:7px 10px}
+[data-theme=light] .chat-alert-row .btn.chat-alert-all,[data-theme=light].chat-alert .btn.chat-alert-all{color:#000;border-color:#000}
+@keyframes chat-blink{0%{border-color:#FFD60A}50%{border-color:transparent}}
+.chat-btn.urgent{background:var(--emergency);border-color:var(--emergency);color:#000;animation:chat-btn-blink 1s step-end infinite}
+@keyframes chat-btn-blink{0%{background:#FFD60A;color:#000}50%{background:var(--raise);color:#FFD60A}}
+
+/* ================================================================ 16 · Startanimation als Schicht (Link-Suite/Konzepte/_Startanimation, ?app=suite)
+   Das Modul (src/ui/intro.ts, aus make_startanimation.py) legt #intro über das ganze Fenster. Darunter ist PROGRAMME
+   schon aufgebaut. Ende: Ereignis „linksuite-intro-done“ → Schicht entfernen, #top-logo sichtbar, Fokus auf den Tab. */
+.intro-layer{position:fixed;inset:0;z-index:2000;background:var(--bg)}
+.intro-layer.gone{opacity:0;pointer-events:none;transition:opacity .15s linear}
+
+/* ================================================================ 17 · Kleinteile */
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);z-index:400;background:var(--raise);border:1px solid var(--line);border-left:3px solid var(--green);border-radius:var(--r-l);padding:10px 14px;box-shadow:var(--shadow-pop);color:var(--text);display:flex;gap:10px;align-items:center}
+.toast.err{border-left-color:var(--red)}
+.toast.info{border-left-color:var(--grey)}
+.empty{display:grid;place-items:center;text-align:center;gap:8px;padding:40px 20px;color:var(--dim)}
+.empty b{color:var(--strong);font-size:15px}
+.empty svg.ico{width:34px;height:34px;stroke-width:1.5}
+
+/* ================================================================ 18 · Bewegung reduzieren */
+@media (prefers-reduced-motion:reduce){
+  .detail,.logo.intro-in{animation:none}
+  .ck.run{animation:none;border-color:var(--text);border-style:dotted}
+  .chat-alert,.chat-btn.urgent{animation:none}
+  .btn:active{transform:none}
+  .progress i{transition:none}
+}
+
+/* ================================================================ 19 · Schmale Fenster */
+@media (max-width:1100px){
+  .split.has-detail{grid-template-columns:minmax(0,1fr)}
+  .split.has-detail .detail{position:absolute;right:0;top:0;bottom:0;width:min(var(--detail-w),100%);z-index:20;box-shadow:var(--shadow-pop)}
+  .progs{grid-template-columns:1fr}
+}
+@media (max-width:900px){
+  .wiz,.settings{grid-template-columns:1fr}
+  .wsteps{flex-direction:row;overflow-x:auto;border-right:0;border-bottom:1px solid var(--line)}
+  .ws span{display:none}
+  .set-nav{flex-direction:row;overflow-x:auto;border-right:0;border-bottom:1px solid var(--line)}
+  .choices{grid-template-columns:1fr}
+  .set-row{flex-wrap:wrap}
+}

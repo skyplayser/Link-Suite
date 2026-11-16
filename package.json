@@ -1,0 +1,154 @@
+{
+  "name": "link-suite",
+  "version": "0.3.2",
+  "productName": "Link-Suite",
+  "description": "Link-Suite: zeigt und startet die Programme der Link-Suite (installierte Apps und Entwicklerprojekte), mit Suite-Chat und Übersicht im Netz.",
+  "license": "EPL-2.0",
+  "private": true,
+  "type": "module",
+  "main": "dist-electron/main.cjs",
+  "author": {
+    "name": "Philipp Spruck / NEXTPHILM",
+    "email": "anfrage@nextphilm.de"
+  },
+  "homepage": "https://github.com/skyplayser/Link-Suite",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/skyplayser/Link-Suite.git"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "intro": "node scripts/make-intro.mjs",
+    "build": "npm run intro && npm run build:main && vite build",
+    "build:main": "node scripts/build-main.mjs",
+    "start": "npm run build && electron .",
+    "demo": "npm run build && electron . --demo",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run",
+    "check": "npm run intro && npm run typecheck && npm test",
+    "shots": "npm run build && node scripts/shots.mjs",
+    "dist:dir": "npm run build && electron-builder --mac --dir --arm64 --publish never",
+    "dist:mac": "npm run build && electron-builder --mac --arm64 --x64 --publish never && node scripts/rename-dist.mjs",
+    "dist:win": "npm run build && electron-builder --win --x64 --publish never && node scripts/rename-dist.mjs",
+    "release": "sh scripts/release.sh"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.6",
+    "electron": "45.3.1",
+    "electron-builder": "26.17.0",
+    "esbuild": "0.28.2",
+    "typescript": "7.0.2",
+    "vite": "8.3.8",
+    "vitest": "5.1.0"
+  },
+  "build": {
+    "appId": "de.nextphilm.linksuite",
+    "afterPack": "build/after-pack.cjs",
+    "productName": "Link-Suite",
+    "copyright": "© 2026 Philipp Spruck / NEXTPHILM",
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "files": [
+      "dist/**/*",
+      "dist-electron/**/*",
+      "!dist-electron/*.map",
+      "package.json",
+      "LICENSE",
+      "THIRD_PARTY.md"
+    ],
+    "asar": true,
+    "electronFuses": {
+      "runAsNode": false,
+      "enableNodeOptionsEnvironmentVariable": false,
+      "enableNodeCliInspectArguments": false,
+      "onlyLoadAppFromAsar": true,
+      "enableEmbeddedAsarIntegrityValidation": true
+    },
+    "mac": {
+      "category": "public.app-category.utilities",
+      "icon": "build/icon.icns",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        }
+      ],
+      "identity": "-",
+      "minimumSystemVersion": "13.0",
+      "extendInfo": {
+        "NSLocalNetworkUsageDescription": "Link-Suite hört im lokalen Netzwerk den Suite-Chat der anderen Suite-Programme (Multicast 239.255.76.76)."
+      },
+      "hardenedRuntime": false,
+      "artifactName": "Link-Suite-macos-${arch}.${ext}"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "Link-Suite-windows.${ext}",
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowElevation": false,
+      "allowToChangeInstallationDirectory": false,
+      "installerSidebar": "build/installerSidebar.bmp",
+      "uninstallerSidebar": "build/uninstallerSidebar.bmp",
+      "installerHeader": "build/installerHeader.bmp",
+      "installerLanguages": [
+        "de_DE",
+        "en_US"
+      ],
+      "multiLanguageInstaller": true,
+      "include": "build/installer.nsh",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "runAfterFinish": true,
+      "shortcutName": "Link-Suite"
+    },
+    "dmg": {
+      "title": "Link-Suite ${version}",
+      "background": "build/dmg-background.tiff",
+      "icon": "build/icon.icns",
+      "iconSize": 100,
+      "iconTextSize": 13,
+      "window": {
+        "width": 660,
+        "height": 400
+      },
+      "contents": [
+        {
+          "x": 170,
+          "y": 200,
+          "type": "file"
+        },
+        {
+          "x": 490,
+          "y": 200,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ],
+      "format": "ULFO"
+    },
+    "electronLanguages": [
+      "de",
+      "en",
+      "en-US",
+      "en-GB"
+    ]
+  }
+}

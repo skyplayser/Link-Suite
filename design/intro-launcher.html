@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Link-Suite – PROGRAMME 0.3 und Startanimation (Prototyp)</title>
+<!-- Prototyp, Stand 16.11.2026. Zeigt PROGRAMME im Feinschliff (design/launcher-v2.css) und das Launcher-Ende der
+     Startanimation: Suite-Zeichen → Programme fächern auf → Icons fliegen in ihre Karten, das Zeichen gleitet ins Logo
+     oben links. Beschreibung: die UI-Unterlagen (außerhalb des Repos).
+     Parameter: theme=light · lang=en · intro=0 (ohne Animation = Zielbild) · t=<ms> (Standbild) · speed=0.25 ·
+     reduced=1 · loop=1 · hide=vd,net (diese Karten nicht sichtbar → Rückfall testen).
+     Texte über das kleine Wörterbuch unten (data-i18n), wie im Programm über i18n. Daten wie shots/echt-0.2-programme.png. -->
+<link rel="stylesheet" href="launcher.css">
+<link rel="stylesheet" href="launcher-v2.css">
+<style>
+/* nur Prototyp: Prüfleiste */
+#groups{display:contents}
+.proto-bar{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);z-index:3000;display:flex;gap:4px;font-size:12px}
+.proto-bar a{color:var(--dim);text-decoration:none;border:1px solid var(--line);border-radius:5px;padding:3px 8px;background:var(--panel)}
+.proto-bar a:hover{color:var(--text)}
+</style>
+</head>
+<body>
+<svg width="0" height="0" class="sr" aria-hidden="true">
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 4h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-5 4v-4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm3 6.5a1.5 1.5 0 1 0 0 .01zm5 0a1.5 1.5 0 1 0 0 .01zm5 0a1.5 1.5 0 1 0 0 .01z"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></symbol>
+  <symbol id="i-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="1.5"/></symbol>
+  <symbol id="i-front" viewBox="0 0 24 24"><rect x="3" y="8" width="13" height="13" rx="2"/><path d="M8 8V4h13v13h-5"/></symbol>
+  <symbol id="i-log" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9l3 3-3 3M12 15h5"/></symbol>
+  <symbol id="i-code" viewBox="0 0 24 24"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 6a1 1 0 0 1 1-1h5l2 2h9a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/></symbol>
+  <symbol id="i-app" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></symbol>
+  <symbol id="i-clear" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.01"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M4 20h16"/></symbol>
+  <symbol id="i-usb" viewBox="0 0 24 24"><path d="M8 3h8v6H8z"/><path d="M6 9h12v8a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4z"/><path d="M10 5v1M14 5v1"/></symbol>
+  <symbol id="i-ext" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-8 8"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></symbol>
+  <symbol id="i-monitor" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6"/></symbol>
+  <symbol id="i-package" viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5l8 4.5 8-4.5M12 12v9"/></symbol>
+</svg>
+<div id="shell">
+  <header class="top">
+    <div class="logo" id="top-logo"><img class="only-dark" src="icons/logo-horizontal-on-dark.svg" alt="Link-Suite"><img class="only-light" src="icons/logo-horizontal-on-light.svg" alt="Link-Suite"></div>
+    <nav class="tabs" role="tablist" data-i18n-aria="tab.aria">
+      <button role="tab" aria-selected="true" class="on" data-i18n="tab.programs"></button>
+      <button role="tab" aria-selected="false" data-i18n="tab.network"></button>
+      <button role="tab" aria-selected="false" data-i18n="tab.stick"></button>
+      <button role="tab" aria-selected="false" data-i18n="tab.settings"></button>
+    </nav>
+    <div class="status">
+      <span class="chip"><span class="dot green"></span><span data-i18n="top.running"></span></span>
+      <button class="chip" type="button" data-i18n="top.network"></button>
+      <button class="iconbtn" type="button" data-i18n-aria="chat.title"><svg class="ico fill" aria-hidden="true"><use href="#i-chat"/></svg></button>
+    </div>
+  </header>
+  <main>
+    <section class="tab on" id="tab-programs" role="tabpanel">
+      <div class="split">
+        <div class="pane v2" id="prog-pane">
+          <section class="hero" aria-labelledby="hero-h">
+            <div class="hero-txt">
+              <div class="hero-mark" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+              <h1 id="hero-h" data-i18n="hero.claim"></h1>
+              <p class="hero-sub" data-i18n="hero.sub"></p>
+            </div>
+            <dl class="hero-stats">
+              <div class="stat warn"><dd>1</dd><dt data-i18n="stat.updates"></dt></div>
+              <div class="stat ok"><dd>1</dd><dt data-i18n="stat.running"></dt></div>
+              <div class="stat"><dd>2</dd><dt data-i18n="stat.installed"></dt></div>
+              <div class="stat dev"><dd>5</dd><dt data-i18n="stat.dev"></dt></div>
+            </dl>
+            <div class="hero-act">
+              <span class="when" data-i18n="progs.scanned"></span>
+              <button class="btn" type="button"><svg class="ico"><use href="#i-refresh"/></svg><span data-i18n="progs.rescan"></span></button>
+              <span class="when" data-i18n="progs.checked"></span>
+              <button class="btn" type="button"><svg class="ico"><use href="#i-globe"/></svg><span data-i18n="progs.checkAll"></span></button>
+            </div>
+          </section>
+          <div id="groups"></div>
+          <footer class="foot"><span class="netlink"><img src="icons/net-link.svg" alt=""><span data-i18n="foot.net"></span></span><span class="sp"></span><span data-i18n="foot.ver"></span><a class="linkish" href="#" data-i18n="foot.lic"></a></footer>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+<div id="intro" class="intro-layer" hidden></div>
+
+<script>
+// ------------------------------------------------------------------ Texte (im Programm: src/renderer/i18n.ts)
+const TXT = {
+  de: {
+    'tab.aria': 'Bereiche', 'tab.programs': 'Programme', 'tab.network': 'Im Netz', 'tab.stick': 'Club-Stick', 'tab.settings': 'Einstellungen',
+    'top.running': '1 läuft', 'top.network': 'Im Netz: 0 Programme · 0 Rechner', 'chat.title': 'Suite-Chat',
+    'hero.claim': 'Kostenlose Programme für Veranstaltungstechnik.', 'hero.sub': '8 Programme · 3 auf diesem Rechner · alle aus einer Hand',
+    'stat.updates': 'Update', 'stat.running': 'läuft', 'stat.installed': 'installiert', 'stat.dev': 'Entwicklung',
+    'progs.scanned': 'gesucht 14:21', 'progs.rescan': 'Neu suchen', 'progs.checked': 'GitHub 14:21', 'progs.checkAll': 'Alle prüfen',
+    'g.installed': 'Installiert', 'g.dev': 'Entwicklung', 'g.avail': 'Verfügbar', 'g.soon': 'Kommt bald',
+    'g.installed.hint': 'Apps auf diesem Rechner', 'g.dev.hint': 'Projektordner, Start mit electron .', 'g.avail.hint': 'Release auf GitHub, noch nicht hier',
+    'pill.running': 'LÄUFT', 'pill.dev': 'ENTWICKLER', 'pill.stickOnly': 'NUR VOM STICK', 'pill.update': 'UPDATE',
+    'btn.start': 'Starten', 'btn.front': 'Nach vorn', 'btn.update': 'Aktualisieren', 'btn.install': 'Installieren', 'btn.stick': 'Auf den Stick',
+    'more': 'Mehr zu {n}', 'beta': 'Beta {v} bereit', 'alpha': 'Alpha {v}', 'stickRoute': 'läuft vom Club-Stick auf dem Mac des DJs',
+    'foot.net': 'Netzproblem? NET Link ist in Entwicklung', 'foot.ver': 'Link-Suite 0.2.0 · nicht signiert · EPL-2.0', 'foot.lic': 'Lizenzen',
+    'w.title': 'Willkommen bei Link-Suite', 'w.what': 'Alle Programme an einem Ort', 'w.what.sub': 'Starten, aktualisieren und sehen, was im Show-Netz läuft.',
+    'w.sign': 'Nicht signiert – mit Absicht', 'w.sign.sub': 'Kostenlos und ohne Apple-Konto. macOS fragt deshalb beim ersten Öffnen jedes Programms.',
+    'w.net': 'Lokales Netzwerk erlauben', 'w.net.sub': 'Für Suite-Chat und IM NETZ. Später: Systemeinstellungen → Datenschutz → Lokales Netzwerk.',
+    'w.ok': 'Verstanden', 'w.more': 'Mehr dazu',
+    'skip': 'Überspringen:', 'skip.key': 'Taste', 'skip.or': 'oder Klick',
+  },
+  en: {
+    'tab.aria': 'Sections', 'tab.programs': 'Programs', 'tab.network': 'On the network', 'tab.stick': 'Club stick', 'tab.settings': 'Settings',
+    'top.running': '1 running', 'top.network': 'On the network: 0 programs · 0 computers', 'chat.title': 'Suite chat',
+    'hero.claim': 'Free software for event technology.', 'hero.sub': '8 programs · 3 on this computer · all from one place',
+    'stat.updates': 'update', 'stat.running': 'running', 'stat.installed': 'installed', 'stat.dev': 'in development',
+    'progs.scanned': 'scanned 14:21', 'progs.rescan': 'Scan again', 'progs.checked': 'GitHub 14:21', 'progs.checkAll': 'Check all',
+    'g.installed': 'Installed', 'g.dev': 'Development', 'g.avail': 'Available', 'g.soon': 'Coming soon',
+    'g.installed.hint': 'Apps on this computer', 'g.dev.hint': 'Project folders, started with electron .', 'g.avail.hint': 'Released on GitHub, not here yet',
+    'pill.running': 'RUNNING', 'pill.dev': 'DEVELOPER', 'pill.stickOnly': 'STICK ONLY', 'pill.update': 'UPDATE',
+    'btn.start': 'Start', 'btn.front': 'Bring to front', 'btn.update': 'Update', 'btn.install': 'Install', 'btn.stick': 'To the stick',
+    'more': 'More for {n}', 'beta': 'Beta {v} ready', 'alpha': 'Alpha {v}', 'stickRoute': 'runs from the club stick on the DJ’s Mac',
+    'foot.net': 'Network trouble? NET Link is in development', 'foot.ver': 'Link-Suite 0.2.0 · unsigned · EPL-2.0', 'foot.lic': 'Licences',
+    'w.title': 'Welcome to Link-Suite', 'w.what': 'All programs in one place', 'w.what.sub': 'Start, update and see what runs on the show network.',
+    'w.sign': 'Unsigned – on purpose', 'w.sign.sub': 'Free and without an Apple account, so macOS asks the first time you open each program.',
+    'w.net': 'Allow local network', 'w.net.sub': 'For the suite chat and ON THE NETWORK. Later: System Settings → Privacy → Local Network.',
+    'w.ok': 'Got it', 'w.more': 'Learn more',
+    'skip': 'Skip:', 'skip.key': 'any key', 'skip.or': 'or click',
+  },
+};
+const Q = new URLSearchParams(location.search);
+const LANG = Q.get('lang') === 'en' ? 'en' : 'de';
+const t = (k, p = {}) => (TXT[LANG][k] ?? k).replace(/\{(\w+)\}/g, (_, x) => p[x] ?? '');
+document.documentElement.lang = LANG;
+if (Q.get('theme') === 'light') document.documentElement.dataset.theme = 'light';
+
+// ------------------------------------------------------------------ Daten (wie shots/echt-0.2-programme.png)
+const P = [
+  {id: 'lj', name: 'LJ Link', icon: 'lj-link.svg', g: 'installed', line: {de: 'Alle Decks, Wellenformen und Cues für die Booth.', en: 'All decks, waveforms and cues for the booth.'},
+    pill: ['ok run', 'pill.running', true], ver: '1.7.10', to: '1.7.11', path: ['app', '/Applications/LJ-Link-PRO.app'], btns: [['go', 'front', 'btn.front'], ['primary', 'download', 'btn.update']]},
+  {id: 'vd', name: 'VD-Link', icon: 'vd-link.svg', g: 'installed', line: {de: '3D-Lichtvisualisierer für Art-Net und sACN.', en: '3D light visualiser for Art-Net and sACN.'},
+    ver: '0.2.0', path: ['app', '/Applications/VD-Link.app'], btns: [['go', 'play', 'btn.start']]},
+  {id: 'vj', name: 'VJ-Link', icon: 'vj-link.svg', g: 'dev', line: {de: 'Visuals, gesteuert vom Lichtpult.', en: 'Visuals, driven by the lighting desk.'},
+    pill: ['kind', 'pill.dev'], ver: '0.1.8', chan: ['beta', '0.1.8'], path: ['folder', '~/VJ-Link · electron .'], btns: [['', 'download', 'btn.install'], ['go', 'play', 'btn.start']]},
+  {id: 'net', name: 'NET Link', icon: 'net-link.svg', g: 'dev', line: {de: 'Wer ist im Show-Netz?', en: 'Who is on the show network?'},
+    pill: ['kind', 'pill.dev'], ver: '0.1.0', path: ['folder', '~/NET-Link · electron .'], btns: [['go', 'play', 'btn.start']]},
+  {id: 'cr', name: 'Crew Link', icon: 'crew-link.svg', g: 'dev', line: {de: 'Timetable der Nacht.', en: 'Timetable of the night.'},
+    pill: ['kind', 'pill.dev'], ver: '0.1.0', path: ['folder', '~/Crew-Link · electron .'], btns: [['go', 'play', 'btn.start']]},
+  {id: 'pl', name: 'PL Link', icon: 'pl-link.svg', g: 'dev', line: {de: 'Patch und Stromlast.', en: 'Patch and power load.'},
+    pill: ['kind', 'pill.dev'], ver: '0.1.0', path: ['folder', '~/PL-Link · electron .'], btns: [['go', 'play', 'btn.start']]},
+  {id: 'db', name: 'dB Link', icon: 'db-link.svg', g: 'dev', line: {de: 'Lautstärke nach DIN 15905-5.', en: 'Sound level per DIN 15905-5.'},
+    pill: ['kind', 'pill.dev'], ver: '0.1.0', path: ['folder', '~/dB-Link · electron .'], btns: [['go', 'play', 'btn.start']]},
+  {id: 'ljl', name: 'LJL Link', icon: 'ljl-link-256.png', g: 'avail', line: {de: 'Serato-Decks vom Stick des Clubs in LJ Link.', en: 'Serato decks from the club’s stick in LJ Link.'},
+    pill: ['off', 'pill.stickOnly'], alpha: '0.3.1', path: ['usb', 'stickRoute'], btns: [['primary', 'usb', 'btn.stick']]},
+];
+
+// ------------------------------------------------------------------ Aufbau (im Programm: programs.ts card())
+const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
+const ico = id => { const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); s.setAttribute('class', 'ico' + (id === 'play' || id === 'more' || id === 'stop' ? ' fill' : '')); s.setAttribute('aria-hidden', 'true'); const u = document.createElementNS('http://www.w3.org/2000/svg', 'use'); u.setAttribute('href', '#i-' + id); s.append(u); return s; };
+function card(p) {
+  const a = el('article', 'prog'); a.tabIndex = 0; a.dataset.id = p.id; a.setAttribute('aria-labelledby', 'p-' + p.id);
+  const img = el('img', 'prog-icon'); img.src = 'icons/' + p.icon; img.alt = '';
+  const body = el('div', 'prog-body');
+  const head = el('div', 'prog-head'); const h3 = el('h3', '', p.name); h3.id = 'p-' + p.id; head.append(h3);
+  if (p.pill) { const ps = el('span', 'pills'); const pill = el('span', 'pill ' + p.pill[0]); if (p.pill[0] === 'kind') pill.append(ico('code')); if (p.pill[2]) pill.append(el('span', 'dot')); pill.append(t(p.pill[1])); ps.append(pill); head.append(ps); }
+  const meta = el('div', 'prog-meta');
+  const ver = el('span', 'vers');
+  if (p.ver) { ver.append(el('b', '', p.ver)); if (p.to) ver.append(' ', el('span', 'to', '→ ' + p.to)); }
+  if (p.alpha) ver.append(el('b', '', t('alpha', {v: p.alpha})));
+  if (p.chan) ver.append(el('span', 'chan', '· ' + t('beta', {v: p.chan[1]})));
+  meta.append(ver, el('span', 'sep', '·'));
+  const path = el('span', 'path'); path.append(ico(p.path[0]), el('span', '', p.path[1] === 'stickRoute' ? t('stickRoute') : p.path[1])); meta.append(path);
+  const act = el('div', 'prog-act'); act.append(el('span', 'sp'));
+  for (const [kind, i, k] of p.btns) { const b = el('button', 'btn main' + (kind ? ' ' + kind : '')); b.type = 'button'; b.append(ico(i), el('span', '', t(k))); act.append(b); }
+  const more = el('button', 'btn more'); more.type = 'button'; more.setAttribute('aria-label', t('more', {n: p.name})); more.append(ico('more')); act.append(more);
+  body.append(head, el('p', 'prog-line', p.line[LANG]), meta, act);
+  a.append(img, body);
+  return a;
+}
+const groups = document.getElementById('groups');
+for (const g of ['installed', 'dev', 'avail']) {
+  const list = P.filter(p => p.g === g); if (!list.length) continue;
+  const sec = el('section', 'group'); sec.setAttribute('aria-labelledby', 'g-' + g);
+  const head = el('div', 'ghead'); const h2 = el('h2', '', t('g.' + g)); h2.id = 'g-' + g;
+  head.append(h2, el('span', 'n', String(list.length)), el('span', 'hintline', t('g.' + g + '.hint')));
+  const grid = el('div', 'progs v2'); grid.append(...list.map(card));
+  sec.append(head, grid); groups.before(sec);
+}
+
+// macOS-Kopf (Ampel-Platz) und Willkommen-Karte zum Prüfen: ?mac=1&welcome=1
+if (Q.get('mac') === '1') document.documentElement.classList.add('mac', 'focused');
+if (Q.get('welcome') === '1') {
+  const w = el('section', 'welcome'); w.setAttribute('aria-labelledby', 'w-h');
+  const logo = el('img'); logo.src = 'icons/link-suite.svg'; logo.alt = '';
+  const mid = el('div'); const h = el('h2', '', t('w.title')); h.id = 'w-h';
+  const ol = el('ol');
+  for (const [i, k] of [['app', 'w.what'], ['alert', 'w.sign'], ['globe', 'w.net']]) { const li = el('li'); const d = el('div'); d.append(el('b', '', t(k)), t(k + '.sub')); li.append(ico(i), d); ol.append(li); }
+  mid.append(h, ol);
+  const acts = el('div', 'acts'); const ok = el('button', 'btn', t('w.ok')); ok.type = 'button'; const more = el('button', 'btn ghost', t('w.more')); more.type = 'button'; acts.append(ok, more);
+  w.append(logo, mid, acts);
+  document.querySelector('.hero').before(w);
+}
+for (const n of document.querySelectorAll('[data-i18n]')) n.textContent = t(n.dataset.i18n);
+for (const n of document.querySelectorAll('[data-i18n-aria]')) n.setAttribute('aria-label', t(n.dataset.i18nAria));
+// Zum Testen des Rückfalls: ?hide=vd,net → diese Karten gelten als „nicht sichtbar“
+const HIDE = new Set((Q.get('hide') || '').split(',').filter(Boolean));
+
+// ================================================================== Startanimation, Launcher-Ende
+// Im Programm: src/renderer/intro/launcher-intro.ts, Aufruf playLauncherIntro({...}) – Schnittstelle siehe UI-Unterlagen
+function playLauncherIntro(o) {
+  const {layer, logoBox, targets, symbolSrc, logoSrc, speed = 1, reduced = false, holdAt = null, text} = o;
+  const W = innerWidth, H = innerHeight, cx = W / 2, cy = H / 2;
+  const k = Math.max(.2, Math.min(W / 1000, H / 600, 1.4));      // Bühne 1000 × 600 wie die Vorlage
+  const anims = [], seen = new Set();
+  let T = [];
+  const run = (node, frames, delay, dur, easing = 'cubic-bezier(.2,.8,.2,1)') => {
+    const fill = seen.has(node) ? 'forwards' : 'both'; seen.add(node);
+    const a = node.animate(frames, {delay: delay / speed, duration: dur / speed, easing, fill}); anims.push(a); return a;
+  };
+  // Ein Bild liegt fest an seinem ZIEL (Last). Alles davor ist ein Transform relativ dazu (FLIP: Invert + Play).
+  const put = (src, cxL, cyL, w, h = w) => {
+    const i = new Image(); i.src = src; i.alt = ''; i.decoding = 'sync';
+    Object.assign(i.style, {left: (cxL - w / 2) + 'px', top: (cyL - h / 2) + 'px', width: w + 'px', height: h + 'px'});
+    i._c = [cxL, cyL]; layer.append(i); return i;
+  };
+  const pose = (i, x, y, s = 1) => `translate(${x - i._c[0]}px,${y - i._c[1]}px) scale(${s})`;
+
+  const bg = document.createElement('div'); bg.className = 'ibg'; layer.append(bg);
+  const skip = document.createElement('div'); skip.className = 'skip';
+  skip.append(text('skip') + ' ', Object.assign(document.createElement('kbd'), {textContent: text('skip.key')}), ' ' + text('skip.or'));
+  bg.append(skip);
+  layer.hidden = false;
+  document.documentElement.classList.add('intro-run');
+
+  // Ziel des Logos = sichtbares <img> in #top-logo. Zeichen im Logo: viewBox −8 −6.5 591.54 106, Zeichen x 0…108
+  const R = logoBox();
+  const sc = R.height / 106;
+  const logo = put(logoSrc, R.left + R.width / 2, R.top + R.height / 2, R.width, R.height);
+  const signClip = `inset(0 ${100 - (116 + 4) / 591.54 * 100}% 0 0)`;   // nur das Zeichen (bis x = 112)
+  // Zeichen der Suite (symbol.svg, viewBox −4 −4 116 98): Ziel = Lage des Zeichens im Logo (Zeichen dort 1.5 tiefer)
+  const SW = 150 * k;                                     // Größe auf der Bühne – scharf, wird nur verkleinert
+  const symF = [R.left + (4 + 58) * sc, R.top + (4 + 49) * sc];
+  const sym = put(symbolSrc, symF[0], symF[1], SW, SW * 98 / 116);
+  const symEnd = 116 * sc / SW;
+
+  if (reduced) {
+    // Bewegung reduzieren: keine Bewegung. Logo groß in der Mitte blendet ein und aus (~1 s), Oberfläche blendet auf.
+    const big = put(logoSrc, cx, cy, 84 * R.width / R.height, 84);
+    run(big, [{opacity: 0}, {opacity: 1}], 0, 300, 'ease-out');
+    run(big, [{opacity: 1}, {opacity: 0}], 800, 250, 'ease-in');
+    run(bg, [{opacity: 1}, {opacity: 0}], 800, 250, 'ease-out');
+    return control(anims, 1050);
+  }
+
+  // 1 · 0–380 ms: Suite-Zeichen erscheint und wächst leicht
+  run(sym, [{opacity: 0, transform: pose(sym, cx, cy, .82)}, {opacity: 1, transform: pose(sym, cx, cy, 1)}], 0, 380, 'cubic-bezier(.2,.7,.2,1)');
+  // 2 · 320–840 ms: Zeichen rückt nach oben …
+  const up = cy - 96 * k;
+  run(sym, [{transform: pose(sym, cx, cy, 1)}, {transform: pose(sym, cx, up, .62)}], 320, 520);
+  // … und die Programme fächern sich zu einer Reihe auf (Reihenfolge = Karten im DOM, Lesereihenfolge)
+  T = targets();
+  const n = T.length, F = 92 * k, G = 22 * k, rowY = cy + 70 * k;
+  const rowW = n * F + (n - 1) * G, fit = Math.min(1, (W * .92) / rowW);
+  const FF = F * fit, GG = G * fit;
+  const LAND = [];
+  T.forEach((tg, i) => {
+    const x = cx - (n * FF + (n - 1) * GG) / 2 + FF / 2 + i * (FF + GG);
+    const r = tg.visible ? tg.icon.getBoundingClientRect() : null;
+    const L = r ? [r.left + r.width / 2, r.top + r.height / 2] : symF;     // Rückfall: zurück ins Zeichen
+    const endS = r ? r.width / FF : (22 / FF);
+    const fly = put(tg.src, L[0], L[1], FF);
+    run(fly, [{opacity: 0, transform: pose(fly, cx, up, .25)}, {opacity: 1, transform: pose(fly, x, rowY, 1)}], 380 + i * 45, 480);
+    // 3 · ab 1000 ms: Flug ins Ziel. x und y mit verschiedenen Kurven → leichter Bogen (erst seitlich, dann hinab)
+    const d = 1000 + i * 55, dur = 600, land = d + dur;
+    run(fly, [{transform: `translateY(${rowY - L[1]}px) scale(1)`}, {transform: `translateY(0px) scale(${endS})`}], d, dur, 'cubic-bezier(.6,0,.2,1)');
+    anims.push(fly.animate([{translate: `${x - L[0]}px 0px`}, {translate: '0px 0px'}], {delay: d / speed, duration: dur / speed, easing: 'cubic-bezier(.35,0,.15,1)', fill: 'forwards'}));
+    if (r) {
+      // Karte blendet ein, während ihr Icon landet; ihr eigenes Icon erscheint im Moment der Landung (Bild deckungsgleich)
+      run(tg.card, [{opacity: 0, transform: 'translateY(10px)'}, {opacity: 1, transform: 'none'}], land - 260, 260, 'cubic-bezier(.2,.8,.2,1)');
+      run(tg.icon, [{opacity: 0}, {opacity: 1}], land, 1, 'linear');
+      run(fly, [{opacity: 1}, {opacity: 0}], land + 34, 1, 'linear');
+    } else {
+      run(fly, [{opacity: 1}, {opacity: 0}], d + 280, 320, 'ease-in');
+      run(tg.card, [{opacity: 0}, {opacity: 1}], 1250, 300, 'ease-out');
+    }
+    LAND.push(land);
+  });
+  // Hintergrund der Schicht gibt die Oberfläche frei (gleiche Farbe wie --bg: kein Helligkeitssprung, auch im Tag-Modus)
+  run(bg, [{opacity: 1}, {opacity: 0}], 950, 450, 'ease-out');
+  // 4 · 1050–1670 ms: Zeichen gleitet an seinen Platz im Logo oben links
+  run(sym, [{transform: pose(sym, cx, up, .62)}, {transform: pose(sym, symF[0], symF[1], symEnd)}], 1050, 620, 'cubic-bezier(.55,0,.2,1)');
+  // 5 · 1670–2140 ms: Logo übernimmt (erst Logo ein, dann Zeichen aus – nie beide halb), Name wischt von links herein
+  run(logo, [{opacity: 0, clipPath: signClip}, {opacity: 1, clipPath: signClip}], 1670, 150, 'linear');
+  run(sym, [{opacity: 1}, {opacity: 0}], 1780, 150, 'linear');
+  run(logo, [{clipPath: signClip}, {clipPath: 'inset(0 0% 0 0)'}], 1760, 380, 'cubic-bezier(.3,.7,.2,1)');
+  return control(anims, Math.max(2140, ...LAND));
+
+  function control(list, total) {
+    let done = false;
+    const finish = skipped => {
+      if (done) return; done = true;
+      // Stand der Karten merken, dann alle Animationen weg, Rest in 150 ms weich nachziehen (nie hart schneiden)
+      const cards = T.map(x => [x.card, Number(getComputedStyle(x.card).opacity)]);
+      list.forEach(a => a.cancel());
+      document.documentElement.classList.remove('intro-run');
+      if (skipped) {
+        layer.animate([{opacity: 1}, {opacity: 0}], {duration: 150, fill: 'forwards'});
+        for (const [c, op] of cards) if (op < 1) c.animate([{opacity: op}, {opacity: 1}], {duration: 150});
+        document.getElementById('top-logo').animate([{opacity: 0}, {opacity: 1}], {duration: 150});
+        setTimeout(() => layer.remove(), 160);
+      } else layer.remove();                       // alles liegt deckungsgleich: Schicht weg, kein Sprung
+      dispatchEvent(new CustomEvent('linksuite-intro-done', {detail: {app: 'suite', skipped}}));
+    };
+    if (holdAt !== null) { list.forEach(a => { a.pause(); a.currentTime = holdAt / speed; }); skip.remove(); return {finish}; }
+    setTimeout(() => finish(false), total / speed);
+    addEventListener('keydown', e => { if (!e.metaKey && !e.ctrlKey) finish(true); }, {once: true});
+    layer.addEventListener('pointerdown', () => finish(true), {once: true});
+    addEventListener('resize', () => finish(true), {once: true});   // Ziele stimmen nicht mehr
+    return {finish};
+  }
+}
+
+// ------------------------------------------------------------------ Start (im Programm: main.ts intro())
+const dark = document.documentElement.dataset.theme !== 'light';
+const go = () => {
+  if (Q.get('intro') === '0') { document.getElementById('intro').remove(); return; }
+  const header = document.querySelector('.top').getBoundingClientRect();
+  playLauncherIntro({
+    layer: document.getElementById('intro'),
+    logoBox: () => [...document.querySelectorAll('#top-logo img')].find(i => i.offsetWidth > 0).getBoundingClientRect(),
+    targets: () => [...document.querySelectorAll('#prog-pane .prog')].map(card => {
+      const icon = card.querySelector('.prog-icon'), r = icon.getBoundingClientRect();
+      const visible = r.width > 0 && r.bottom > header.bottom && r.top < innerHeight - 8 && r.right > 0 && r.left < innerWidth && !HIDE.has(card.dataset.id);
+      return {id: card.dataset.id, card, icon, src: icon.currentSrc || icon.src, visible};
+    }),
+    symbolSrc: 'icons/symbol.svg',
+    logoSrc: dark ? 'icons/logo-horizontal-on-dark.svg' : 'icons/logo-horizontal-on-light.svg',
+    speed: Math.min(4, Math.max(.05, Number(Q.get('speed')) || 1)),
+    reduced: Q.get('reduced') === '1' || matchMedia('(prefers-reduced-motion: reduce)').matches,
+    holdAt: Q.has('t') ? Number(Q.get('t')) : null,
+    text: t,
+  });
+};
+// Erst messen, wenn alle Bilder geladen sind und das Layout steht (im Programm: nach dem ersten render() von PROGRAMME)
+addEventListener('load', () => requestAnimationFrame(go));
+if (Q.get('loop') === '1') addEventListener('linksuite-intro-done', () => setTimeout(() => location.reload(), 1200));
+if (!Q.has('t') && Q.get('ui') !== '0') {
+  const bar = document.createElement('div'); bar.className = 'proto-bar';
+  const url = p => '?' + new URLSearchParams({...Object.fromEntries(Q), ...p});
+  bar.innerHTML = `<a href="${url({})}">Nochmal</a><a href="${url({speed: Q.get('speed') === '0.25' ? 1 : 0.25})}">Zeitlupe</a><a href="${url({reduced: Q.get('reduced') === '1' ? 0 : 1})}">Reduziert</a><a href="${url({theme: dark ? 'light' : 'dark'})}">${dark ? 'Tag' : 'Nacht'}</a><a href="${url({hide: Q.get('hide') ? '' : 'vd,net'})}">Rückfall</a>`;
+  document.body.append(bar);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,761 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Link-Suite – Muster der Bildschirme und Bausteine</title>
+<link rel="stylesheet" href="launcher.css">
+</head>
+<body class="mu">
+<!-- Statisches Muster aller Bildschirme des Suite-Launchers „Link-Suite“. Nutzt nur launcher.css und icons/.
+     Texte stehen hier auf Deutsch; im Programm kommen sie über i18n (data-i18n="schlüssel", siehe die Design-Unterlagen (außerhalb des Repos)).
+     Daten erfunden (Rechner, Namen, Adressen, PIDs, Log-Zeilen); Pfade und Skripte wie auf dem Entwickler-Mac am 15.11.2026.
+     style-Attribute nur hier im Muster (Fortschrittsbreite) – im Programm per element.style. Das kleine Skript unten
+     schaltet nur Tag/Nacht für das Muster. -->
+
+<!-- Icons als Inline-SVG-Symbole: im Programm genauso (CSP-sicher, keine Fremdquellen) -->
+<svg width="0" height="0" class="sr" aria-hidden="true">
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 4h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-5 4v-4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm3 6.5a1.5 1.5 0 1 0 0 .01zm5 0a1.5 1.5 0 1 0 0 .01zm5 0a1.5 1.5 0 1 0 0 .01z"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></symbol>
+  <symbol id="i-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="1.5"/></symbol>
+  <symbol id="i-front" viewBox="0 0 24 24"><rect x="3" y="8" width="13" height="13" rx="2"/><path d="M8 8V4h13v13h-5"/></symbol>
+  <symbol id="i-log" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9l3 3-3 3M12 15h5"/></symbol>
+  <symbol id="i-code" viewBox="0 0 24 24"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 6a1 1 0 0 1 1-1h5l2 2h9a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/></symbol>
+  <symbol id="i-app" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></symbol>
+  <symbol id="i-clear" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.01"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M4 20h16"/></symbol>
+  <symbol id="i-usb" viewBox="0 0 24 24"><path d="M8 3h8v6H8z"/><path d="M6 9h12v8a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4z"/><path d="M10 5v1M14 5v1"/></symbol>
+  <symbol id="i-ext" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-8 8"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></symbol>
+  <symbol id="i-monitor" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6"/></symbol>
+  <symbol id="i-package" viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5l8 4.5 8-4.5M12 12v9"/></symbol>
+</svg>
+
+<div class="mu-switch" role="group" aria-label="Muster: Anzeige">
+  <span class="muted">Muster</span>
+  <div class="seg small"><button type="button" id="mu-dark" class="on"><svg class="ico"><use href="#i-moon"/></svg>Nacht</button><button type="button" id="mu-light"><svg class="ico"><use href="#i-sun"/></svg>Tag</button></div>
+</div>
+
+<div class="mu-title"><img src="icons/link-suite.svg" alt="">Link-Suite – Bildschirme und Bausteine</div>
+<p class="mu-sub">Design 0.1 · 15.11.2026 · Version 0.1 „Starten“ zuerst (App oder Entwicklerprojekt), Installieren/Aktualisieren ab 0.2 · Tokens und Klassen wie VJ-Link / VD-Link, Akzent Pink nur zum Bedienen, auf Pink dunkle Schrift #141821, Pink als Schrift im Tag #CC0045 · Rechner, Namen, Adressen, PIDs und Log-Zeilen erfunden · Beschreibung: die Design-Unterlagen (außerhalb des Repos) · Schalter oben rechts: Tag / Nacht</p>
+
+<!-- ================================================================ 0 Tokens -->
+<div class="mu-cap"><b>0</b> Tokens <span>– Nacht (Standard) und Tag (<code>data-theme="light"</code>)</span></div>
+<div class="mu-row mu-2">
+<div class="mu-surface"><h5>Nacht</h5><div class="mu-sw">
+<div><i class="mu-k-bg"></i><span>--bg</span><code>#0C0E13</code></div><div><i class="mu-k-panel"></i><span>--panel</span><code>#151821</code></div><div><i class="mu-k-raise"></i><span>--raise</span><code>#1E222E</code></div><div><i class="mu-k-line"></i><span>--line</span><code>#2A2F3D</code></div>
+<div><i class="mu-k-text"></i><span>--text</span><code>#DCE1EA</code></div><div><i class="mu-k-dim"></i><span>--dim</span><code>#7E879A</code></div><div><i class="mu-k-accent-demo">Starten</i><span>--accent · Fläche</span><code>#FF5C93 · darauf #141821</code></div><div><i class="mu-k-accent-text"></i><span>--accent-text · Schrift, Linie</span><code>#FF5C93</code></div>
+<div><i class="mu-k-on-accent"></i><span>--on-accent</span><code>#141821 · 6,09:1</code></div><div><i class="mu-k-em"></i><span>--emergency</span><code>#FFD60A</code></div>
+<div><i class="mu-k-green"></i><span>--green · aktuell, läuft</span><code>#3DDC84</code></div><div><i class="mu-k-amber"></i><span>--amber · Update</span><code>#FFB020</code></div><div><i class="mu-k-red"></i><span>--red · Fehler</span><code>#FF3B3B</code></div><div><i class="mu-k-cyan"></i><span>--cyan · Hinweis, Entwickler</span><code>#22C8F0</code></div>
+<div><i class="mu-k-violet"></i><span>--violet · in Entwicklung</span><code>#B45CFF</code></div><div><i class="mu-k-grey"></i><span>--grey · neutral</span><code>#8A93A6</code></div><div><i class="mu-k-log"></i><span>--log-bg</span><code>#08090C</code></div><div><i class="mu-k-suite"></i><span>--sA … --sE · Suite</span><code>5 Farben</code></div>
+</div></div>
+<div class="mu-surface" data-theme="light"><h5>Tag</h5><div class="mu-sw">
+<div><i class="mu-k-bg"></i><span>--bg</span><code>#EEF0F4</code></div><div><i class="mu-k-panel"></i><span>--panel</span><code>#FFFFFF</code></div><div><i class="mu-k-raise"></i><span>--raise</span><code>#F3F4F7</code></div><div><i class="mu-k-line"></i><span>--line</span><code>#D9DDE5</code></div>
+<div><i class="mu-k-text"></i><span>--text</span><code>#141821</code></div><div><i class="mu-k-dim"></i><span>--dim</span><code>#5E677A</code></div><div><i class="mu-k-accent-demo">Starten</i><span>--accent · Fläche</span><code>#FF5C93 · darauf #141821</code></div><div><i class="mu-k-accent-text"></i><span>--accent-text · Schrift, Linie</span><code>#CC0045 · 5,75:1</code></div>
+<div><i class="mu-k-on-accent"></i><span>--on-accent</span><code>#141821</code></div><div><i class="mu-k-em"></i><span>--emergency</span><code>#FFD60A</code></div>
+<div><i class="mu-k-green-ink"></i><span>--green-ink</span><code>#14804A</code></div><div><i class="mu-k-amber-ink"></i><span>--amber-ink</span><code>#A15C00</code></div><div><i class="mu-k-red-ink"></i><span>--red-ink</span><code>#C62828</code></div><div><i class="mu-k-cyan-ink"></i><span>--cyan-ink</span><code>#0A7491</code></div>
+<div><i class="mu-k-violet-ink"></i><span>--violet-ink</span><code>#7A35C2</code></div><div><i class="mu-k-grey-ink"></i><span>--grey-ink</span><code>#5E677A</code></div><div><i class="mu-k-log"></i><span>--log-bg</span><code>#FAFBFC</code></div><div><i class="mu-k-suite"></i><span>--sA … --sE · Suite</span><code>unverändert</code></div>
+</div></div>
+</div>
+
+<!-- ================================================================ 0b Pillen, Knöpfe, Zustände -->
+<div class="mu-cap"><b>0b</b> Pillen, Knöpfe, Zustände <span>– Pink nur zum Bedienen; Zustand in Grün / Gelb / Grau / Violett / Cyan; Rot nur für Fehler</span></div>
+<div class="mu-row mu-2">
+<div class="mu-surface">
+  <h5>Status-Pillen (.pill)</h5>
+  <div class="mu-line">
+    <span class="pill ok" data-i18n="pill.current">AKTUELL 1.7.11</span>
+    <span class="pill warn" data-i18n="pill.update">UPDATE 1.7.11</span>
+    <span class="pill off" data-i18n="pill.notInstalled">NICHT INSTALLIERT</span>
+    <span class="pill ok run"><span class="dot"></span><span data-i18n="pill.running">LÄUFT</span></span>
+    <span class="pill ok run"><span class="dot"></span><span data-i18n="pill.running">LÄUFT</span> <em>PID 48211 · 12:04</em></span>
+    <span class="pill kind"><svg class="ico"><use href="#i-code"/></svg><span data-i18n="pill.dev">ENTWICKLER</span></span>
+  </div>
+  <div class="mu-line">
+    <span class="pill dev" data-i18n="pill.inDev">IN ENTWICKLUNG</span>
+    <span class="pill dev" data-i18n="pill.concept">KONZEPT</span>
+    <span class="pill off" data-i18n="pill.notStartable">NOCH NICHT STARTBAR</span>
+    <span class="pill off" data-i18n="pill.stickOnly">NUR VOM STICK</span>
+    <span class="pill off" data-i18n="pill.macOnly">NUR MACOS</span>
+  </div>
+  <div class="mu-line">
+    <span class="pill off" data-i18n="pill.private">NICHT ÖFFENTLICH</span>
+    <span class="pill off" data-i18n="pill.noCheck">PRÜFUNG FEHLT</span>
+    <span class="pill off" data-i18n="pill.unsigned">NICHT SIGNIERT</span>
+    <span class="pill off">BETA 0.1.8</span>
+    <span class="pill err" data-i18n="pill.startFailed">START FEHLGESCHLAGEN</span>
+    <span class="exit err">EXIT 1</span><span class="exit ok">EXIT 0</span><span class="exit stop" data-i18n="log.stopped">GESTOPPT</span>
+  </div>
+  <h5>Kopf: Chips, Chat-Knopf</h5>
+  <div class="mu-line">
+    <span class="chip"><span class="dot green"></span>2 laufen</span>
+    <button class="chip" type="button">Im Netz: <b>4</b> Programme · <b>3</b> Rechner</button>
+    <span class="chip">GitHub geprüft 17:32 <span class="ver">ab 0.2</span></span>
+    <button class="iconbtn chat-btn" type="button" aria-label="Suite-Chat"><svg class="ico fill"><use href="#i-chat"/></svg></button>
+    <button class="iconbtn chat-btn" type="button" aria-label="Suite-Chat, 2 ungelesen"><svg class="ico fill"><use href="#i-chat"/></svg><b class="chat-unread">2</b></button>
+    <button class="iconbtn chat-btn on" type="button" aria-expanded="true" aria-label="Suite-Chat"><svg class="ico fill"><use href="#i-chat"/></svg></button>
+    <button class="iconbtn chat-btn urgent" type="button" aria-label="Suite-Chat, EMERGENCY"><svg class="ico fill"><use href="#i-chat"/></svg><b class="chat-unread">1</b></button>
+  </div>
+</div>
+<div class="mu-surface">
+  <h5>Knöpfe – normal · hover · Fokus · gedrückt-Zustand · deaktiviert</h5>
+  <div class="mu-line">
+    <button class="btn primary" type="button"><svg class="ico fill"><use href="#i-play"/></svg>Starten</button>
+    <button class="btn primary mu-fake-hover" type="button">Starten</button>
+    <button class="btn primary mu-fake-focus" type="button">Starten</button>
+    <button class="btn primary" type="button" disabled>Aktualisieren</button>
+  </div>
+  <div class="mu-line">
+    <button class="btn" type="button"><svg class="ico fill"><use href="#i-stop"/></svg>Stoppen</button>
+    <button class="btn mu-fake-hover" type="button">Stoppen</button>
+    <button class="btn mu-fake-focus" type="button">Stoppen</button>
+    <button class="btn small" type="button" aria-pressed="true">Auto-Scroll</button>
+    <button class="btn" type="button" disabled>Stoppen</button>
+    <button class="btn ghost" type="button">Abbrechen</button>
+    <button class="btn more" type="button" aria-label="Mehr"><svg class="ico fill"><use href="#i-more"/></svg></button>
+    <button class="linkish" type="button">In NET Link prüfen →</button>
+  </div>
+  <div class="mu-line">
+    <div class="seg" role="radiogroup"><button role="radio" aria-checked="true"><svg class="ico"><use href="#i-app"/></svg>App</button><button role="radio" aria-checked="false"><svg class="ico"><use href="#i-code"/></svg>Entwickler</button></div>
+    <div class="seg" role="radiogroup"><button role="radio" aria-checked="false"><svg class="ico"><use href="#i-sun"/></svg>Tag</button><button role="radio" aria-checked="true"><svg class="ico"><use href="#i-moon"/></svg>Nacht</button><button role="radio" aria-checked="false"><svg class="ico"><use href="#i-monitor"/></svg>System</button></div>
+    <input class="input" value="Max" aria-label="Name"><input class="input mu-fake-focus" value="Booth" aria-label="Platz">
+  </div>
+  <h5>Hinweis (Cyan) · Fehler (Rot) · Notiz</h5>
+  <div class="hint"><svg class="ico"><use href="#i-info"/></svg><div><b>Keine Internetverbindung.</b> Im Show-Netz ist das normal. Starten geht trotzdem.</div></div>
+  <div class="alert"><svg class="ico"><use href="#i-alert"/></svg><div><b>Prüfsumme falsch.</b> Die Datei wurde gelöscht. Nichts wurde ersetzt.</div><button class="btn" type="button"><svg class="ico"><use href="#i-ext"/></svg>Seite öffnen</button></div>
+  <div class="note amber"><b>Nicht signiert.</b> macOS prüft das Programm nicht. Der Launcher prüft Herkunft und Prüfsumme.</div>
+</div>
+</div>
+
+<!-- ================================================================ 1 PROGRAMME -->
+<div class="mu-cap"><b>1</b> PROGRAMME <span>– der Start. Darüber liegt beim Öffnen die Startanimation (?app=suite). Detail rechts, Log-Leiste unten (VJ-Link läuft als Entwicklerprojekt)</span></div>
+<div class="mu-win mu-h-main">
+  <div class="mu-chrome"><i></i><i></i><i></i><span>Link-Suite</span></div>
+  <header class="top">
+    <div class="logo" id="top-logo"><img class="only-dark" src="icons/logo-horizontal-on-dark.svg" alt="Link-Suite"><img class="only-light" src="icons/logo-horizontal-on-light.svg" alt="Link-Suite"></div>
+    <nav class="tabs" role="tablist" aria-label="Bereiche" data-i18n-aria="tab.aria">
+      <button role="tab" aria-selected="true" class="on" data-i18n="tab.programs">PROGRAMME</button>
+      <button role="tab" aria-selected="false"><span data-i18n="tab.network">IM NETZ</span><span class="count">4</span></button>
+      <button role="tab" aria-selected="false" data-i18n="tab.stick">CLUB-STICK</button>
+      <button role="tab" aria-selected="false" data-i18n="tab.settings">EINSTELLUNGEN</button>
+    </nav>
+    <div class="status">
+      <span class="chip"><span class="dot green"></span><span data-i18n="top.running">2 laufen</span></span>
+      <button class="chip" type="button" data-i18n="top.network">Im Netz: <b>4</b> Programme · <b>3</b> Rechner</button>
+      <button class="iconbtn chat-btn" id="chat-btn" type="button" aria-expanded="false" aria-label="Suite-Chat" title="Suite-Chat" data-i18n-title="chat.title" data-i18n-aria="chat.title"><svg class="ico fill" aria-hidden="true"><use href="#i-chat"/></svg><b class="chat-unread" id="chat-unread">2</b></button>
+    </div>
+  </header>
+  <main>
+    <section class="tab on" id="tab-programs" role="tabpanel">
+      <div class="split has-detail">
+        <div class="pane">
+          <div class="bar">
+            <h2 data-i18n="progs.here">Auf diesem Rechner</h2><span class="grow"></span>
+            <span class="when" data-i18n="progs.scanned">gesucht 21:14</span>
+            <button class="btn" type="button"><svg class="ico"><use href="#i-refresh"/></svg><span data-i18n="progs.rescan">Neu suchen</span></button>
+          </div>
+          <div class="progs">
+            <!-- LJ Link: App in /Applications, bereit -->
+            <article class="prog" tabindex="0" aria-labelledby="p-lj">
+              <img class="prog-icon" src="icons/lj-link.svg" alt="">
+              <div class="prog-body">
+                <div class="prog-head"><h3 id="p-lj">LJ Link</h3><span class="pills"><span class="pill off">1.7.10</span></span></div>
+                <p class="prog-line" data-i18n="prog.lj.line">Alle Decks, Wellenformen und Cues für die Booth.</p>
+                <div class="route"><span class="route-path"><svg class="ico"><use href="#i-app"/></svg><b>/Applications/LJ-Link-PRO.app</b></span></div>
+                <div class="prog-act"><span class="sp"></span>
+                  <button class="btn primary" type="button"><svg class="ico fill"><use href="#i-play"/></svg><span data-i18n="prog.start">Starten</span></button>
+                  <button class="btn more" type="button" aria-label="Mehr zu LJ Link" data-i18n-aria="prog.more"><svg class="ico fill"><use href="#i-more"/></svg></button>
+                </div>
+              </div>
+            </article>
+            <!-- VJ-Link: Entwicklerprojekt, läuft, ausgewählt -->
+            <article class="prog sel" tabindex="0" aria-labelledby="p-vj" aria-current="true">
+              <img class="prog-icon" src="icons/vj-link.svg" alt="">
+              <div class="prog-body">
+                <div class="prog-head"><h3 id="p-vj">VJ-Link</h3><span class="pills"><span class="pill kind"><svg class="ico"><use href="#i-code"/></svg><span data-i18n="pill.dev">ENTWICKLER</span></span><span class="pill ok run"><span class="dot"></span><span data-i18n="pill.running">LÄUFT</span> <em>PID 48211 · 12:04</em></span></span></div>
+                <p class="prog-line" data-i18n="prog.vj.line">Visuals, gesteuert vom Lichtpult.</p>
+                <div class="route"><span class="route-path"><svg class="ico"><use href="#i-folder"/></svg><b>/Users/dj/VJ-Link</b> · npm start</span></div>
+                <div class="prog-act"><span class="sp"></span>
+                  <button class="btn" type="button"><svg class="ico fill"><use href="#i-stop"/></svg><span data-i18n="prog.stop">Stoppen</span></button>
+                  <button class="btn" type="button" aria-pressed="true"><svg class="ico"><use href="#i-log"/></svg><span data-i18n="prog.log">Log</span></button>
+                  <button class="btn more" type="button" aria-label="Mehr zu VJ-Link"><svg class="ico fill"><use href="#i-more"/></svg></button>
+                </div>
+              </div>
+            </article>
+            <!-- VD-Link: App und Entwicklerprojekt, App gewählt, läuft -->
+            <article class="prog" tabindex="0" aria-labelledby="p-vd">
+              <img class="prog-icon" src="icons/vd-link.svg" alt="">
+              <div class="prog-body">
+                <div class="prog-head"><h3 id="p-vd">VD-Link</h3><span class="pills"><span class="pill off">0.2.0</span><span class="pill ok run"><span class="dot"></span><span data-i18n="pill.running">LÄUFT</span></span></span></div>
+                <p class="prog-line" data-i18n="prog.vd.line">3D-Lichtvisualisierer für Art-Net und sACN.</p>
+                <div class="route">
+                  <div class="seg small" role="radiogroup" aria-label="Startweg" data-i18n-aria="route.aria"><button role="radio" aria-checked="true"><svg class="ico"><use href="#i-app"/></svg><span data-i18n="route.app">App</span></button><button role="radio" aria-checked="false"><svg class="ico"><use href="#i-code"/></svg><span data-i18n="route.dev">Entwickler</span></button></div>
+                  <span class="route-path"><b>/Applications/VD-Link.app</b></span>
+                </div>
+                <div class="prog-act"><span class="sp"></span>
+                  <button class="btn primary" type="button"><svg class="ico"><use href="#i-front"/></svg><span data-i18n="prog.front">Nach vorn</span></button>
+                  <button class="btn more" type="button" aria-label="Mehr zu VD-Link"><svg class="ico fill"><use href="#i-more"/></svg></button>
+                </div>
+              </div>
+            </article>
+            <!-- LJL Link: nur vom Stick -->
+            <article class="prog" tabindex="0" aria-labelledby="p-ljl">
+              <img class="prog-icon" src="icons/ljl-link-256.png" alt="">
+              <div class="prog-body">
+                <div class="prog-head"><h3 id="p-ljl">LJL Link</h3><span class="pills"><span class="pill off" data-i18n="pill.stickOnly">NUR VOM STICK</span><span class="pill off">ALPHA 0.3.1</span></span></div>
+                <p class="prog-line" data-i18n="prog.ljl.line">Serato-Decks vom Stick des Clubs in LJ Link.</p>
+                <div class="route"><span class="route-path"><svg class="ico"><use href="#i-usb"/></svg><span data-i18n="route.stick">läuft vom Club-Stick auf dem Mac des DJs</span></span></div>
+                <div class="prog-act"><span class="sp"></span>
+                  <button class="btn primary" type="button"><svg class="ico"><use href="#i-usb"/></svg><span data-i18n="prog.prepareStick">Stick vorbereiten</span></button>
+                  <button class="btn more" type="button" aria-label="Mehr zu LJL Link"><svg class="ico fill"><use href="#i-more"/></svg></button>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <div class="soon">
+            <div class="bar"><h2 data-i18n="progs.soon">Kommt bald – in dieser Reihenfolge</h2></div>
+            <div class="progs">
+              <article class="prog small openable" tabindex="0" aria-labelledby="s-net">
+                <img class="prog-icon" src="icons/net-link.svg" alt="">
+                <div class="prog-body">
+                  <div class="prog-head"><h3 id="s-net">NET Link</h3></div>
+                  <p class="prog-line" data-i18n="prog.net.line">Wer ist im Show-Netz?</p>
+                  <span class="pills"><span class="pill dev" data-i18n="pill.inDev">IN ENTWICKLUNG</span><span class="pill off" data-i18n="pill.notStartable">NOCH NICHT STARTBAR</span></span>
+                  <span class="route-path" data-i18n="need.short.pkg">– fehlt: package.json</span>
+                </div>
+              </article>
+              <article class="prog small openable" tabindex="0" aria-labelledby="s-cr">
+                <img class="prog-icon" src="icons/crew-link.svg" alt="">
+                <div class="prog-body">
+                  <div class="prog-head"><h3 id="s-cr">Crew Link</h3></div>
+                  <p class="prog-line" data-i18n="prog.crew.line">Timetable der Nacht.</p>
+                  <span class="pills"><span class="pill dev" data-i18n="pill.concept">KONZEPT</span><span class="pill off" data-i18n="pill.notStartable">NOCH NICHT STARTBAR</span></span>
+                  <span class="route-path">– fehlt: package.json</span>
+                </div>
+              </article>
+              <article class="prog small openable" tabindex="0" aria-labelledby="s-pl">
+                <img class="prog-icon" src="icons/pl-link.svg" alt="">
+                <div class="prog-body">
+                  <div class="prog-head"><h3 id="s-pl">PL Link</h3></div>
+                  <p class="prog-line" data-i18n="prog.pl.line">Patch und Stromlast.</p>
+                  <span class="pills"><span class="pill dev" data-i18n="pill.concept">KONZEPT</span><span class="pill off" data-i18n="pill.notStartable">NOCH NICHT STARTBAR</span></span>
+                  <span class="route-path">– fehlt: package.json</span>
+                </div>
+              </article>
+              <article class="prog small openable" tabindex="0" aria-labelledby="s-db">
+                <img class="prog-icon" src="icons/db-link.svg" alt="">
+                <div class="prog-body">
+                  <div class="prog-head"><h3 id="s-db">dB Link</h3></div>
+                  <p class="prog-line" data-i18n="prog.db.line">Lautstärke nach DIN 15905-5.</p>
+                  <span class="pills"><span class="pill dev" data-i18n="pill.concept">KONZEPT</span><span class="pill off" data-i18n="pill.notStartable">NOCH NICHT STARTBAR</span></span>
+                  <span class="route-path">– fehlt: package.json</span>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          <footer class="foot">
+            <span class="netlink"><img src="icons/net-link.svg" alt=""><span data-i18n="foot.netProblem">Netzproblem?</span> <button class="linkish strong" type="button" data-i18n="foot.netCheck">In NET Link prüfen →</button></span>
+            <span class="sp"></span>
+            <span data-i18n="foot.version">Link-Suite 0.1.0 · nicht signiert · EPL-2.0</span> · <button class="linkish" type="button" data-i18n="foot.licenses">Lizenzen</button>
+          </footer>
+        </div>
+
+        <aside class="detail" aria-labelledby="d-vj">
+          <div class="detail-head"><img src="icons/vj-link.svg" alt=""><div><b id="d-vj">VJ-Link</b><small data-i18n="detail.devRunning">Entwicklerprojekt · läuft</small></div>
+            <button class="iconbtn small ghost" type="button" aria-label="Schließen" data-i18n-aria="common.close"><svg class="ico"><use href="#i-x"/></svg></button></div>
+          <div class="sec" data-i18n="detail.route">Startweg</div>
+          <div class="seg" role="radiogroup" aria-label="Startweg"><button role="radio" aria-checked="false" disabled title="Nicht in /Applications gefunden"><svg class="ico"><use href="#i-app"/></svg>App</button><button role="radio" aria-checked="true"><svg class="ico"><use href="#i-code"/></svg>Entwickler</button></div>
+          <dl class="kv">
+            <dt data-i18n="detail.folder">Ordner</dt><dd>/Users/dj/VJ-Link</dd>
+            <dt data-i18n="detail.command">Befehl</dt><dd>npm start</dd>
+            <dt data-i18n="detail.script">Skript</dt><dd>npm run build &amp;&amp; node scripts/dev-app.mjs --run</dd>
+            <dt data-i18n="detail.version">Version</dt><dd>0.1.8 <span class="muted">(package.json)</span></dd>
+            <dt>PID</dt><dd>48211</dd>
+            <dt data-i18n="detail.since">Läuft seit</dt><dd>21:14 · 12 min</dd>
+          </dl>
+          <div class="hint"><svg class="ico"><use href="#i-info"/></svg><div><b>npm start baut zuerst.</b> Das schreibt <span class="mono">dist/</span> im Projektordner neu – der Launcher hat vorher gefragt.</div></div>
+          <div class="sec"><span data-i18n="detail.release">Veröffentlicht</span> <span class="ver">ab 0.2</span></div>
+          <dl class="kv">
+            <dt data-i18n="detail.latest">Neueste</dt><dd>0.1.8 · 12.11.2026</dd>
+            <dt data-i18n="detail.origin">Herkunft</dt><dd class="txt">github.com/skyplayser/VJ-LINK</dd>
+          </dl>
+          <div class="btns"><button class="btn" type="button"><svg class="ico"><use href="#i-folder"/></svg><span data-i18n="prog.reveal">Im Finder zeigen</span></button><button class="btn" type="button" aria-pressed="true"><svg class="ico"><use href="#i-log"/></svg>Log</button></div>
+        </aside>
+      </div>
+
+      <section class="log-dock" aria-label="Log" data-i18n-aria="log.aria">
+        <div class="log-tabs" role="tablist">
+          <button role="tab" class="on" aria-selected="true"><img src="icons/vj-link.svg" alt=""><span class="dot green"></span>VJ-Link</button>
+          <button role="tab" aria-selected="false"><img src="icons/vd-link.svg" alt=""><span class="dot grey"></span>VD-Link · Exit 0</button>
+        </div>
+        <div class="log-head">
+          <b>VJ-Link</b>
+          <span class="log-cmd">/Users/dj/VJ-Link <span>$ npm start</span></span>
+          <span class="pill ok run"><span class="dot"></span>LÄUFT <em>PID 48211 · 12:04</em></span>
+          <div class="btns">
+            <button class="btn small" type="button" aria-pressed="true" data-i18n="log.autoscroll">Auto-Scroll</button>
+            <button class="btn small" type="button"><svg class="ico"><use href="#i-copy"/></svg><span data-i18n="log.copy">Kopieren</span></button>
+            <button class="btn small" type="button"><svg class="ico"><use href="#i-clear"/></svg><span data-i18n="log.clear">Leeren</span></button>
+            <button class="btn small" type="button"><svg class="ico fill"><use href="#i-stop"/></svg><span data-i18n="log.stop">Stoppen</span></button>
+            <button class="iconbtn small ghost" type="button" aria-label="Log schließen" data-i18n-aria="log.close"><svg class="ico"><use href="#i-x"/></svg></button>
+          </div>
+        </div>
+        <div class="log-body" role="log" aria-live="off" tabindex="0"><span class="ln sys">21:14:02 · Start in /Users/dj/VJ-Link: npm start</span><span class="ln out">&gt; vj-link@0.1.8 start
+&gt; npm run build &amp;&amp; node scripts/dev-app.mjs --run</span><span class="ln out">&gt; vj-link@0.1.8 build
+&gt; node scripts/build.mjs</span><span class="ln out">build: renderer 412 ms · main 96 ms · fertig</span><span class="ln out">dev-app: Electron 45.3.1 startet …</span><span class="ln err">(node:48233) ExperimentalWarning: VM Modules is an experimental feature</span><span class="ln out">Art-Net: hört auf 0.0.0.0:6454 · sACN: Universe 1</span><span class="ln out">Suite-Chat: 239.255.76.76:47676 auf en8 (192.168.1.10)</span><span class="ln err">[ljlink] Bonjour: kein _ljlink._tcp gefunden, versuche erneut in 5 s</span><span class="ln out">[ljlink] verbunden mit LJ Link auf 192.168.1.10:8080</span></div>
+      </section>
+    </section>
+  </main>
+</div>
+
+<!-- ================================================================ 2 Programmkarte – alle Zustände -->
+<div class="mu-cap"><b>2</b> Programmkarte – alle Zustände <span>– Startweg App oder Entwickler; „noch nicht startbar“ zeigt, was fehlt; 0.2-Zustände (Update, Installieren, Signatur) markiert</span></div>
+<div class="mu-grid">
+  <div class="mu-surface"><h5>App · bereit</h5>
+    <article class="prog" tabindex="0"><img class="prog-icon" src="icons/lj-link.svg" alt="">
+      <div class="prog-body"><div class="prog-head"><h3>LJ Link</h3><span class="pills"><span class="pill off">1.7.10</span></span></div>
+        <p class="prog-line">Alle Decks, Wellenformen und Cues für die Booth.</p>
+        <div class="route"><span class="route-path"><svg class="ico"><use href="#i-app"/></svg><b>/Applications/LJ-Link-PRO.app</b></span></div>
+        <div class="prog-act"><span class="sp"></span><button class="btn primary" type="button"><svg class="ico fill"><use href="#i-play"/></svg>Starten</button><button class="btn more" type="button" aria-label="Mehr"><svg class="ico fill"><use href="#i-more"/></svg></button></div></div></article>
+  </div>
+  <div class="mu-surface"><h5>App · läuft → „Nach vorn“</h5>
+    <article class="prog" tabindex="0"><img class="prog-icon" src="icons/vd-link.svg" alt="">
+      <div class="prog-body"><div class="prog-head"><h3>VD-Link</h3><span class="pills"><span class="pill off">0.2.0</span><span class="pill ok run"><span class="dot"></span>LÄUFT</span></span></div>
+        <p class="prog-line">3D-Lichtvisualisierer für Art-Net und sACN.</p>
+        <div class="route"><span class="route-path"><svg class="ico"><use href="#i-app"/></svg><b>/Applications/VD-Link.app</b></span></div>
+        <div class="prog-act"><span class="sp"></span><button class="btn primary" type="button"><svg class="ico"><use href="#i-front"/></svg>Nach vorn</button><button class="btn more" type="button" aria-label="Mehr"><svg class="ico fill"><use href="#i-more"/></svg></button></div></div></article>
+  </div>
+  <div class="mu-surface"><h5>Entwickler · bereit (Start braucht Build → Rückfrage)</h5>
+    <article class="prog" tabindex="0"><img class="prog-icon" src="icons/vj-link.svg" alt="">
+      <div class="prog-body"><div class="prog-head"><h3>VJ-Link</h3><span class="pills"><span class="pill kind"><svg class="ico"><use href="#i-code"/></svg>ENTWICKLER</span><span class="pill off">0.1.8</span></span></div>
+        <p class="prog-line">Visuals, gesteuert vom Lichtpult.</p>
+        <div class="route"><span class="route-path"><svg class="ico"><use href="#i-folder"/></svg><b>/Users/dj/VJ-Link</b> · npm start</span></div>
+        <div class="prog-act"><span class="sp"></span><button class="btn primary" type="button"><svg class="ico fill"><use href="#i-play"/></svg><span data-i18n="prog.startDev">Starten (Entwickler)</span></button><button class="btn more" type="button" aria-label="Mehr"><svg class="ico fill"><use href="#i-more"/></svg></button></div></div></article>
+  </div>
+  <div class="mu-surface"><h5>Entwickler · läuft → Stoppen (neutral) und Log</h5>
+    <article class="prog" tabindex="0"><img class="prog-icon" src="icons/vj-link.svg" alt="">
+      <div class="prog-body"><div class="prog-head"><h3>VJ-Link</h3><span class="pills"><span class="pill kind"><svg class="ico"><use href="#i-code"/></svg>ENTWICKLER</span><span class="pill ok run"><span class="dot"></span>LÄUFT <em>PID 48211 · 12:04</em></span></span></div>
+        <p class="prog-line">Visuals, gesteuert vom Lichtpult.</p>
+        <div class="route"><span class="route-path"><svg class="ico"><use href="#i-folder"/></svg><b>/Users/dj/VJ-Link</b> · npm start</span></div>
+        <div class="prog-act"><span class="sp"></span><button class="btn" type="button"><svg class="ico fill"><use href="#i-stop"/></svg>Stoppen</button><button class="btn" type="button"><svg class="ico"><use href="#i-log"/></svg>Log</button><button class="btn more" type="button" aria-label="Mehr"><svg class="ico fill"><use href="#i-more"/></svg></button></div></div></article>
+  </div>
+  <div class="mu-surface"><h5>App und Entwickler · Startweg Entwickler gewählt</h5>
+    <article class="prog" tabindex="0"><img class="prog-icon" src="icons/vd-link.svg" alt="">
+      <div class="prog-body"><div class="prog-head"><h3>VD-Link</h3><span class="pills"><span class="pill kind"><svg class="ico"><use href="#i-code"/></svg>ENTWICKLER</span><span class="pill off">0.2.0</span></span></div>
+        <p class="prog-line">3D-Lichtvisualisierer für Art-Net und sACN.</p>
+        <div class="route"><div class="seg small" role="radiogroup" aria-label="Startweg"><button role="radio" aria-checked="false"><svg class="ico"><use href="#i-app"/></svg>App</button><button role="radio" aria-checked="true"><svg class="ico"><use href="#i-code"/></svg>Entwickler</button></div><span class="route-path"><b>/Users/dj/VD-Link</b> · npm run dev</span></div>
+        <div class="prog-act"><span class="sp"></span><button class="btn primary" type="button"><svg class="ico fill"><use href="#i-play"/></svg>Starten (Entwickler)</button><button class="btn more" type="button" aria-label="Mehr"><svg class="ico fill"><use href="#i-more"/></svg></button></div></div></article>
+  </div>
+  <div class="mu-surface"><h5>Start fehlgeschlagen (Rot = Fehler)</h5>
+    <article class="prog err" tabindex="0"><img class="prog-icon" src="icons/vj-link.svg" alt="">
+      <div class="prog-body"><div class="prog-head"><h3>VJ-Link</h3><span class="pills"><span class="pill kind"><svg class="ico"><use href="#i-code"/></svg>ENTWICKLER</span><span class="pill err">START FEHLGESCHLAGEN</span></span></div>
+        <div class="prog-err"><svg class="ico"><use href="#i-alert"/></svg><div><b>Exit-Code 1 nach 3 s.</b> <span>Die letzte Zeile im Log: „Cannot find module 'electron'“.</span></div></div>
+        <div class="route"><span class="route-path"><svg class="ico"><use href="#i-folder"/></svg><b>/Users/dj/VJ-Link</b> · npm start</span></div>
+        <div class="prog-act"><span class="sp"></span><button class="btn" type="button"><svg class="ico"><use href="#i-log"/></svg>Log</button><button class="btn primary" type="button"><svg class="ico"><use href="#i-refresh"/></svg><span data-i18n="prog.retry">Erneut starten</span></button><button class="btn more" type="button" aria-label="Mehr"><svg class="ico fill"><use href="#i-more"/></svg></button></div></div></article>
+  </div>
+  <div class="mu-surface"><h5>Noch nicht startbar · kein package.json</h5>
+    <article class="prog" tabindex="0"><img class="prog-icon" src="icons/net-link.svg" alt="">
+      <div class="prog-body"><div class="prog-head"><h3>NET Link</h3><span class="pills"><span class="pill dev">IN ENTWICKLUNG</span><span class="pill off">NOCH NICHT STARTBAR</span></span></div>
+        <p class="prog-line">Wer ist im Show-Netz?</p>
+        <ul class="need" aria-label="Was zum Start fehlt" data-i18n-aria="need.aria">
+          <li class="have"><span>Ordner <code>/Users/dj/NET-Link</code></span></li>
+          <li class="miss"><span data-i18n="need.pkg"><code>package.json</code> fehlt – es gibt nur <code>design/</code> und <code>docs/</code></span></li>
+          <li class="miss"><span data-i18n="need.script">Skript <code>dev</code> oder <code>start</code></span></li>
+          <li class="miss"><span data-i18n="need.modules"><code>node_modules</code></span></li>
+          <li class="next"><span data-i18n="need.next.pkg">Startbar, sobald das Projekt angelegt ist. „Neu suchen“ prüft erneut.</span></li>
+        </ul>
+        <div class="prog-act"><span class="sp"></span><button class="btn" type="button"><svg class="ico"><use href="#i-folder"/></svg>Im Finder zeigen</button></div></div></article>
+  </div>
+  <div class="mu-surface"><h5>Noch nicht startbar · Skript fehlt</h5>
+    <article class="prog" tabindex="0"><img class="prog-icon" src="icons/db-link.svg" alt="">
+      <div class="prog-body"><div class="prog-head"><h3>dB Link</h3><span class="pills"><span class="pill dev">KONZEPT</span><span class="pill off">NOCH NICHT STARTBAR</span></span></div>
+        <p class="prog-line">Lautstärke nach DIN 15905-5.</p>
+        <ul class="need">
+          <li class="have"><span>Ordner <code>/Users/dj/dB-Link</code></span></li>
+          <li class="have"><span><code>package.json</code></span></li>
+          <li class="miss"><span>Skript <code>dev</code> oder <code>start</code> fehlt in <code>package.json</code></span></li>
+          <li class="next"><span data-i18n="need.next.script">Der Launcher startet nur diese beiden Skripte.</span></li>
+        </ul>
+        <div class="prog-act"><span class="sp"></span><button class="btn" type="button"><svg class="ico"><use href="#i-folder"/></svg>Im Finder zeigen</button></div></div></article>
+  </div>
+  <div class="mu-surface"><h5>Noch nicht startbar · node_modules fehlen → npm install mit Rückfrage</h5>
+    <article class="prog" tabindex="0"><img class="prog-icon" src="icons/pl-link.svg" alt="">
+      <div class="prog-body"><div class="prog-head"><h3>PL Link</h3><span class="pills"><span class="pill dev">IN ENTWICKLUNG</span><span class="pill off">NOCH NICHT STARTBAR</span></span></div>
+        <p class="prog-line">Patch und Stromlast.</p>
+        <ul class="need">
+          <li class="have"><span>Ordner, <code>package.json</code>, Skript <code>dev</code></span></li>
+          <li class="miss"><span><code>node_modules</code> fehlt</span></li>
+          <li class="next"><span data-i18n="need.next.modules">Einmal <code>npm install</code> nötig. Lädt Pakete aus dem Internet.</span></li>
+        </ul>
+        <div class="prog-act"><span class="sp"></span><button class="btn" type="button"><svg class="ico"><use href="#i-package"/></svg><span data-i18n="prog.npmInstall">npm install …</span></button><button class="btn more" type="button" aria-label="Mehr"><svg class="ico fill"><use href="#i-more"/></svg></button></div></div></article>
+  </div>
+  <div class="mu-surface"><h5>Update da <span class="ver">ab 0.2</span></h5>
+    <article class="prog" tabindex="0"><img class="prog-icon" src="icons/lj-link.svg" alt="">
+      <div class="prog-body"><div class="prog-head"><h3>LJ Link</h3><span class="pills"><span class="pill warn">UPDATE 1.7.11</span><span class="pill off">1.7.10</span></span></div>
+        <p class="prog-line">Alle Decks, Wellenformen und Cues für die Booth.</p>
+        <div class="route"><span class="route-path"><svg class="ico"><use href="#i-app"/></svg><b>/Applications/LJ-Link-PRO.app</b></span></div>
+        <div class="prog-act"><span class="sp"></span><button class="btn primary" type="button"><svg class="ico"><use href="#i-download"/></svg><span data-i18n="prog.update">Aktualisieren</span></button><button class="btn" type="button"><svg class="ico fill"><use href="#i-play"/></svg>Starten</button><button class="btn more" type="button" aria-label="Mehr"><svg class="ico fill"><use href="#i-more"/></svg></button></div></div></article>
+  </div>
+  <div class="mu-surface"><h5>Nicht installiert, nicht signiert → „Seite öffnen“ <span class="ver">ab 0.2</span></h5>
+    <article class="prog" tabindex="0"><img class="prog-icon" src="icons/vj-link.svg" alt="">
+      <div class="prog-body"><div class="prog-head"><h3>VJ-Link</h3><span class="pills"><span class="pill off">NICHT INSTALLIERT</span><span class="pill off">BETA 0.1.8</span><span class="pill off">NICHT SIGNIERT</span></span></div>
+        <p class="prog-line">Visuals, gesteuert vom Lichtpult.</p>
+        <div class="prog-act"><span class="sp"></span><button class="btn primary" type="button"><svg class="ico"><use href="#i-ext"/></svg><span data-i18n="prog.openPage">Seite öffnen</span></button><button class="btn more" type="button" aria-label="Mehr"><svg class="ico fill"><use href="#i-more"/></svg></button></div></div></article>
+  </div>
+  <div class="mu-surface"><h5>Keine Prüfung möglich · nur macOS (auf Windows)</h5>
+    <article class="prog" tabindex="0"><img class="prog-icon" src="icons/ljl-link-256.png" alt="">
+      <div class="prog-body"><div class="prog-head"><h3>LJL Link</h3><span class="pills"><span class="pill off">NUR MACOS</span><span class="pill off">NUR VOM STICK</span><span class="pill off">PRÜFUNG FEHLT</span></span></div>
+        <p class="prog-line">Serato-Decks vom Stick des Clubs in LJ Link.</p>
+        <div class="prog-act"><span class="sp"></span><button class="btn primary" type="button"><svg class="ico"><use href="#i-usb"/></svg>Stick vorbereiten</button><button class="btn more" type="button" aria-label="Mehr"><svg class="ico fill"><use href="#i-more"/></svg></button></div></div></article>
+  </div>
+  <div class="mu-surface"><h5>⋯-Menü der Karte</h5>
+    <div class="mu-menu-host"><div class="menu-wrap"><button class="btn more" type="button" aria-expanded="true" aria-label="Mehr zu VD-Link"><svg class="ico fill"><use href="#i-more"/></svg></button>
+      <div class="menu" role="menu">
+        <div class="menu-label" data-i18n="menu.route">Startweg</div>
+        <button role="menuitemradio" aria-checked="true"><svg class="ico"><use href="#i-app"/></svg>App <small>/Applications</small></button>
+        <button role="menuitemradio" aria-checked="false"><svg class="ico"><use href="#i-code"/></svg>Entwickler <small>npm run dev</small></button>
+        <hr>
+        <button role="menuitem"><svg class="ico"><use href="#i-folder"/></svg><span data-i18n="prog.reveal">Im Finder zeigen</span></button>
+        <button role="menuitem"><svg class="ico"><use href="#i-log"/></svg><span data-i18n="menu.lastLog">Letztes Log</span></button>
+        <button role="menuitem"><svg class="ico"><use href="#i-ext"/></svg><span data-i18n="menu.page">Seite auf GitHub</span></button>
+        <button role="menuitem" disabled><svg class="ico"><use href="#i-info"/></svg><span data-i18n="menu.changes">Änderungen</span> <small>ab 0.2</small></button>
+      </div></div></div>
+  </div>
+  <div class="mu-surface" data-theme="light"><h5>Tag · Entwickler läuft</h5>
+    <article class="prog sel" tabindex="0"><img class="prog-icon" src="icons/vj-link.svg" alt="">
+      <div class="prog-body"><div class="prog-head"><h3>VJ-Link</h3><span class="pills"><span class="pill kind"><svg class="ico"><use href="#i-code"/></svg>ENTWICKLER</span><span class="pill ok run"><span class="dot"></span>LÄUFT <em>PID 48211 · 12:04</em></span></span></div>
+        <p class="prog-line">Visuals, gesteuert vom Lichtpult.</p>
+        <div class="route"><span class="route-path"><svg class="ico"><use href="#i-folder"/></svg><b>/Users/dj/VJ-Link</b> · npm start</span></div>
+        <div class="prog-act"><span class="sp"></span><button class="btn" type="button"><svg class="ico fill"><use href="#i-stop"/></svg>Stoppen</button><button class="btn" type="button"><svg class="ico"><use href="#i-log"/></svg>Log</button><button class="btn more" type="button" aria-label="Mehr"><svg class="ico fill"><use href="#i-more"/></svg></button></div></div></article>
+  </div>
+  <div class="mu-surface" data-theme="light"><h5>Tag · App bereit · Update da <span class="ver">ab 0.2</span></h5>
+    <article class="prog" tabindex="0"><img class="prog-icon" src="icons/lj-link.svg" alt="">
+      <div class="prog-body"><div class="prog-head"><h3>LJ Link</h3><span class="pills"><span class="pill warn">UPDATE 1.7.11</span><span class="pill off">1.7.10</span></span></div>
+        <p class="prog-line">Alle Decks, Wellenformen und Cues für die Booth.</p>
+        <div class="route"><span class="route-path"><svg class="ico"><use href="#i-app"/></svg><b>/Applications/LJ-Link-PRO.app</b></span></div>
+        <div class="prog-act"><span class="sp"></span><button class="btn primary" type="button"><svg class="ico"><use href="#i-download"/></svg>Aktualisieren</button><button class="btn" type="button"><svg class="ico fill"><use href="#i-play"/></svg>Starten</button><button class="btn more" type="button" aria-label="Mehr"><svg class="ico fill"><use href="#i-more"/></svg></button></div></div></article>
+  </div>
+  <div class="mu-surface" data-theme="light"><h5>Tag · Kommt bald · Leiste ab 0.2</h5>
+    <div class="bar"><h2>Installiert und verfügbar</h2><span class="grow"></span><span class="when">geprüft 17:32</span><button class="btn small" type="button" data-i18n="progs.checkAll">Alle prüfen</button><button class="btn small primary" type="button" data-i18n="progs.updateAll">Alle aktualisieren (2)</button></div>
+    <article class="prog small openable" tabindex="0"><img class="prog-icon" src="icons/crew-link.svg" alt="">
+      <div class="prog-body"><div class="prog-head"><h3>Crew Link</h3></div><p class="prog-line">Timetable der Nacht.</p>
+        <span class="pills"><span class="pill dev">KONZEPT</span><span class="pill off">NOCH NICHT STARTBAR</span></span><span class="route-path">– fehlt: package.json</span></div></article>
+  </div>
+</div>
+
+<!-- ================================================================ 3 Log-Leiste -->
+<div class="mu-cap"><b>3</b> Log-Leiste <span>– unten im Tab PROGRAMME, ein Reiter je gestartetem Entwicklerprojekt. stdout grau, stderr rot-orange, Zeilen des Launchers hell</span></div>
+<div class="mu-row mu-2">
+  <div class="mu-surface"><h5>Läuft · Auto-Scroll aus (hochgescrollt) → „Nach unten“</h5>
+    <section class="log-dock mu-static mu-log" aria-label="Log">
+      <div class="log-head"><b>VD-Link</b><span class="log-cmd">/Users/dj/VD-Link <span>$ npm run dev</span></span><span class="pill ok run"><span class="dot"></span>LÄUFT <em>PID 50310 · 0:41</em></span>
+        <div class="btns"><button class="btn small" type="button" aria-pressed="false">Auto-Scroll</button><button class="btn small" type="button"><svg class="ico"><use href="#i-copy"/></svg>Kopieren</button><button class="btn small" type="button"><svg class="ico"><use href="#i-clear"/></svg>Leeren</button><button class="btn small" type="button"><svg class="ico fill"><use href="#i-stop"/></svg>Stoppen</button></div></div>
+      <div class="log-body" role="log" tabindex="0"><span class="ln sys">22:03:11 · Start in /Users/dj/VD-Link: npm run dev</span><span class="ln out">&gt; vd-link@0.2.0 dev
+&gt; node scripts/dev.mjs</span><span class="ln out">vite v8.3.8 dev server running at http://localhost:5173/</span><span class="ln out">build-main: electron/main.ts → dist-electron/main.js (88 ms)</span><span class="ln err">[vite] warning: chunk three.module.js is larger than 500 kB</span><span class="ln out">Art-Net: hört auf 0.0.0.0:6454</span></div>
+      <button class="btn small log-jump" type="button"><svg class="ico"><use href="#i-down"/></svg><span data-i18n="log.jump">Nach unten · 12 neu</span></button>
+    </section>
+  </div>
+  <div class="mu-surface"><h5>Beendet · Exit-Code im Kopf und als letzte Zeile</h5>
+    <section class="log-dock mu-static mu-log" aria-label="Log">
+      <div class="log-head"><b>VJ-Link</b><span class="log-cmd">/Users/dj/VJ-Link <span>$ npm start</span></span><span class="exit err">EXIT 1 · 21:26</span>
+        <div class="btns"><button class="btn small" type="button"><svg class="ico"><use href="#i-copy"/></svg>Kopieren</button><button class="btn small" type="button"><svg class="ico"><use href="#i-clear"/></svg>Leeren</button><button class="btn small primary" type="button"><svg class="ico"><use href="#i-refresh"/></svg>Erneut starten</button></div></div>
+      <div class="log-body" role="log" tabindex="0"><span class="ln sys">21:26:40 · Start in /Users/dj/VJ-Link: npm start</span><span class="ln out">&gt; vj-link@0.1.8 start</span><span class="ln err">Error: Cannot find module 'electron'
+Require stack:
+- /Users/dj/VJ-Link/scripts/dev-app.mjs</span><span class="ln err">npm ERR! code 1</span><span class="ln exit-err">21:26:43 · Beendet mit Exit-Code 1 nach 3 s</span></div>
+    </section>
+  </div>
+  <div class="mu-surface" data-theme="light"><h5>Tag · gestoppt vom Nutzer</h5>
+    <section class="log-dock mu-static mu-log" aria-label="Log">
+      <div class="log-head"><b>VD-Link</b><span class="log-cmd">/Users/dj/VD-Link <span>$ npm run dev</span></span><span class="exit stop">GESTOPPT · 22:41</span>
+        <div class="btns"><button class="btn small" type="button"><svg class="ico"><use href="#i-copy"/></svg>Kopieren</button><button class="btn small" type="button"><svg class="ico"><use href="#i-clear"/></svg>Leeren</button><button class="btn small primary" type="button"><svg class="ico"><use href="#i-refresh"/></svg>Erneut starten</button></div></div>
+      <div class="log-body" role="log" tabindex="0"><span class="ln out">Art-Net: hört auf 0.0.0.0:6454</span><span class="ln err">[sacn] Universe 3: keine Daten seit 30 s</span><span class="ln sys">22:41:07 · Stoppen: SIGTERM an Prozessgruppe 50310</span><span class="ln exit-stop">22:41:08 · Gestoppt nach 38 min</span></div>
+    </section>
+  </div>
+  <div class="mu-surface" data-theme="light"><h5>Tag · beendet ohne Fehler</h5>
+    <section class="log-dock mu-static mu-log" aria-label="Log">
+      <div class="log-head"><b>VD-Link</b><span class="log-cmd">/Users/dj/VD-Link <span>$ npm run dev</span></span><span class="exit ok">EXIT 0 · 20:12</span>
+        <div class="btns"><button class="btn small" type="button"><svg class="ico"><use href="#i-copy"/></svg>Kopieren</button><button class="btn small" type="button"><svg class="ico"><use href="#i-clear"/></svg>Leeren</button><button class="btn small primary" type="button"><svg class="ico"><use href="#i-refresh"/></svg>Erneut starten</button></div></div>
+      <div class="log-body" role="log" tabindex="0"><span class="ln out">vite v8.3.8 dev server running at http://localhost:5173/</span><span class="ln out">Fenster geschlossen, beende …</span><span class="ln exit-ok">20:12:55 · Beendet mit Exit-Code 0 nach 1 h 04 min</span></div>
+    </section>
+  </div>
+</div>
+
+<!-- ================================================================ 4 Dialoge -->
+<div class="mu-cap"><b>4</b> Dialoge <span>– Rückfrage vor Build / npm install (0.1), Installieren/Aktualisieren knapp (0.2)</span></div>
+<div class="mu-dialogs">
+  <div class="modal" role="alertdialog" aria-labelledby="q1-t" aria-describedby="q1-d">
+    <div class="modal-head"><img src="icons/vj-link.svg" alt=""><div><h3 class="modal-title" id="q1-t" data-i18n="ask.title">Das ändert Dateien im Projektordner</h3><small>VJ-Link · Entwickler · /Users/dj/VJ-Link</small></div></div>
+    <div class="modal-body">
+      <p id="q1-d" data-i18n="ask.build.text">„npm start“ baut VJ-Link vor dem Start neu. Dabei läuft:</p>
+      <div class="cmd"><span class="p">/Users/dj/VJ-Link $</span> npm run build &amp;&amp; node scripts/dev-app.mjs --run</div>
+      <ul class="changes">
+        <li><span data-i18n="ask.build.dist">schreibt <code>dist/</code> neu (alte Dateien dort werden ersetzt)</span></li>
+        <li><span data-i18n="ask.build.src">ändert keine Quelldateien und nichts außerhalb des Ordners</span></li>
+      </ul>
+      <p class="muted small" data-i18n="ask.build.log">Was passiert, siehst du in der Log-Leiste. Stoppen geht jederzeit.</p>
+    </div>
+    <div class="modal-foot"><button class="btn ghost mu-fake-focus" type="button" data-i18n="common.cancel">Abbrechen</button><button class="btn primary" type="button" data-i18n="ask.anyway">Trotzdem starten</button></div>
+  </div>
+  <div class="modal" role="alertdialog" aria-labelledby="q2-t" data-theme="light">
+    <div class="modal-head"><img src="icons/pl-link.svg" alt=""><div><h3 class="modal-title" id="q2-t">Das ändert Dateien im Projektordner</h3><small>PL Link · Entwickler · /Users/dj/PL-Link</small></div></div>
+    <div class="modal-body">
+      <p data-i18n="ask.install.text">Zum Start fehlen die Pakete. Der Launcher führt einmal aus:</p>
+      <div class="cmd"><span class="p">/Users/dj/PL-Link $</span> npm install</div>
+      <ul class="changes">
+        <li><span data-i18n="ask.install.modules">legt <code>node_modules/</code> an (einige Hundert MB)</span></li>
+        <li><span data-i18n="ask.install.lock">kann <code>package-lock.json</code> ändern</span></li>
+        <li class="net"><span data-i18n="ask.install.net">lädt Pakete aus dem Internet (<code>registry.npmjs.org</code>) – nicht von GitHub</span></li>
+      </ul>
+      <div class="hint"><svg class="ico"><use href="#i-info"/></svg><div data-i18n="ask.install.scripts">Paket-Skripte (<code>postinstall</code>) laufen dabei mit. Nur für eigene Projekte bestätigen.</div></div>
+    </div>
+    <div class="modal-foot"><button class="btn ghost" type="button">Abbrechen</button><button class="btn primary" type="button" data-i18n="ask.install.anyway">Trotzdem installieren</button></div>
+  </div>
+</div>
+<div class="mu-dialogs" data-theme="light">
+  <div class="modal" role="dialog" aria-labelledby="u1-t">
+    <div class="modal-head"><img src="icons/lj-link.svg" alt=""><div><h3 class="modal-title" id="u1-t">LJ Link 1.7.10 → 1.7.11</h3><small>72,4 MB · Apple-Chip · github.com/skyplayser/LJ-Link</small></div><span class="ver">ab 0.2</span></div>
+    <div class="modal-body">
+      <ul class="checksteps">
+        <li><span class="ck ok"></span><span data-i18n="inst.origin">Nur von GitHub über HTTPS</span><span class="r">ok</span></li>
+        <li><span class="ck run"></span><span><span data-i18n="inst.load">Laden</span><div class="progress"><i style="width:64%"></i></div></span><span class="r">46,3 / 72,4 MB</span></li>
+        <li class="wait"><span class="ck wait"></span><span data-i18n="inst.sig">Prüfsumme und Suite-Signatur</span><span class="r"></span></li>
+        <li class="wait"><span class="ck wait"></span><span data-i18n="inst.content">Inhalt: eine App, Kennung <span class="mono">dev.ljlinkpro</span>, 1.7.11</span><span class="r"></span></li>
+        <li class="wait"><span class="ck wait"></span><span data-i18n="inst.replace">Alte App sichern, neue einsetzen</span><span class="r"></span></li>
+      </ul>
+      <div class="note amber"><b>Nicht signiert.</b> macOS prüft LJ Link nicht. Der Launcher prüft Herkunft, Prüfsumme und Signatur. Er schaltet keine Schutzfunktion ab.</div>
+    </div>
+    <div class="modal-foot"><span class="muted">Starten geht danach wie gewohnt.</span><button class="btn ghost" type="button">Abbrechen</button><button class="btn primary" type="button" disabled>Aktualisieren</button></div>
+  </div>
+  <div class="modal" role="dialog" aria-labelledby="u2-t">
+    <div class="modal-head"><img src="icons/vd-link.svg" alt=""><div><h3 class="modal-title" id="u2-t">VD-Link 0.2.0 installieren</h3><small>118,0 MB · Apple-Chip · github.com/skyplayser/VD-LINK</small></div><span class="ver">ab 0.2</span></div>
+    <div class="modal-body">
+      <ul class="checksteps">
+        <li><span class="ck ok"></span><span>Nur von GitHub über HTTPS</span><span class="r">ok</span></li>
+        <li><span class="ck ok"></span><span>Laden</span><span class="r">118,0 MB</span></li>
+        <li class="fail"><span class="ck fail"></span><span data-i18n="inst.sigMissing">Suite-Signatur fehlt (<span class="mono">SHA256SUMS.sig</span>)</span><span class="r">Fehler</span></li>
+        <li class="wait"><span class="ck wait"></span><span>Inhalt prüfen</span><span class="r"></span></li>
+      </ul>
+      <div class="alert"><svg class="ico"><use href="#i-alert"/></svg><div><b>Nicht installiert.</b> Ohne gültige Signatur installiert der Launcher nichts. Die Datei ist gelöscht.</div></div>
+    </div>
+    <div class="modal-foot"><button class="btn" type="button"><svg class="ico"><use href="#i-ext"/></svg>Seite öffnen</button><button class="btn primary" type="button" data-i18n="common.close">Schließen</button></div>
+  </div>
+</div>
+
+<!-- ================================================================ 5 IM NETZ -->
+<div class="mu-cap"><b>5</b> IM NETZ <span>– here mit ver und Bonjour, gruppiert nach Rechner, „Dieser Rechner“ oben; fremde Rechner nur anzeigen</span></div>
+<div class="mu-win mu-h-net">
+  <div class="mu-chrome"><i></i><i></i><i></i><span>Link-Suite</span></div>
+  <header class="top">
+    <div class="logo"><img class="only-dark" src="icons/logo-horizontal-on-dark.svg" alt="Link-Suite"><img class="only-light" src="icons/logo-horizontal-on-light.svg" alt="Link-Suite"></div>
+    <nav class="tabs" role="tablist"><button role="tab" aria-selected="false">PROGRAMME</button><button role="tab" aria-selected="true" class="on"><span>IM NETZ</span><span class="count">4</span></button><button role="tab" aria-selected="false">CLUB-STICK</button><button role="tab" aria-selected="false">EINSTELLUNGEN</button></nav>
+    <div class="status"><span class="chip"><span class="dot green"></span><span data-i18n="net.listening">Hört zu</span> · 239.255.76.76:47676 · en8 Kabel 192.168.1.10</span><button class="iconbtn chat-btn" type="button" aria-label="Suite-Chat"><svg class="ico fill"><use href="#i-chat"/></svg><b class="chat-unread">2</b></button></div>
+  </header>
+  <main><section class="tab on"><div class="pane">
+    <div class="table-wrap">
+      <table class="net">
+        <thead><tr><th data-i18n="net.col.program">Programm</th><th data-i18n="net.col.where">Platz · Name</th><th data-i18n="net.col.addr">Adresse</th><th data-i18n="net.col.ver">Version</th><th data-i18n="net.col.state">Stand</th><th data-i18n="net.col.web">Weboberfläche</th><th data-i18n="net.col.seen">Gesehen</th></tr></thead>
+        <tbody>
+          <tr class="host me"><td colspan="7"><span data-i18n="net.thisHost">Dieser Rechner</span> · Booth-Mac<span class="muted">192.168.1.10</span></td></tr>
+          <tr><td class="prg"><img src="icons/link-suite.svg" alt="">Link-Suite</td><td>Booth · Max</td><td class="mono">192.168.1.10</td><td class="mono">0.1.0</td><td><span class="pill ok">AKTUELL</span></td><td class="muted">–</td><td class="seen">jetzt</td></tr>
+          <tr><td class="prg"><img src="icons/lj-link.svg" alt="">LJ Link</td><td>Booth · Max</td><td class="mono">192.168.1.10:8080</td><td class="mono">1.7.10</td><td><span class="pill warn">UPDATE 1.7.11</span></td><td><button class="btn small" type="button"><svg class="ico"><use href="#i-ext"/></svg><span data-i18n="net.openWeb">Im Browser öffnen</span></button></td><td class="seen">jetzt</td></tr>
+          <tr><td class="prg"><img src="icons/vj-link.svg" alt="">VJ-Link</td><td>Booth · Max</td><td class="mono">192.168.1.10</td><td class="mono">0.1.8</td><td><span class="pill kind"><svg class="ico"><use href="#i-code"/></svg>ENTWICKLER</span></td><td class="muted">–</td><td class="seen">jetzt</td></tr>
+          <tr class="host"><td colspan="7">VJ-Platz<span class="muted">192.168.1.12</span></td></tr>
+          <tr><td class="prg"><img src="icons/vj-link.svg" alt="">VJ-Link</td><td>VJ-Platz · Lena</td><td class="mono">192.168.1.12</td><td class="mono">0.1.7</td><td><span class="pill warn">UPDATE 0.1.8</span><span class="there" data-i18n="net.onThatHost">auf jenem Rechner</span></td><td class="muted">–</td><td class="seen">vor 3 s</td></tr>
+          <tr class="host"><td colspan="7">FOH<span class="muted">192.168.1.14</span></td></tr>
+          <tr><td class="prg"><img src="icons/vd-link.svg" alt="">VD-Link</td><td>FOH · Tom</td><td class="mono">192.168.1.14</td><td class="muted" data-i18n="net.verUnknown">unbekannt</td><td><span class="pill off" data-i18n="pill.noVer">OHNE VER</span></td><td class="muted">–</td><td class="seen">vor 1 s</td></tr>
+          <tr><td class="prg"><img src="icons/net-link.svg" alt="">NET Link</td><td>FOH · Tom</td><td class="mono">192.168.1.14:8060</td><td class="mono">0.1.0-dev</td><td><span class="pill dev">IN ENTWICKLUNG</span></td><td><button class="btn small" type="button"><svg class="ico"><use href="#i-ext"/></svg>Im Browser öffnen</button></td><td class="seen">vor 2 s</td></tr>
+          <tr class="host"><td colspan="7">DJ-Pult<span class="muted">192.168.1.21</span></td></tr>
+          <tr class="gone"><td class="prg"><img src="icons/ljl-link-256.png" alt="">LJL Link</td><td>DJ-Pult · DJ Sora</td><td class="mono">192.168.1.21</td><td class="mono">0.3.1</td><td><span class="pill off" data-i18n="pill.gone">WEG</span></td><td>–</td><td class="seen" data-i18n="net.goneSince">weg seit 22:41</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="hint"><svg class="ico"><use href="#i-info"/></svg><div><b>VD-Link meldet keine Version.</b> Ältere Programme senden <span class="mono">ver</span> noch nicht. Aktualisieren geht nur an jenem Rechner – der Launcher fasst fremde Rechner nie an.</div></div>
+    <footer class="foot"><span class="netlink"><img src="icons/net-link.svg" alt="">Netzproblem? <button class="linkish strong" type="button">In NET Link prüfen →</button></span><span class="sp"></span><span>Link-Suite 0.1.0 · nicht signiert · EPL-2.0</span></footer>
+  </div></section></main>
+</div>
+
+<!-- ================================================================ 6 CLUB-STICK -->
+<div class="mu-cap"><b>6</b> CLUB-STICK <span>– Assistent, Schritte links. Links Schritt 1 „Ziel“ im Tag-Modus, rechts Schritt 4 „Schreiben“ in der Nacht</span></div>
+<div class="mu-row mu-2">
+<div class="mu-win mu-h-stick" data-theme="light">
+  <div class="mu-chrome"><i></i><i></i><i></i><span>Link-Suite</span></div>
+  <header class="top">
+    <div class="logo"><img class="only-dark" src="icons/logo-horizontal-on-dark.svg" alt="Link-Suite"><img class="only-light" src="icons/logo-horizontal-on-light.svg" alt="Link-Suite"></div>
+    <nav class="tabs" role="tablist"><button role="tab" aria-selected="false">PROGRAMME</button><button role="tab" aria-selected="false">IM NETZ</button><button role="tab" aria-selected="true" class="on">CLUB-STICK</button><button role="tab" aria-selected="false">EINSTELLUNGEN</button></nav>
+  </header>
+  <main><section class="tab on"><div class="wiz">
+    <nav class="wsteps" aria-label="Schritte" data-i18n-aria="stick.steps">
+      <button class="ws on" type="button" aria-current="step"><span class="n">1</span><div><b data-i18n="stick.s1">Ziel</b><span data-i18n="stick.s1.sub">Ordner oder Stick</span></div></button>
+      <button class="ws wait" type="button" disabled><span class="n">2</span><div><b data-i18n="stick.s2">Club</b><span data-i18n="stick.s2.sub">Name, Booth-Rechner</span></div></button>
+      <button class="ws wait" type="button" disabled><span class="n">3</span><div><b data-i18n="stick.s3">Club-Schlüssel</b><span data-i18n="stick.s3.sub">aus LJ Link einfügen</span></div></button>
+      <button class="ws wait" type="button" disabled><span class="n">4</span><div><b data-i18n="stick.s4">Schreiben</b><span data-i18n="stick.s4.sub">LJL Link laden und prüfen</span></div></button>
+    </nav>
+    <div class="wmain">
+      <h2 class="title" data-i18n="stick.s1.title">Wohin soll LJL Link?</h2>
+      <p class="lead" data-i18n="stick.s1.lead">LJL Link läuft vom Club-Stick auf dem Mac des DJs. Neben die App kommen club.json und LIESMICH.txt.</p>
+      <div class="choices" role="radiogroup" aria-label="Ziel">
+        <button class="choice" role="radio" aria-checked="false" type="button"><svg class="ico"><use href="#i-download"/></svg><div><b data-i18n="stick.folder">Ordner herunterladen</b><small data-i18n="stick.folder.sub">„LJL Link für den Club“ in Downloads – später auf einen Stick kopieren oder weitergeben</small></div></button>
+        <button class="choice" role="radio" aria-checked="true" type="button"><svg class="ico"><use href="#i-usb"/></svg><div><b data-i18n="stick.direct">Direkt auf den Stick</b><small data-i18n="stick.direct.sub">auf einen eingesteckten Wechseldatenträger</small></div></button>
+      </div>
+      <div class="field"><span class="lbl" data-i18n="stick.drives">Eingesteckte Sticks</span>
+        <div class="drives" role="radiogroup" aria-label="Stick">
+          <label class="drive sel"><input type="radio" name="drv" checked><svg class="ico"><use href="#i-usb"/></svg><span><b>CLUB-USB</b><small>/Volumes/CLUB-USB</small></span><span class="free">7,2 GB frei</span></label>
+          <label class="drive"><input type="radio" name="drv"><svg class="ico"><use href="#i-usb"/></svg><span><b>SANDISK</b><small>/Volumes/SANDISK</small></span><span class="free">28,4 GB frei</span></label>
+        </div></div>
+      <p class="muted small" data-i18n="stick.safe">Die Systemplatte wird nie angeboten. Formatiert wird nicht. LJL Link braucht etwa 5 MB.</p>
+      <div class="wnav"><button class="btn ghost" type="button" disabled data-i18n="common.back">Zurück</button><button class="btn primary" type="button" data-i18n="common.next">Weiter</button></div>
+    </div>
+  </div></section></main>
+</div>
+<div class="mu-win mu-h-stick">
+  <div class="mu-chrome"><i></i><i></i><i></i><span>Link-Suite</span></div>
+  <header class="top">
+    <div class="logo"><img class="only-dark" src="icons/logo-horizontal-on-dark.svg" alt="Link-Suite"><img class="only-light" src="icons/logo-horizontal-on-light.svg" alt="Link-Suite"></div>
+    <nav class="tabs" role="tablist"><button role="tab" aria-selected="false">PROGRAMME</button><button role="tab" aria-selected="false">IM NETZ</button><button role="tab" aria-selected="true" class="on">CLUB-STICK</button><button role="tab" aria-selected="false">EINSTELLUNGEN</button></nav>
+  </header>
+  <main><section class="tab on"><div class="wiz">
+    <nav class="wsteps" aria-label="Schritte">
+      <button class="ws done" type="button"><span class="n">✓</span><div><b>Ziel</b><span>CLUB-USB · 7,2 GB frei</span></div></button>
+      <button class="ws done" type="button"><span class="n">✓</span><div><b>Club</b><span>Keller · 192.168.1.10:8080</span></div></button>
+      <button class="ws done" type="button"><span class="n">✓</span><div><b>Club-Schlüssel</b><span>eingefügt, nicht gespeichert</span></div></button>
+      <button class="ws on" type="button" aria-current="step"><span class="n">4</span><div><b>Schreiben</b><span>LJL Link laden und prüfen</span></div></button>
+    </nav>
+    <div class="wmain">
+      <h2 class="title" data-i18n="stick.s4.title">Auf den Stick schreiben</h2>
+      <ul class="checksteps">
+        <li><span class="ck ok"></span><span>LJL Link 0.3.1 von GitHub laden</span><span class="r">4,8 MB</span></li>
+        <li><span class="ck ok"></span><span>Prüfsumme und Suite-Signatur</span><span class="r">ok</span></li>
+        <li><span class="ck ok"></span><span>Entpacken: genau eine <span class="mono">LJL Link.app</span></span><span class="r">ok</span></li>
+        <li><span class="ck run"></span><span>Auf CLUB-USB kopieren<div class="progress"><i style="width:40%"></i></div></span><span class="r">2 / 3 Dateien</span></li>
+      </ul>
+      <div class="field"><span class="lbl" data-i18n="stick.files">Auf den Stick kommt</span>
+        <div class="files"><div>/Volumes/CLUB-USB/LJL Link.app <span class="muted">· 0.3.1 · geprüft</span></div><div>/Volumes/CLUB-USB/club.json</div><div>/Volumes/CLUB-USB/LIESMICH.txt</div></div></div>
+      <div class="hint"><svg class="ico"><use href="#i-info"/></svg><div><b>Vorhandene Dateien bleiben.</b> Eine alte <span class="mono">club.json</span> heißt danach <span class="mono">club.json.alt</span>.</div></div>
+      <div class="wnav"><button class="btn ghost" type="button">Abbrechen</button><button class="btn primary" type="button" disabled>Fertig</button></div>
+    </div>
+  </div></section></main>
+</div>
+</div>
+
+<!-- ================================================================ 7 EINSTELLUNGEN -->
+<div class="mu-cap"><b>7</b> EINSTELLUNGEN <span>– als Tab, nicht als Dialog. <span class="suite-tag"><i></i>SUITE</span> = gilt für alle Suite-Programme (suite.json)</span></div>
+<div class="mu-win mu-h-set">
+  <div class="mu-chrome"><i></i><i></i><i></i><span>Link-Suite</span></div>
+  <header class="top">
+    <div class="logo"><img class="only-dark" src="icons/logo-horizontal-on-dark.svg" alt="Link-Suite"><img class="only-light" src="icons/logo-horizontal-on-light.svg" alt="Link-Suite"></div>
+    <nav class="tabs" role="tablist"><button role="tab" aria-selected="false">PROGRAMME</button><button role="tab" aria-selected="false">IM NETZ</button><button role="tab" aria-selected="false">CLUB-STICK</button><button role="tab" aria-selected="true" class="on">EINSTELLUNGEN</button></nav>
+    <div class="status"><button class="iconbtn chat-btn" type="button" aria-label="Suite-Chat"><svg class="ico fill"><use href="#i-chat"/></svg></button></div>
+  </header>
+  <main><section class="tab on"><div class="settings">
+    <nav class="set-nav" aria-label="Einstellungen">
+      <button class="on" type="button" data-i18n="set.nav.ui">Oberfläche</button>
+      <button type="button" data-i18n="set.nav.chat">Suite-Chat</button>
+      <button type="button" data-i18n="set.nav.programs">Programme</button>
+      <button type="button" data-i18n="set.nav.about">Über</button>
+    </nav>
+    <div class="set-content">
+      <h3 data-i18n="set.nav.ui">Oberfläche</h3>
+      <div class="set-row"><div class="set-label"><b><span data-i18n="set.lang">Sprache</span> <span class="suite-tag"><i></i>SUITE</span></b><small data-i18n="set.lang.sub">Für alle Suite-Programme. Eigene Wahl im Programm geht vor.</small></div>
+        <div class="set-ctl"><div class="seg" role="radiogroup" aria-label="Sprache"><button role="radio" aria-checked="true">Deutsch</button><button role="radio" aria-checked="false">English</button><button role="radio" aria-checked="false" data-i18n="set.system">System</button></div></div></div>
+      <div class="set-row"><div class="set-label"><b><span data-i18n="set.theme">Anzeige</span> <span class="suite-tag"><i></i>SUITE</span></b><small data-i18n="set.theme.sub">Tag für helle Räume, Nacht für die Booth.</small></div>
+        <div class="set-ctl"><div class="seg" role="radiogroup" aria-label="Anzeige"><button role="radio" aria-checked="false"><svg class="ico"><use href="#i-sun"/></svg><span data-i18n="set.day">Tag</span></button><button role="radio" aria-checked="true"><svg class="ico"><use href="#i-moon"/></svg><span data-i18n="set.night">Nacht</span></button><button role="radio" aria-checked="false"><svg class="ico"><use href="#i-monitor"/></svg>System</button></div></div></div>
+      <div class="set-row"><div class="set-label"><b><span data-i18n="set.intro">Startanimation zeigen</span> <span class="suite-tag"><i></i>SUITE</span></b><small data-i18n="set.intro.sub">Höchstens 2,5 s, mit Taste oder Klick überspringen. Bei „Bewegung reduzieren“ nur eine ruhige Blende.</small></div>
+        <div class="set-ctl"><input type="checkbox" checked aria-label="Startanimation zeigen"></div></div>
+
+      <h3 data-i18n="set.nav.chat">Suite-Chat</h3>
+      <div class="set-row"><div class="set-label"><b><span data-i18n="set.chatOn">Mit allen Suite-Programmen in diesem Netzwerk chatten</span> <span class="suite-tag"><i></i>SUITE</span></b><small data-i18n="set.chatOn.sub">Unverschlüsselt, ohne Server. Nachrichten nur im Speicher.</small></div>
+        <div class="set-ctl"><input type="checkbox" checked aria-label="Chat an"></div></div>
+      <div class="set-row"><div class="set-label"><b><span data-i18n="set.nick">Name und Platz</span> <span class="suite-tag"><i></i>SUITE</span></b><small data-i18n="set.nick.sub">Sehen alle im Netzwerk. Je höchstens 24 Zeichen.</small></div>
+        <div class="set-ctl"><input class="input" value="Max" maxlength="24" aria-label="Name" placeholder="z. B. Max" data-i18n-ph="set.nick.ph"><input class="input" value="Booth" maxlength="24" aria-label="Platz" placeholder="z. B. Booth, FOH" data-i18n-ph="set.where.ph"></div></div>
+      <div class="set-row"><div class="set-label"><b data-i18n="set.background">Im Hintergrund weiterlaufen</b><small data-i18n="set.background.sub">Symbol in der Menüleiste (Windows: Infobereich). Der Launcher bleibt im Chat und zeigt EMERGENCY auch bei geschlossenem Fenster. Ab Werk aus.</small></div>
+        <div class="set-ctl"><input type="checkbox" aria-label="Im Hintergrund weiterlaufen"></div></div>
+
+      <h3 data-i18n="set.nav.programs">Programme</h3>
+      <div class="set-row"><div class="set-label"><b data-i18n="set.devRoot">Entwicklerprojekte suchen in</b><small data-i18n="set.devRoot.sub">Ordner mit package.json und Skript dev oder start. Leer = kein Entwicklerstart.</small></div>
+        <div class="set-ctl"><span class="path">/Users/dj</span><button class="btn small" type="button" data-i18n="common.change">Ändern …</button></div></div>
+      <div class="set-row"><div class="set-label"><b data-i18n="set.askBuild">Vor Build und npm install fragen</b><small data-i18n="set.askBuild.sub">Immer an. Der Launcher ändert nichts im Projektordner ohne Rückfrage.</small></div>
+        <div class="set-ctl"><input type="checkbox" checked disabled aria-label="Vor Build fragen"></div></div>
+      <div class="set-row off"><div class="set-label"><b><span data-i18n="set.checkOnStart">Beim Start nach Updates fragen</span> <span class="ver">ab 0.2</span></b><small data-i18n="set.checkOnStart.sub">Fragt GitHub höchstens einmal pro Stunde nach Versionsnummern. Lädt nichts.</small></div>
+        <div class="set-ctl"><input type="checkbox" checked disabled aria-label="Update-Prüfung beim Start"></div></div>
+      <div class="set-row off"><div class="set-label"><b><span data-i18n="set.beta">Beta-Versionen zeigen</span> <span class="ver">ab 0.2</span></b><small data-i18n="set.beta.sub">Vorabversionen bei Update und Installieren anbieten.</small></div>
+        <div class="set-ctl"><input type="checkbox" disabled aria-label="Beta-Versionen zeigen"></div></div>
+      <div class="set-row off"><div class="set-label"><b><span data-i18n="set.installDir">Installationsordner</span> <span class="ver">ab 0.2</span></b><small data-i18n="set.installDir.sub">Wo die alte App liegt, sonst hier. Ohne Admin-Rechte: ~/Applications.</small></div>
+        <div class="set-ctl"><span class="path">/Applications</span><button class="btn small" type="button" disabled>Ändern …</button></div></div>
+
+      <h3 data-i18n="set.nav.about">Über</h3>
+      <div class="about"><img src="icons/link-suite.svg" alt=""><div><b>Link-Suite 0.1.0</b><span class="muted small" data-i18n="set.about.text">Freie Software unter der Eclipse Public License 2.0. Kostenlos und ohne Gewähr. Keine Telemetrie, kein Konto.</span></div></div>
+      <div class="btns"><button class="btn" type="button" data-i18n="set.licenses">Lizenzen und Hinweise</button><button class="btn" type="button" data-i18n="set.trademarks">Markenhinweise</button><button class="btn" type="button"><svg class="ico"><use href="#i-ext"/></svg><span data-i18n="set.source">Quellcode auf GitHub</span></button></div>
+    </div>
+  </div></section></main>
+</div>
+
+<!-- ================================================================ 8 Chat und EMERGENCY -->
+<div class="mu-cap"><b>8</b> Suite-Chat und EMERGENCY <span>– Markup und Verhalten aus VJ-Link (index.html:337–363, chat.ts), app:"Link-Suite"</span></div>
+<div class="mu-row mu-3">
+  <div class="chat-panel mu-static" role="dialog" aria-labelledby="chat-title">
+    <div class="chat-head"><strong id="chat-title" data-i18n="chat.title">Suite-Chat – Alpha</strong><button class="chat-link" type="button" data-i18n="chat.rename">Name ändern</button><button class="chat-link" type="button" data-i18n="common.close">Schließen</button></div>
+    <div class="chat-peers">Im Raum: du, Lena · VJ-Platz (VJ-Link), Tom · FOH (VD-Link), DJ Sora · DJ-Pult (LJL Link)</div>
+    <div class="chat-list" aria-live="polite">
+      <div class="chat-msg"><small>Lena · VJ-Platz · 21:58</small><div>Bin startklar, LJ Link ist da.</div></div>
+      <div class="chat-msg self"><small>Du · 21:59</small><div>Danke! Einlass 22 Uhr.</div></div>
+      <div class="chat-msg urgent"><small>EMERGENCY · Tom · FOH · 22:40</small><div>Nebelmaschine aus – Brandmelder!</div></div>
+    </div>
+    <form class="chat-form"><input class="input" placeholder="Nachricht an alle" aria-label="Nachricht an alle" data-i18n-ph="chat.ph" data-i18n-aria="chat.ph"><button class="btn" type="button" data-i18n="chat.send">Senden</button><button class="chat-emergency" type="button" title="Popup sofort bei allen im Raum" data-i18n-title="chat.emergency.title">EMERGENCY</button></form>
+  </div>
+  <div class="chat-panel mu-static" role="dialog" aria-labelledby="chat-title2" data-theme="light">
+    <div class="chat-head"><strong id="chat-title2">Suite-Chat – Alpha</strong><button class="chat-link" type="button">Schließen</button></div>
+    <div class="chat-peers">Noch niemand sonst im Raum. Suite-Programme in diesem Netzwerk kommen von selbst dazu.</div>
+    <form class="chat-nick">
+      <label for="cn"><span>Name</span> <em>Wie heißt du?</em></label><input class="input" id="cn" maxlength="24" value="Max">
+      <label for="cw"><span>Position</span> <em>Wo stehst du? (freiwillig)</em></label><input class="input" id="cw" maxlength="24" value="Booth">
+      <p class="muted small">Name und Position sehen alle im Netzwerk. Gilt für alle Suite-Programme.</p>
+      <button class="btn primary" type="button">Chat betreten</button>
+    </form>
+  </div>
+  <div class="mu-surface">
+    <div class="chat-alert mu-static" role="alertdialog" aria-labelledby="ca-t"><strong id="ca-t">EMERGENCY</strong><div class="chat-alert-from">Tom · FOH (VD-Link) · 22:40</div><div class="chat-alert-text">Nebelmaschine aus – Brandmelder!</div><div class="chat-alert-row"><span>1 weitere</span><span class="chat-alert-btns"><button class="btn chat-alert-all" type="button">Alle schließen</button><button class="btn" type="button">OK</button></span></div></div>
+    <div class="chat-alert mu-static" role="alertdialog" data-theme="light"><strong>EMERGENCY</strong><div class="chat-alert-from">Tom · FOH (VD-Link) · 22:40</div><div class="chat-alert-text">Nebelmaschine aus – Brandmelder!</div><div class="chat-alert-row"><span></span><span class="chat-alert-btns"><button class="btn" type="button">OK</button></span></div></div>
+    <p class="muted small">Hinweis-Meldung fürs Team, kein Sicherheitssystem. Rand blinkt 1 Hz (bei „Bewegung reduzieren“ fest). Nimmt nie den Tastaturfokus.</p>
+  </div>
+</div>
+
+<!-- ================================================================ 9 Startanimation -->
+<div class="mu-cap"><b>9</b> Startanimation <span>– eingebunden, nicht nachgebaut: Link-Suite/Konzepte/_Startanimation/startanimation.html?app=suite (hier bei 2,0 s angehalten)</span></div>
+<div class="mu-intro">
+  <iframe src="../../Link-Suite/Konzepte/_Startanimation/startanimation.html?app=suite&amp;t=2050&amp;ui=0" title="Startanimation Link-Suite bei 2,0 s"></iframe>
+  <div class="mu-surface">
+    <h5>Übergabe an den Kopf</h5>
+    <header class="top"><div class="logo intro-in"><img class="only-dark" src="icons/logo-horizontal-on-dark.svg" alt="Link-Suite"><img class="only-light" src="icons/logo-horizontal-on-light.svg" alt="Link-Suite"></div><nav class="tabs"><button class="on" aria-selected="true">PROGRAMME</button><button>IM NETZ</button><button>CLUB-STICK</button><button>EINSTELLUNGEN</button></nav></header>
+    <ol class="mu-flow">
+      <li><code>0 ms</code><span>Fenster öffnet. <code>#intro</code> liegt über allem, PROGRAMME baut sich darunter auf. <code>#top-logo</code> hat <code>.intro-wait</code>.</span></li>
+      <li><code>~2,2 s</code><span>Das Logo der Animation blendet aus, die Fläche darunter blendet ein.</span></li>
+      <li><code>Ereignis</code><span><code>linksuite-intro-done</code> → <code>#intro</code> entfernen, <code>.intro-wait</code> → <code>.intro-in</code> (200 ms), Fokus auf den Tab PROGRAMME.</span></li>
+      <li><code>aus</code><span><code>suite.json</code> <code>"intro":false</code>: keine Schicht, Logo sofort sichtbar.</span></li>
+    </ol>
+  </div>
+</div>
+
+<script>
+// Nur für das Muster: Tag/Nacht umschalten (im Programm: Einstellungen → Anzeige, gespeichert in suite.json).
+(function(){
+  var d=document.getElementById('mu-dark'), l=document.getElementById('mu-light');
+  function set(light){ if(light) document.documentElement.setAttribute('data-theme','light'); else document.documentElement.removeAttribute('data-theme');
+    d.classList.toggle('on',!light); l.classList.toggle('on',light); }
+  d.addEventListener('click',function(){set(false);}); l.addEventListener('click',function(){set(true);});
+  if(location.hash==='#tag') set(true);
+})();
+</script>
+</body>
+</html>

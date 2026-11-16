@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<!-- Keine Fremdquellen, keine Inline-Skripte oder -Styles. Bilder: eigene Dateien und Daten-URIs (Startanimation). -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'none'; connect-src 'none'; media-src 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Link-Suite</title>
+<link rel="stylesheet" href="/src/renderer/launcher.css">
+<link rel="stylesheet" href="/src/renderer/launcher-v2.css">
+<link rel="stylesheet" href="/src/renderer/app.css">
+</head>
+<body>
+<!-- Icons als Inline-SVG-Symbole (aus design/muster.html) -->
+<svg width="0" height="0" class="sr" aria-hidden="true">
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 4h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-5 4v-4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm3 6.5a1.5 1.5 0 1 0 0 .01zm5 0a1.5 1.5 0 1 0 0 .01zm5 0a1.5 1.5 0 1 0 0 .01z"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></symbol>
+  <symbol id="i-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="1.5"/></symbol>
+  <symbol id="i-front" viewBox="0 0 24 24"><rect x="3" y="8" width="13" height="13" rx="2"/><path d="M8 8V4h13v13h-5"/></symbol>
+  <symbol id="i-log" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9l3 3-3 3M12 15h5"/></symbol>
+  <symbol id="i-code" viewBox="0 0 24 24"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 6a1 1 0 0 1 1-1h5l2 2h9a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/></symbol>
+  <symbol id="i-app" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></symbol>
+  <symbol id="i-clear" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.01"/></symbol>
+  <symbol id="i-usb" viewBox="0 0 24 24"><path d="M8 3h8v6H8z"/><path d="M6 9h12v8a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4z"/><path d="M10 5v1M14 5v1"/></symbol>
+  <symbol id="i-ext" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-8 8"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></symbol>
+  <symbol id="i-monitor" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M4 20h16"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6"/></symbol>
+  <symbol id="i-package" viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5l8 4.5 8-4.5M12 12v9"/></symbol>
+</svg>
+
+<div id="shell">
+  <header class="top">
+    <div class="logo" id="top-logo"><img class="only-dark" src="./icons/logo-horizontal-on-dark.svg" alt="Link-Suite"><img class="only-light" src="./icons/logo-horizontal-on-light.svg" alt="Link-Suite"></div>
+    <nav class="tabs" role="tablist" aria-label="Bereiche" data-i18n-aria="tab.aria">
+      <button role="tab" id="tabbtn-programs" data-tab="programs" aria-controls="tab-programs" data-i18n="tab.programs">Programme</button>
+      <button role="tab" id="tabbtn-network" data-tab="network" aria-controls="tab-network"><span data-i18n="tab.network">Im Netz</span><span class="count" id="net-count" hidden></span></button>
+      <button role="tab" id="tabbtn-stick" data-tab="stick" aria-controls="tab-stick" data-i18n="tab.stick">Club-Stick</button>
+      <button role="tab" id="tabbtn-settings" data-tab="settings" aria-controls="tab-settings" data-i18n="tab.settings">Einstellungen</button>
+    </nav>
+    <div class="status">
+      <span class="chip" id="chip-demo" hidden><span class="dot amber"></span><span data-i18n="top.demo">DEMO</span></span>
+      <span class="chip run" id="chip-running"><span class="dot grey" id="chip-running-dot"></span><span id="chip-running-text"></span></span>
+      <button class="chip" type="button" id="chip-net"></button>
+      <span class="chip" id="chip-listen" hidden></span>
+      <button class="iconbtn chat-btn" id="chat-btn" type="button" aria-expanded="false" title="Suite-Chat" data-i18n-title="chat.button" data-i18n-aria="chat.button" hidden><svg class="ico fill" aria-hidden="true"><use href="#i-chat"/></svg><b class="chat-unread" id="chat-unread" hidden></b></button>
+    </div>
+  </header>
+
+  <main>
+    <section class="tab" id="tab-programs" role="tabpanel" aria-labelledby="tabbtn-programs">
+      <div class="split" id="prog-split">
+        <div class="pane v2" id="prog-pane">
+          <section class="welcome" id="welcome" aria-labelledby="w-title" hidden>
+            <img src="./icons/link-suite.svg" alt="">
+            <div>
+              <h2 id="w-title" data-i18n="w.title">Willkommen</h2>
+              <ol>
+                <li><svg class="ico"><use href="#i-app"/></svg><div><b data-i18n="w.1.t"></b><span data-i18n="w.1.x"></span></div></li>
+                <li><svg class="ico"><use href="#i-alert"/></svg><div><b data-i18n="w.2.t" data-i18n-win="w.2.t.win"></b><span data-i18n="w.2.x" data-i18n-win="w.2.x.win"></span></div></li>
+                <li><svg class="ico"><use href="#i-globe"/></svg><div><b data-i18n="w.3.t" data-i18n-win="w.3.t.win"></b><span data-i18n="w.3.x" data-i18n-win="w.3.x.win"></span></div></li>
+              </ol>
+            </div>
+            <div class="acts"><button class="btn" type="button" id="w-ok" data-i18n="w.ok">Verstanden</button><button class="btn ghost" type="button" id="w-more" data-i18n="w.more">Mehr dazu</button></div>
+          </section>
+          <section class="hero" aria-labelledby="hero-h">
+            <div class="hero-txt">
+              <div class="hero-mark" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+              <h1 id="hero-h" data-i18n="hero.claim">Kostenlose Programme für Veranstaltungstechnik.</h1>
+              <p class="hero-sub" id="hero-sub"></p>
+            </div>
+            <dl class="hero-stats" id="hero-stats"></dl>
+            <div class="hero-act">
+              <span class="when" id="scan-when"></span>
+              <button class="btn" type="button" id="rescan"><svg class="ico"><use href="#i-refresh"/></svg><span data-i18n="progs.rescan">Neu suchen</span></button>
+              <span class="when" id="gh-when"></span>
+              <button class="btn" type="button" id="check-all"><svg class="ico"><use href="#i-globe"/></svg><span data-i18n="progs.checkAll">Alle prüfen</span></button>
+            </div>
+          </section>
+          <section class="group" id="grp-installed" aria-labelledby="g-installed" hidden>
+            <div class="ghead"><h2 id="g-installed" data-i18n="g.installed">Installiert</h2><span class="n" id="n-installed"></span><span class="hintline" data-i18n="g.installed.hint"></span></div>
+            <div class="progs v2" id="progs-installed"></div>
+          </section>
+          <section class="group" id="grp-dev" aria-labelledby="g-dev" hidden>
+            <div class="ghead"><h2 id="g-dev" data-i18n="g.dev">Entwicklung</h2><span class="n" id="n-dev"></span><span class="hintline" data-i18n="g.dev.hint"></span></div>
+            <div class="progs v2" id="progs-dev"></div>
+          </section>
+          <section class="group" id="grp-avail" aria-labelledby="g-avail" hidden>
+            <div class="ghead"><h2 id="g-avail" data-i18n="g.avail">Verfügbar</h2><span class="n" id="n-avail"></span><span class="hintline" data-i18n="g.avail.hint"></span></div>
+            <div class="progs v2" id="progs-avail"></div>
+          </section>
+          <section class="group" id="grp-soon" aria-labelledby="g-soon" hidden>
+            <div class="ghead"><h2 id="g-soon" data-i18n="g.soon">Kommt bald</h2><span class="n" id="n-soon"></span><span class="hintline" data-i18n="g.soon.hint"></span></div>
+            <div class="progs v2 soon-grid" id="progs-soon"></div>
+          </section>
+          <footer class="foot" data-foot></footer>
+        </div>
+        <aside class="detail" id="detail" hidden></aside>
+      </div>
+      <section class="log-dock" id="log-dock" aria-label="Log" data-i18n-aria="log.aria" hidden>
+        <div class="log-grip" id="log-grip" role="separator" aria-orientation="horizontal" tabindex="0" data-i18n-aria="log.grip"></div>
+        <div class="log-tabs" role="tablist" id="log-tabs"></div>
+        <div class="log-head" id="log-head"></div>
+        <div class="log-body" id="log-body" role="log" aria-live="off" tabindex="0"></div>
+        <button class="btn small log-jump" type="button" id="log-jump" hidden><svg class="ico"><use href="#i-down"/></svg><span id="log-jump-text"></span></button>
+      </section>
+    </section>
+
+    <section class="tab" id="tab-network" role="tabpanel" aria-labelledby="tabbtn-network">
+      <div class="pane" id="net-pane">
+        <div id="net-body"></div>
+        <footer class="foot" data-foot></footer>
+      </div>
+    </section>
+
+    <section class="tab" id="tab-stick" role="tabpanel" aria-labelledby="tabbtn-stick">
+      <div class="pane">
+        <div class="empty">
+          <svg class="ico"><use href="#i-usb"/></svg>
+          <b data-i18n="stick.title">LJL Link auf den Club-Stick</b>
+          <span data-i18n="stick.text"></span>
+          <span class="small" data-i18n="stick.now"></span>
+          <button class="btn" type="button" id="stick-go"><svg class="ico"><use href="#i-usb"/></svg><span data-i18n="stick.go">Zu LJL Link</span></button>
+        </div>
+        <footer class="foot" data-foot></footer>
+      </div>
+    </section>
+
+    <section class="tab" id="tab-settings" role="tabpanel" aria-labelledby="tabbtn-settings">
+      <div class="settings">
+        <nav class="set-nav" aria-label="Einstellungen" data-i18n-aria="set.nav.aria" id="set-nav">
+          <button type="button" class="on" data-sec="ui" data-i18n="set.nav.ui">Oberfläche</button>
+          <button type="button" data-sec="chat" data-i18n="set.nav.chat">Suite-Chat</button>
+          <button type="button" data-sec="programs" data-i18n="set.nav.programs">Programme</button>
+          <button type="button" data-sec="about" data-i18n="set.nav.about">Über</button>
+        </nav>
+        <div class="set-content" id="set-content">
+          <div class="note amber" id="set-readonly" hidden data-i18n="set.readOnly"></div>
+          <h3 id="sec-ui" data-i18n="set.nav.ui">Oberfläche</h3>
+          <div class="set-row"><div class="set-label"><b><span data-i18n="set.lang">Sprache</span> <span class="suite-tag"><i></i>SUITE</span></b><small data-i18n="set.lang.sub"></small></div>
+            <div class="set-ctl"><div class="seg" role="radiogroup" id="set-lang" data-i18n-aria="set.lang"><button type="button" role="radio" data-v="de">Deutsch</button><button type="button" role="radio" data-v="en">English</button><button type="button" role="radio" data-v="system" data-i18n="set.system">System</button></div></div></div>
+          <div class="set-row"><div class="set-label"><b><span data-i18n="set.theme">Anzeige</span> <span class="suite-tag"><i></i>SUITE</span></b><small data-i18n="set.theme.sub"></small></div>
+            <div class="set-ctl"><div class="seg" role="radiogroup" id="set-theme" data-i18n-aria="set.theme"><button type="button" role="radio" data-v="light"><svg class="ico"><use href="#i-sun"/></svg><span data-i18n="set.day">Tag</span></button><button type="button" role="radio" data-v="dark"><svg class="ico"><use href="#i-moon"/></svg><span data-i18n="set.night">Nacht</span></button><button type="button" role="radio" data-v="system"><svg class="ico"><use href="#i-monitor"/></svg><span data-i18n="set.system">System</span></button></div></div></div>
+          <div class="set-row"><div class="set-label"><b><span data-i18n="set.intro">Startanimation zeigen</span> <span class="suite-tag"><i></i>SUITE</span></b><small data-i18n="set.intro.sub"></small></div>
+            <div class="set-ctl"><input type="checkbox" id="set-intro" data-i18n-aria="set.intro"></div></div>
+
+          <h3 id="sec-chat" data-i18n="set.nav.chat">Suite-Chat</h3>
+          <div class="set-row"><div class="set-label"><b><span data-i18n="set.chatOn">Chat</span> <span class="suite-tag"><i></i>SUITE</span></b><small data-i18n="set.chatOn.sub"></small><small class="chat-set-status" id="chat-set-status"></small></div>
+            <div class="set-ctl"><input type="checkbox" id="chat-on" data-i18n-aria="set.chatOn"></div></div>
+          <div class="set-row"><div class="set-label"><b><span data-i18n="set.nick">Name und Platz</span> <span class="suite-tag"><i></i>SUITE</span></b><small data-i18n="set.nick.sub"></small></div>
+            <div class="set-ctl"><input class="input" id="set-nick" maxlength="24" autocomplete="off" spellcheck="false" data-i18n-ph="set.nick.ph" data-i18n-aria="set.nick.aria"><input class="input" id="set-where" maxlength="24" autocomplete="off" spellcheck="false" data-i18n-ph="set.where.ph" data-i18n-aria="set.where.aria"></div></div>
+          <div class="set-row"><div class="set-label"><b data-i18n="set.background">Im Hintergrund weiterlaufen</b><small data-i18n="set.background.sub" data-i18n-win="set.background.sub.win"></small></div>
+            <div class="set-ctl"><input type="checkbox" id="set-background" data-i18n-aria="set.background"></div></div>
+
+          <h3 id="sec-programs" data-i18n="set.nav.programs">Programme</h3>
+          <div class="set-row"><div class="set-label"><b data-i18n="set.devView">Entwickleransicht</b><small data-i18n="set.devView.sub"></small></div>
+            <div class="set-ctl"><input type="checkbox" id="set-devview" data-i18n-aria="set.devView"></div></div>
+          <div class="set-row dev-only"><div class="set-label"><b data-i18n="set.devDirs">Entwicklerordner</b><small data-i18n="set.devDirs.sub"></small></div></div>
+          <div id="set-devdirs" class="dev-only"></div>
+          <div class="set-row dev-only"><div class="set-label"><b data-i18n="set.askBuild">Vor Build fragen</b><small data-i18n="set.askBuild.sub"></small></div>
+            <div class="set-ctl"><input type="checkbox" checked disabled data-i18n-aria="set.askBuild"></div></div>
+          <div class="set-row"><div class="set-label"><b data-i18n="set.notify">Mitteilungen</b><small data-i18n="set.notify.sub"></small></div>
+            <div class="set-ctl"><input type="checkbox" id="set-notify" data-i18n-aria="set.notify"></div></div>
+          <div class="set-row"><div class="set-label"><b data-i18n="set.checkOnStart">Beim Start nach Updates suchen</b><small data-i18n="set.checkOnStart.sub"></small></div>
+            <div class="set-ctl"><input type="checkbox" id="set-check" data-i18n-aria="set.checkOnStart"></div></div>
+          <div class="set-row off"><div class="set-label"><b><span data-i18n="set.beta">Beta-Versionen zeigen</span> <span class="ver" data-i18n="common.v02">ab 0.2</span></b><small data-i18n="set.beta.sub"></small></div>
+            <div class="set-ctl"><input type="checkbox" disabled data-i18n-aria="set.beta"></div></div>
+          <div class="set-row off mac-only"><div class="set-label"><b><span data-i18n="set.installDir">Installationsordner</span> <span class="ver" data-i18n="common.v02">ab 0.2</span></b><small data-i18n="set.installDir.sub"></small></div>
+            <div class="set-ctl"><span class="path">/Applications</span><button class="btn small" type="button" disabled data-i18n="common.change">Ändern …</button></div></div>
+
+          <h3 id="sec-about" data-i18n="set.nav.about">Über</h3>
+          <div class="about"><img src="./icons/link-suite.svg" alt=""><div><b id="about-name">Link-Suite</b><span class="muted small" data-i18n="set.about.text"></span></div></div>
+          <div class="set-row"><div class="set-label"><b data-i18n="set.self">Link-Suite selbst</b><small id="self-state"></small></div>
+            <div class="set-ctl" id="self-ctl"></div></div>
+          <p class="muted small mono" id="set-file"></p>
+          <div class="btns"><button class="btn" type="button" id="btn-licenses" data-i18n="set.licenses">Lizenzen und Hinweise</button><button class="btn" type="button" id="btn-trademarks" data-i18n="set.trademarks">Markenhinweise</button><span class="muted small"><span data-i18n="set.source">Quellcode</span>: <span class="mono">github.com/skyplayser/Link-Suite</span></span></div>
+          <p class="muted small" data-i18n="chat.note"></p>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- Suite-Chat und EMERGENCY: Markup aus VJ-Link src/renderer/index.html:337–363, Schlüssel chat.* -->
+<div id="chat-panel" class="chat-panel" role="dialog" aria-labelledby="chat-title" hidden>
+  <div class="chat-head"><strong id="chat-title" data-i18n="chat.title">Suite-Chat – Alpha</strong>
+    <button id="chat-rename" class="chat-link" type="button" hidden data-i18n="chat.rename">Name ändern</button>
+    <button id="chat-close" class="chat-link" type="button" data-i18n="common.close">Schließen</button></div>
+  <div id="chat-peers" class="chat-peers"></div>
+  <form id="chat-nick-form" class="chat-nick" hidden>
+    <label for="chat-nick"><span data-i18n="chat.name">Name</span> <em data-i18n="chat.nameQ">Wie heißt du?</em></label>
+    <input class="input" id="chat-nick" maxlength="24" autocomplete="off" spellcheck="false" data-i18n-ph="chat.nick.ph">
+    <label for="chat-where"><span data-i18n="chat.where">Position</span> <em data-i18n="chat.whereQ">Wo stehst du? (freiwillig)</em></label>
+    <input class="input" id="chat-where" maxlength="24" autocomplete="off" spellcheck="false" data-i18n-ph="chat.where.ph">
+    <p class="muted small" data-i18n="chat.visible">Name und Position sehen alle im Netzwerk.</p>
+    <button class="btn primary" type="submit" data-i18n="chat.enter">Chat betreten</button>
+  </form>
+  <div id="chat-list" class="chat-list" aria-live="polite"></div>
+  <form id="chat-form" class="chat-form">
+    <input class="input" id="chat-input" maxlength="500" autocomplete="off" data-i18n-ph="chat.ph" data-i18n-aria="chat.ph">
+    <button class="btn" type="submit" data-i18n="chat.send">Senden</button>
+    <button id="chat-emergency" class="chat-emergency" type="button" data-i18n-title="chat.emergency.title">EMERGENCY</button>
+  </form>
+  <div id="chat-status" class="chat-status"></div>
+</div>
+<div id="chat-alert" class="chat-alert" role="alertdialog" aria-labelledby="chat-alert-title" aria-describedby="chat-alert-text" hidden>
+  <strong id="chat-alert-title">EMERGENCY</strong>
+  <div id="chat-alert-from" class="chat-alert-from"></div>
+  <div id="chat-alert-text" class="chat-alert-text"></div>
+  <div class="chat-alert-row"><span id="chat-alert-more"></span><span class="chat-alert-btns"><button id="chat-alert-all" class="btn chat-alert-all" type="button" hidden data-i18n="chat.allClose">Alle schließen</button><button id="chat-alert-ok" class="btn" type="button" data-i18n="common.ok">OK</button></span></div>
+</div>
+
+<div id="modal-root"></div>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+<div id="intro" class="intro-layer" hidden><div class="ibg"></div></div>
+
+<script type="module" src="/src/renderer/main.ts"></script>
+</body>
+</html>
