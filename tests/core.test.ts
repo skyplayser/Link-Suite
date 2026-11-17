@@ -39,8 +39,8 @@ describe("Katalog", () => {
   });
 
   it("Reihenfolge: große Karten und „Kommt bald“ in Release-Reihenfolge", () => {
-    expect(MAIN_ORDER).toEqual(["lj", "vj", "vd", "ljl"]);
-    expect(soonPrograms().map(p => p.id)).toEqual(["net", "crew", "pl", "db"]);
+    expect(MAIN_ORDER).toEqual(["lj", "vj", "vd", "ljl", "crew"]);
+    expect(soonPrograms().map(p => p.id)).toEqual(["net", "pl", "db"]);
   });
 });
 

@@ -23,12 +23,12 @@ afterEach(() => { vi.unstubAllGlobals(); });
 
 describe("Katalog-Version im Zwischenspeicher", () => {
   it("alter Speicher ohne Version: nur die fehlenden Programme sind neu", () => {
-    expect(staleSources(OLD)).toEqual(["vd"]);
+    expect(staleSources(OLD)).toEqual(["vd", "crew"]);
   });
   it("gleiche Version: `checked` zählt (auch „noch nicht veröffentlicht“), andere Version: alles neu", () => {
-    expect(staleSources({ catalog: CATALOG_VERSION, checked: ["lj", "vj", "vd", "ljl", "suite"], entries: {} })).toEqual([]);
-    expect(staleSources({ catalog: CATALOG_VERSION, checked: ["lj", "vj", "ljl", "suite"], entries: { vd: rel("0.3.0") } })).toEqual(["vd"]);
-    expect(staleSources({ catalog: CATALOG_VERSION + 1, checked: ["lj", "vj", "vd", "ljl", "suite"], entries: {} }).length).toBe(5);
+    expect(staleSources({ catalog: CATALOG_VERSION, checked: ["lj", "vj", "vd", "ljl", "crew", "suite"], entries: {} })).toEqual([]);
+    expect(staleSources({ catalog: CATALOG_VERSION, checked: ["lj", "vj", "ljl", "crew", "suite"], entries: { vd: rel("0.3.0") } })).toEqual(["vd"]);
+    expect(staleSources({ catalog: CATALOG_VERSION + 1, checked: ["lj", "vj", "vd", "ljl", "crew", "suite"], entries: {} }).length).toBe(6);
     expect(staleSources(undefined)).toEqual([]);
   });
   it("Start mit altem Speicher: VD-Link sofort und zuerst geprüft; danach Speicher mit Version und `checked`", async () => {
@@ -37,7 +37,7 @@ describe("Katalog-Version im Zwischenspeicher", () => {
     const saved: Record<string, unknown>[] = [];
     const ins = make(saved);
     ins.loadCache(OLD);
-    expect(ins.staleIds()).toEqual(["vd"]);
+    expect(ins.staleIds()).toEqual(["vd", "crew"]);
     // Bekannte Programme bleiben aus dem Speicher sichtbar
     expect(ins.snapshot().entries.find(e => e.id === "lj")).toMatchObject({ check: "ok", cached: true });
     await ins.check(false); // Start: der Speicher zählt nie als frische Prüfung
@@ -45,7 +45,7 @@ describe("Katalog-Version im Zwischenspeicher", () => {
     expect(ins.staleIds()).toEqual([]);
     const c = saved.at(-1)!;
     expect(c.catalog).toBe(CATALOG_VERSION);
-    expect([...(c.checked as string[])].sort()).toEqual(["lj", "ljl", "suite", "vd", "vj"]);
+    expect([...(c.checked as string[])].sort()).toEqual(["crew", "lj", "ljl", "suite", "vd", "vj"]);
     // nächster Start mit diesem Speicher: nichts mehr neu
     expect(staleSources(c as never)).toEqual([]);
   });
@@ -75,7 +75,7 @@ describe("Katalog-Version im Zwischenspeicher", () => {
     const ins = make([]);
     ins.loadCache(OLD);
     await ins.check(true);
-    expect(urls.length).toBe(5);
+    expect(urls.length).toBe(6);
     expect(urls[0]).toContain("/VD-Link/");
   });
   it("Prüfung scheitert (kein Netz): VD-Link bleibt neu und wird beim nächsten Mal wieder zuerst geprüft", async () => {
@@ -84,7 +84,32 @@ describe("Katalog-Version im Zwischenspeicher", () => {
     const ins = make(saved);
     ins.loadCache(OLD);
     await ins.check(false);
-    expect(ins.staleIds()).toEqual(["vd"]);
+    expect(ins.staleIds()).toEqual(["vd", "crew"]);
     expect(saved.length).toBe(0);
+  });
+  it("Crew Link (nur Vorabversionen): fragt die Release-Liste und nimmt das neueste, das kein Entwurf ist", async () => {
+    const urls: string[] = [];
+    const asset = (n: string) => ({ name: n, browser_download_url: `https://github.com/skyplayser/Crew-Link/releases/download/v0.1.0/${n}`, size: 100, digest: "sha256:" + "a".repeat(64) });
+    vi.stubGlobal("fetch", vi.fn(async (u: string) => {
+      urls.push(String(u));
+      if (String(u).includes("/Crew-Link/")) return new Response(JSON.stringify([
+        { tag_name: "v0.2.0", draft: true, prerelease: true, assets: [] },
+        { tag_name: "v0.1.0", draft: false, prerelease: true, html_url: "https://github.com/skyplayser/Crew-Link/releases/tag/v0.1.0", assets: [asset("Crew-Link-windows.exe"), asset("SHA256SUMS")] },
+      ]), { status: 200 });
+      return new Response("", { status: 404 });
+    }));
+    const ins = make([]);
+    await ins.check(true);
+    expect(urls).toContain("https://api.github.com/repos/skyplayser/Crew-Link/releases?per_page=10");
+    expect(urls.some(u => u.includes("/Crew-Link/releases/latest"))).toBe(false);
+    const e = ins.snapshot().entries.find(x => x.id === "crew")!;
+    expect(e.latest).toMatchObject({ version: "0.1.0", asset: "Crew-Link-windows.exe", prerelease: true });
+    expect(e.latest!.url).toContain("/Crew-Link/releases/download/v0.1.0/Crew-Link-windows.exe");
+  });
+  it("Crew Link ohne Release (leere Liste): „noch keine Veröffentlichung“", async () => {
+    vi.stubGlobal("fetch", vi.fn(async (u: string) => new Response(String(u).includes("/Crew-Link/") ? "[]" : "", { status: String(u).includes("/Crew-Link/") ? 200 : 404 })));
+    const ins = make([]);
+    await ins.check(true);
+    expect(ins.snapshot().entries.find(x => x.id === "crew")).toMatchObject({ check: "missing", latest: null });
   });
 });

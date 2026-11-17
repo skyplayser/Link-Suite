@@ -78,6 +78,16 @@ export function pageFor(u: unknown, repo: string): string {
   return x.hostname === "github.com" && x.pathname.toLowerCase().startsWith(`/${repo.toLowerCase()}/releases`) ? x.toString() : fallback;
 }
 
+/**
+ * Für Quellen mit Vorabversionen (1.0.5): aus der Release-Liste von GitHub (neueste zuerst) das erste, das kein Entwurf
+ * ist. Leere Liste → null („noch keine Veröffentlichung“, wie 404 bei releases/latest).
+ */
+export function newestRelease(list: unknown): unknown | null {
+  if (!Array.isArray(list)) return null;
+  for (const r of list.slice(0, 20)) if (r && typeof r === "object" && (r as { draft?: unknown }).draft !== true) return r;
+  return null;
+}
+
 /** Antwort von GitHub (releases/latest) für eine Quelle auslesen (aus VJ-Link pickRelease, je Programm). */
 export function pickRelease(json: unknown, src: ReleaseSource, platform: string, arch: string): ReleaseInfo | null {
   if (typeof json !== "object" || json === null || Array.isArray(json)) return null;

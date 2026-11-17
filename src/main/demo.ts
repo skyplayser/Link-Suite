@@ -131,5 +131,6 @@ export const DEMO_RELEASES: { id: SourceId; latest: ReleaseInfo | null }[] = [
   { id: "vj", latest: demoRel("skyplayser/VJ-LINK", "0.1.8", "VJ-Link-macos-arm64.dmg", 135_844_430, "Demo: ver und echo im Suite-Chat.") },
   { id: "vd", latest: demoRel("skyplayser/VD-Link", "0.2.0", "VD-Link-macos-arm64.dmg", 118_000_000, "Demo: Art-Net, sACN, 3D-Vorschau.") },
   { id: "ljl", latest: demoRel("skyplayser/LJL-Link", "0.3.1", "LJL-Link-0.3.1-macOS.zip", 1_641_371, "Demo: Club-Stick.") },
+  { id: "crew", latest: { ...demoRel("skyplayser/Crew-Link", "0.1.0", "Crew-Link-macos-arm64.dmg", 110_000_000, "Demo: Timetable der Nacht."), prerelease: true } },
   { id: "suite", latest: null },
 ];

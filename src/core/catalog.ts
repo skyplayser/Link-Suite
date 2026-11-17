@@ -74,26 +74,26 @@ export const CATALOG: readonly Program[] = [
     line: { de: "Timetable der Nacht.", en: "Tonight's timetable." },
     bundleIds: ["de.nextphilm.crewlink"], appNames: ["Crew Link.app", "Crew-Link.app"],
     devDir: "~/Crew-Link", pkgName: "crew-link", renderer: RENDERER_DEFAULT,
-    stage: "concept", soon: 2, winName: "Crew Link",
+    stage: "alpha", knownRelease: "0.1.0", winName: "Crew Link",
   },
   {
     id: "pl", name: "PL Link", icon: "pl-link.svg",
     line: { de: "Patch und Stromlast.", en: "Patch and power load." },
     bundleIds: ["de.nextphilm.pllink"], appNames: ["PL Link.app", "PL-Link.app"],
     devDir: "~/PL-Link", pkgName: "pl-link", renderer: RENDERER_DEFAULT,
-    stage: "concept", soon: 3, winName: "PL Link",
+    stage: "concept", soon: 2, winName: "PL Link",
   },
   {
     id: "db", name: "dB Link", icon: "db-link.svg",
     line: { de: "Lautstärke nach DIN 15905-5.", en: "Sound levels to DIN 15905-5." },
     bundleIds: ["de.nextphilm.dblink"], appNames: ["dB Link.app", "dB-Link.app", "DB Link.app"],
     devDir: "~/dB-Link", pkgName: "db-link", renderer: RENDERER_DEFAULT,
-    stage: "concept", soon: 4, winName: "dB Link",
+    stage: "concept", soon: 3, winName: "dB Link",
   },
 ];
 
-/** Reihenfolge der großen Karten (Design: LJ Link, VJ-Link, VD-Link, LJL Link). */
-export const MAIN_ORDER: readonly ProgramId[] = ["lj", "vj", "vd", "ljl"];
+/** Reihenfolge der großen Karten (Design: LJ Link, VJ-Link, VD-Link, LJL Link; Crew Link seit 1.0.5). */
+export const MAIN_ORDER: readonly ProgramId[] = ["lj", "vj", "vd", "ljl", "crew"];
 
 const BY_ID = new Map<string, Program>(CATALOG.map(p => [p.id, p]));
 

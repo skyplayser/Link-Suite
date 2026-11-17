@@ -419,6 +419,7 @@ export const TEXTS: Record<string, Entry> = {
   "inst.ljl.stick": { de: "Auf „{name}“", en: "To “{name}”" },
   "ljl.readme": { de: "LJL Link {v}\n\nDE: LJL Link.app vom Stick starten (Doppelklick). Beenden mit Cmd+Q, dann Stick auswerfen.\nDie club.json mit Adresse und Schlüssel des Clubs kommt neben die App.\n\nEN: Start LJL Link.app from the stick (double-click). Quit with Cmd+Q, then eject the stick.\nThe club.json with the club's address and key goes next to the app.\n\nLink-Suite – https://github.com/skyplayser/LJL-Link\n", en: "LJL Link {v}\n\nEN: Start LJL Link.app from the stick (double-click). Quit with Cmd+Q, then eject the stick.\nThe club.json with the club's address and key goes next to the app.\n\nDE: LJL Link.app vom Stick starten (Doppelklick). Beenden mit Cmd+Q, dann Stick auswerfen.\n\nLink-Suite – https://github.com/skyplayser/LJL-Link\n" },
   "detail.latest": { de: "Neueste", en: "Latest" },
+  "detail.pre": { de: "Vorabversion", en: "pre-release" },
   "detail.origin": { de: "Herkunft", en: "Origin" },
   "detail.size": { de: "Größe", en: "Size" },
   "detail.notes": { de: "Was ist neu", en: "What's new" },

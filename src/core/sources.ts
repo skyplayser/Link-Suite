@@ -5,7 +5,7 @@ export const LAUNCHER_REPO = "skyplayser/Link-Suite";
 export const LAUNCHER_BUNDLE_ID = "de.nextphilm.linksuite";
 
 export type Kind = "dmg" | "zip" | "exe";
-export type SourceId = "lj" | "vj" | "vd" | "ljl" | "suite";
+export type SourceId = "lj" | "vj" | "vd" | "ljl" | "crew" | "suite";
 
 export interface ReleaseSource {
   id: SourceId;
@@ -15,6 +15,8 @@ export interface ReleaseSource {
   bundleIds: string[];
   /** Name der App im Image bzw. Zip (nur für Quellen ohne Kennung). */
   appName?: string;
+  /** Auch Vorabversionen zählen (GitHub kennt dann kein releases/latest): neuestes Release der Liste, ohne Entwürfe. */
+  pre?: boolean;
   /** Datei für Plattform/Chip; null = gibt es hier nicht. `version` für Namen mit Version (LJL Link). */
   asset(platform: string, arch: string, version: string): string | null;
 }
@@ -22,7 +24,8 @@ export interface ReleaseSource {
 const triple = (base: string) => (platform: string, arch: string): string | null =>
   platform === "darwin" ? `${base}-macos-${arch === "arm64" ? "arm64" : "intel"}.dmg` : platform === "win32" ? `${base}-windows.exe` : null;
 
-/** Quellen der Programme mit öffentlichen Releases (Stand 16.11.2026). VD-Link ist seit 1.0.0 öffentlich; Intel heißt dort „x64“. */
+/** Quellen der Programme mit öffentlichen Releases (Stand 17.11.2026). VD-Link ist seit 1.0.0 öffentlich; Intel heißt dort „x64“.
+ * Crew Link (seit 1.0.5) veröffentlicht bisher nur Vorabversionen. */
 export const SOURCES: Readonly<Record<SourceId, ReleaseSource>> = {
   lj: { id: "lj", name: "LJ Link", repo: "skyplayser/LJ-Link", bundleIds: ["dev.ljlinkpro"], asset: triple("LJ-Link") },
   vj: { id: "vj", name: "VJ-Link", repo: "skyplayser/VJ-LINK", bundleIds: ["de.nextphilm.vjlink"], asset: triple("VJ-Link") },
@@ -34,6 +37,7 @@ export const SOURCES: Readonly<Record<SourceId, ReleaseSource>> = {
     id: "ljl", name: "LJL Link", repo: "skyplayser/LJL-Link", bundleIds: [], appName: "LJL Link.app",
     asset: (platform, _arch, version) => (platform === "darwin" && /^[0-9][0-9A-Za-z.-]{0,30}$/.test(version) ? `LJL-Link-${version}-macOS.zip` : null),
   },
+  crew: { id: "crew", name: "Crew Link", repo: "skyplayser/Crew-Link", bundleIds: ["de.nextphilm.crewlink"], asset: triple("Crew-Link"), pre: true },
   suite: { id: "suite", name: "Link-Suite", repo: LAUNCHER_REPO, bundleIds: [LAUNCHER_BUNDLE_ID], asset: triple("Link-Suite") },
 };
 

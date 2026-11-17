@@ -12,13 +12,13 @@
 </p>
 
 <p align="center">
-  <a href="#download-and-install"><img alt="Download Link-Suite 1.0.4" src="https://img.shields.io/badge/Download-Link--Suite%201.0.4-FF5C93?style=for-the-badge"></a>
+  <a href="#download-and-install"><img alt="Download Link-Suite 1.0.5" src="https://img.shields.io/badge/Download-Link--Suite%201.0.5-FF5C93?style=for-the-badge"></a>
 </p>
 
 <p align="center">
   <a href="https://github.com/skyplayser/Link-Suite/releases"><img alt="Latest release" src="https://img.shields.io/github/v/release/skyplayser/Link-Suite?include_prereleases&label=release&color=FFB020"></a>
   <a href="https://github.com/skyplayser/Link-Suite/releases"><img alt="Downloads" src="https://img.shields.io/github/downloads/skyplayser/Link-Suite/total?label=downloads&color=22C8F0"></a>
-  <img alt="Version 1.0.4" src="https://img.shields.io/badge/version-1.0.4-FF5C93">
+  <img alt="Version 1.0.5" src="https://img.shields.io/badge/version-1.0.5-FF5C93">
   <img alt="macOS 13+, Apple silicon and Intel" src="https://img.shields.io/badge/macOS%2013%2B-Apple%20silicon%20%7C%20Intel-3DDC84">
   <img alt="Windows 10/11, tested on Windows 11 (in a VM)" src="https://img.shields.io/badge/Windows-tested%20on%20Windows%2011%20(VM)-3DDC84">
   <img alt="Free" src="https://img.shields.io/badge/price-free-B45CFF">
@@ -56,7 +56,7 @@ connection to the internet goes to GitHub, to ask for new releases and to downlo
 server of our own, no account.
 
 > [!NOTE]
-> **Version 1.0.4.** On macOS the QA of 0.3.1 called Link-Suite ready for release: installing and updating a real
+> **Version 1.0.5.** On macOS the QA of 0.3.1 called Link-Suite ready for release: installing and updating a real
 > program twice in a row worked. Some parts were only checked in the code or in a developer build (see
 > [What is tested](#what-is-tested)). The Windows version was **tested on Windows 11 (in a VM)**.
 > Link-Suite is not signed with Apple or Microsoft, so macOS and Windows warn once on the first start
@@ -262,7 +262,7 @@ decided by that project, not by Link-Suite. That is why Link-Suite asks first.
 - It does not switch off Gatekeeper or SmartScreen and changes no system setting.
 - It needs no admin rights and asks for no password. Without admin rights, programs go to `~/Applications`.
 
-## State of version 1.0.4
+## State of version 1.0.5
 
 ### What is new in 0.3
 
@@ -280,7 +280,7 @@ decided by that project, not by Link-Suite. That is why Link-Suite asks first.
 | Area | State |
 |---|---|
 | Check for releases | asks GitHub at start and when you press the button; the check at start can be switched off |
-| Install and update | LJ Link, VJ-Link and VD-Link from their GitHub releases (VD-Link from 1.0.0 on) |
+| Install and update | LJ Link, VJ-Link, VD-Link and Crew Link from their GitHub releases (VD-Link from 1.0.0 on, Crew Link from 1.0.5 on, also as a pre-release) |
 | LJL Link | *To the stick*: into a folder or straight onto the club's USB stick, with a short guide; `club.json` still by hand |
 | Self-update | from [its own releases](https://github.com/skyplayser/Link-Suite/releases) (`skyplayser/Link-Suite`); the checked new version is put in place when you quit or click **Restart now** (macOS: replaced by a script; Windows from 1.0.3: the installer runs silently for your user) |
 | Start programs | installed apps, and developer projects with log bar when the developer view is on |
@@ -397,7 +397,7 @@ Network trouble? That is NET Link's job. It is in development; until then the fo
 
 ## For developers
 
-Version **1.0.4**: everything from 0.1 and 0.2 (program list, starting installed apps and developer projects, suite
+Version **1.0.5**: everything from 0.1 and 0.2 (program list, starting installed apps and developer projects, suite
 chat with EMERGENCY, ON THE NETWORK, installing and updating from GitHub, the club stick, the self-update), plus the new
 interface, the start animation with its launcher ending, the macOS polish and the per-user Windows installer. 1.0.1 brings the fixes from the Windows test, 1.0.2 a DE/EN
 switch in the title bar, 1.0.3 the self-update on Windows.

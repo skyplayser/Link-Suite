@@ -588,7 +588,7 @@ export class ProgramsView {
     const src = sourceById(p.id);
     if (ue?.latest) {
       const l = ue.latest;
-      rel.append(h("dt", { text: t("detail.latest") }), h("dd", { text: `${l.version}${l.prerelease ? " (beta)" : ""}` }));
+      rel.append(h("dt", { text: t("detail.latest") }), h("dd", { text: `${l.version}${l.prerelease ? ` (${t("detail.pre")})` : ""}` }));
       if (src) rel.append(h("dt", { text: t("detail.origin") }), h("dd", { class: "txt", text: `github.com/${src.repo}` }));
       if (l.size) rel.append(h("dt", { text: t("detail.size") }), h("dd", { text: `${(l.size / 1_048_576).toFixed(1)} MB · ${l.asset}` }));
       if (l.sha256) rel.append(h("dt", { text: "SHA-256" }), h("dd", { text: l.sha256.slice(0, 16) + "…", title: l.sha256 }));

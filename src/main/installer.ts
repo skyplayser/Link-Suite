@@ -14,7 +14,7 @@ import { isNewer } from "../core/version";
 import { setupVerdict, type SetupExit } from "../core/winsetup";
 import {
   CATALOG_VERSION, pageFor, sourceById, staleSources,
-  allowedUrl, bundleMatches, checkSignature, installVerdict, kindOf, MAX_DOWNLOAD, MAX_REDIRECTS, pickRelease, REQUIRE_SIGNATURE,
+  allowedUrl, bundleMatches, checkSignature, installVerdict, kindOf, MAX_DOWNLOAD, MAX_REDIRECTS, newestRelease, pickRelease, REQUIRE_SIGNATURE,
   sizeOk, SOURCES, SUITE_PUBLIC_KEYS, symlinkInside, unsafeZipEntries, urlBelongsToRepo, type ReleaseInfo, type ReleaseSource, type SourceId,
 } from "../core/release";
 
@@ -341,7 +341,7 @@ export class Installer {
       for (const src of list) {
         if (limited) { this.set(src.id, { check: this.entries.get(src.id)!.latest ? "ok" : "error", error: "rate limit" }); continue; }
         try {
-          const json = await this.latestJson(src.repo);
+          const json = await this.latestJson(src);
           okAny = true;
           this.stale.delete(src.id);
           if (json === null) { this.set(src.id, { check: "missing", latest: null, error: "", cached: false }); continue; }
@@ -367,15 +367,17 @@ export class Installer {
   }
 
   /** GitHub-API ohne Anmeldung, 15 s; 404 → null („noch keine Veröffentlichung“ / privat). ETag spart Datenmenge. */
-  private async latestJson(repo: string): Promise<unknown | null> {
+  private async latestJson(src: ReleaseSource): Promise<unknown | null> {
     if (this.d.offline) throw new Error(this.d.say("inst.err.offline"));
-    const url = `https://api.github.com/repos/${repo}/releases/latest`;
+    const repo = src.repo;
+    // Mit Vorabversionen: die Liste (neueste zuerst) statt releases/latest, das Vorabversionen auslässt
+    const url = src.pre ? `https://api.github.com/repos/${repo}/releases?per_page=10` : `https://api.github.com/repos/${repo}/releases/latest`;
     const cached = this.etags.get(repo);
     const res = await fetch(url, {
       headers: { ...this.ua(), Accept: "application/vnd.github+json", ...(cached ? { "If-None-Match": cached.etag } : {}) },
       redirect: "error", signal: AbortSignal.timeout(15_000),
     });
-    if (res.status === 304 && cached) return cached.json;
+    if (res.status === 304 && cached) return src.pre ? newestRelease(cached.json) : cached.json;
     if (res.status === 404) return null;
     if ((res.status === 403 || res.status === 429) && res.headers.get("x-ratelimit-remaining") === "0") {
       const reset = Number(res.headers.get("x-ratelimit-reset"));
@@ -387,7 +389,7 @@ export class Installer {
     const json: unknown = JSON.parse(text);
     const etag = res.headers.get("etag");
     if (etag) this.etags.set(repo, { etag, json });
-    return json;
+    return src.pre ? newestRelease(json) : json;
   }
 
   // ------------------------------------------------------------------ Laden
