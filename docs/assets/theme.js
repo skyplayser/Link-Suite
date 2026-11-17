@@ -11,7 +11,7 @@
   root.setAttribute("data-theme", t);
   root.classList.add("js");
 
-  if (!location.hash) {
+  if (!location.hash && !root.hasAttribute("data-no-intro")) {
     root.classList.add("intro-pending");
     // Every load starts at the top, so the animation can land in the hero (also after reload)
     try { history.scrollRestoration = "manual"; } catch (e) { /* old browsers */ }

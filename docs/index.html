@@ -59,8 +59,8 @@
         <li><a href="#suite" title="VJ-Link"><img src="assets/icons/vj-link.svg" alt="VJ-Link" width="64" height="64"></a></li>
         <li><a href="#suite" title="VD-Link"><img src="assets/icons/vd-link.svg" alt="VD-Link" width="64" height="64"></a></li>
         <li><a href="#suite" title="LJL Link"><img src="assets/icons/ljl-link-256.png" alt="LJL Link" width="64" height="64"></a></li>
-        <li><a href="#suite" title="NET Link"><img src="assets/icons/net-link.svg" alt="NET Link" width="64" height="64"></a></li>
         <li><a href="#suite" title="Crew Link"><img src="assets/icons/crew-link.svg" alt="Crew Link" width="64" height="64"></a></li>
+        <li><a href="#suite" title="NET Link"><img src="assets/icons/net-link.svg" alt="NET Link" width="64" height="64"></a></li>
         <li><a href="#suite" title="PL Link"><img src="assets/icons/pl-link.svg" alt="PL Link" width="64" height="64"></a></li>
         <li><a href="#suite" title="dB Link"><img src="assets/icons/db-link.svg" alt="dB Link" width="64" height="64"></a></li>
       </ul>
@@ -205,7 +205,7 @@
         <article class="prog reveal">
           <div class="head"><img src="assets/icons/lj-link.svg" alt="" width="52" height="52"><h3>LJ Link</h3></div>
           <div class="pills"><span class="pill green">available</span><span class="pill">macOS · Windows</span></div>
-          <p>Shows the lighting jockey every deck, waveform and cue from Pioneer and Denon gear and sends the tempo to grandMA, Daslight and more.</p>
+          <p>Shows the lighting jockey decks, waveforms and cues from supported Pioneer and Denon gear and sends the tempo to grandMA, Daslight and more.</p>
           <div class="links"><a href="https://skyplayser.github.io/LJ-Link/">Website</a><a href="https://github.com/skyplayser/LJ-Link">GitHub</a></div>
         </article>
         <article class="prog reveal">
@@ -226,6 +226,12 @@
           <p>Brings the Serato decks from the DJ's Mac into LJ Link in the booth – straight from the club's USB stick, no installation.</p>
           <div class="links"><a href="https://skyplayser.github.io/LJL-Link/">Website</a><a href="https://github.com/skyplayser/LJL-Link">GitHub</a></div>
         </article>
+        <article class="prog reveal">
+          <div class="head"><img src="assets/icons/crew-link.svg" alt="" width="52" height="52"><h3>Crew Link</h3></div>
+          <div class="pills"><span class="pill green">available</span><span class="pill">macOS · Windows</span></div>
+          <p>Tonight's timetable: who plays when, countdown to set end and closing time – one clock for everyone, on phones too.</p>
+          <div class="links"><a href="https://skyplayser.github.io/Crew-Link/">Website</a><a href="https://github.com/skyplayser/Crew-Link">GitHub</a></div>
+        </article>
       </div>
 
       <p class="subhead">Coming to the suite</p>
@@ -236,11 +242,6 @@
           <p>Who is on the show network? Finds IP conflicts, wrong subnets and missing multicast – and tells you what to change.</p>
         </article>
         <article class="prog soon reveal">
-          <div class="head"><img src="assets/icons/crew-link.svg" alt="" width="52" height="52"><h3>Crew Link</h3></div>
-          <div class="pills"><span class="pill violet">soon</span></div>
-          <p>Tonight's timetable: who plays when, countdown to set end and closing time – one clock for everyone, on phones too.</p>
-        </article>
-        <article class="prog soon reveal">
           <div class="head"><img src="assets/icons/pl-link.svg" alt="" width="52" height="52"><h3>PL Link</h3></div>
           <div class="pills"><span class="pill violet">soon</span></div>
           <p>Patch and power load: DMX addresses, circuits, cable and packing lists – planned before the rig goes up.</p>
@@ -248,7 +249,7 @@
         <article class="prog soon reveal">
           <div class="head"><img src="assets/icons/db-link.svg" alt="" width="52" height="52"><h3>dB Link</h3></div>
           <div class="pills"><span class="pill violet">soon</span></div>
-          <p>Sound levels to DIN 15905-5: measure, warn before the limit and write the log at the end of the night.</p>
+          <p>Measure sound levels, based on DIN 15905-5: warn before the limit and write the log at the end of the night.</p>
         </article>
       </div>
       <p class="caption">New programs arrive in your window with the next update of Link-Suite.</p>
@@ -260,7 +261,7 @@
       <p class="lead">Every program of the Link-Suite follows the same rules – Link-Suite itself included.</p>
       <div class="principles">
         <div class="principle reveal"><h3>Only listens</h3><p>Link-Suite controls no device and no program on the network. Other computers are shown, never touched.</p></div>
-        <div class="principle reveal"><h3>No telemetry</h3><p>No usage data, no crash reports, no tracking. This website has no trackers either.</p></div>
+        <div class="principle reveal"><h3>No telemetry</h3><p>No usage data, no crash reports, no tracking. This website has no trackers and no cookies either.</p></div>
         <div class="principle reveal"><h3>No server, no account</h3><p>The suite chat runs directly between the programs on the local network. No sign-in, anywhere.</p></div>
         <div class="principle reveal"><h3>GitHub only</h3><p>Link-Suite goes online only to ask GitHub for new versions and to download what you choose.</p></div>
         <div class="principle reveal"><h3>Nothing without a click</h3><p>Programs are installed, updated and started only when you want.</p></div>
@@ -275,7 +276,7 @@
             <tbody>
               <tr><td>“I am here” every 5 seconds: program name, version, your name and place in the chat (if set), a random ID</td><td>every suite program on the local network (multicast <code>239.255.76.76:47676</code>)</td></tr>
               <tr><td>Chat messages and EMERGENCY that you send</td><td>every suite program on the local network</td></tr>
-              <tr><td>Answer to NET Link's network check, with the IPv4 address of each network adapter</td><td>the NET Link that asked</td></tr>
+              <tr><td>Answer to NET Link's network check: for each network adapter its IPv4 address</td><td>addressed to the NET Link that asked; goes via multicast to every suite program on the local network</td></tr>
               <tr><td>“Bye” when quitting</td><td>every suite program on the local network</td></tr>
               <tr><td>The question for the latest releases of the suite programs and the downloads you start</td><td>GitHub (<code>api.github.com</code>, <code>github.com</code> and GitHub's download servers). Like any website, GitHub sees your IP address. No name and no list of your programs is sent.</td></tr>
               <tr><td>Your installed programs, your folders, the log of developer projects</td><td>nobody – stays on this computer</td></tr>
@@ -371,12 +372,13 @@
       <a href="https://skyplayser.github.io/LJL-Link/">LJL Link</a>
       <a href="https://skyplayser.github.io/VJ-LINK/">VJ-Link</a>
       <a href="https://github.com/skyplayser/VD-Link">VD-Link</a>
-      <span>NET Link · Crew Link · PL Link · dB Link (soon)</span>
+      <a href="https://skyplayser.github.io/Crew-Link/">Crew Link</a>
+      <span>NET Link · PL Link · dB Link (soon)</span>
       <a href="https://discord.gg/N6DMca4Bjk" rel="noopener">Discord</a>
     </p>
     <p>Open source under the Eclipse Public License 2.0, free of charge and without warranty. © 2026 Philipp Spruck / NEXTPHILM. Built with Electron (MIT). Software, networks and devices can fail: always have a plan B.</p>
-    <p>Link-Suite is an independent project and not an official product of Apple, Microsoft, GitHub, AlphaTheta / Pioneer DJ, inMusic / Denon DJ, Serato, MA Lighting or any other manufacturer named here; it is neither endorsed nor reviewed by them. All product names and trademarks belong to their owners and are only named to describe compatibility. Art-Net™ Designed by and Copyright Artistic Licence Holdings Ltd. The Link-Suite has nothing to do with the LightJockey software by Martin.</p>
-    <p><a href="https://github.com/skyplayser/Link-Suite">GitHub</a> · <a href="https://github.com/skyplayser/Link-Suite/releases">Releases</a> · <a href="https://skyplayser.github.io/VJ-LINK/impressum.html">Legal notice (Impressum)</a> · <a href="https://skyplayser.github.io/VJ-LINK/datenschutz.html">Privacy</a> · <a href="de/" hreflang="de" lang="de">Deutsch</a></p>
+    <p>Link-Suite is an independent project and not an official product of Apple, Microsoft, GitHub, AlphaTheta / Pioneer DJ, inMusic / Denon DJ, Serato, MA Lighting, Anthropic or any other manufacturer named here; it is neither endorsed nor reviewed by them. All product names and trademarks belong to their owners and are only named to describe compatibility. Art-Net™ Designed by and Copyright Artistic Licence Holdings Ltd. The Link-Suite has nothing to do with the LightJockey software by Martin.</p>
+    <p><a href="https://github.com/skyplayser/Link-Suite">GitHub</a> · <a href="https://github.com/skyplayser/Link-Suite/releases">Releases</a> · <a href="legal-notice.html">Legal notice (Impressum)</a> · <a href="privacy.html">Privacy</a> · <a href="de/" hreflang="de" lang="de">Deutsch</a></p>
     <p class="credit">Idea SKYPLAYSER/NEXTPHILM<br>Prompted with ❤️ made by Claude</p>
   </div>
 </footer>

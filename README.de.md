@@ -17,6 +17,7 @@
 
 <p align="center">
   <a href="https://github.com/skyplayser/Link-Suite/releases"><img alt="Neueste Version" src="https://img.shields.io/github/v/release/skyplayser/Link-Suite?include_prereleases&label=Release&color=FFB020"></a>
+  <a href="https://github.com/skyplayser/Link-Suite/releases"><img alt="Downloads" src="https://img.shields.io/github/downloads/skyplayser/Link-Suite/total?label=Downloads&color=22C8F0"></a>
   <img alt="Version 1.0.4" src="https://img.shields.io/badge/Version-1.0.4-FF5C93">
   <img alt="macOS 13+, Apple-Chip und Intel" src="https://img.shields.io/badge/macOS%2013%2B-Apple--Chip%20%7C%20Intel-3DDC84">
   <img alt="Windows 10/11, getestet auf Windows 11 (in einer VM)" src="https://img.shields.io/badge/Windows-getestet%20auf%20Windows%2011%20(VM)-3DDC84">
@@ -35,13 +36,13 @@
 </p>
 
 <p align="center">
-  <img src="docs/assets/shots/programme-nacht-de.png" alt="Tab PROGRAMME von Link-Suite: oben die Kennzahlen Update, läuft, installiert und Entwicklung, darunter die Gruppen Installiert, Entwicklung, Verfügbar und Kommt bald mit einer Karte je Programm">
-  <br><sub>Echter Screenshot im Demo-Modus (aufgenommen mit Version 0.3.1): erfundene Ordner, Versionen und Personen.</sub>
+  <img src="docs/assets/shots/programme-nacht-de.png" alt="Tab PROGRAMME von Link-Suite: oben die Kennzahlen Update, läuft und installiert, darunter die Programme in den Gruppen Installiert, Verfügbar und Kommt bald, rechts die Details zu LJ Link">
+  <br><sub>Echter Screenshot von Version 1.0.4 im Demo-Modus mit Beispieldaten.</sub>
 </p>
 
 Die Link-Suite ist eine Familie kostenloser Programme für Veranstaltungstechnik: heute
 [LJ Link](https://github.com/skyplayser/LJ-Link), [LJL Link](https://github.com/skyplayser/LJL-Link),
-[VJ-Link](https://github.com/skyplayser/VJ-LINK) und [VD-Link](https://github.com/skyplayser/VD-Link), bald NET Link, Crew Link, PL Link und dB Link.
+[VJ-Link](https://github.com/skyplayser/VJ-LINK), [VD-Link](https://github.com/skyplayser/VD-Link) und [Crew Link](https://github.com/skyplayser/Crew-Link), bald NET Link, PL Link und dB Link.
 **Link-Suite** ist der Launcher, der sie zusammenhält. Er zeigt alle Programme der Suite in Gruppen, installiert und
 aktualisiert sie direkt aus ihren GitHub-Releases, startet die auf diesem Rechner und listet die Suite-Programme, die er im
 Show-Netz hört. Dazu bringt er den Suite-Chat mit **EMERGENCY** mit. So hat die Booth den Chat, auch wenn gerade kein
@@ -180,7 +181,7 @@ Sprache, Tag oder Nacht, dein Name und Platz im Chat und die Startanimation – 
     <td><img src="docs/assets/shots/einstellungen-de.png" alt="Tab EINSTELLUNGEN mit Oberfläche, Suite-Chat und Programmen"><br><sub><b>Einstellungen</b> für alle Suite-Programme.</sub></td>
   </tr>
 </table>
-<sub>Alle Screenshots: Demo-Modus, aufgenommen mit Version 0.3.1, mit erfundenen Ordnern, Versionen und Personen.</sub>
+<sub>Alle Screenshots: Demo-Modus mit Beispieldaten; Startanimation und Willkommen-Karte stammen aus Version 0.3.1.</sub>
 
 ## Die Programme der Suite
 
@@ -191,7 +192,7 @@ Sprache, Tag oder Nacht, dein Name und Platz im Chat und die Startanimation – 
 | <img src="docs/assets/icons/vj-link.svg" width="28" alt=""> **VJ-Link** | Live-Visuals, gesteuert vom Lichtpult, im Takt der Musik | Beta, macOS und Windows | installieren und aktualisieren | [GitHub](https://github.com/skyplayser/VJ-LINK) · [Website](https://skyplayser.github.io/VJ-LINK/) |
 | <img src="docs/assets/icons/vd-link.svg" width="28" alt=""> **VD-Link** | 3D-Lichtvisualisierer für Art-Net und sACN: die Show sehen, bevor sie hängt | Beta, macOS und Windows | installieren und aktualisieren | [GitHub](https://github.com/skyplayser/VD-Link) |
 | <img src="docs/assets/icons/net-link.svg" width="28" alt=""> **NET Link** | Wer ist im Show-Netz? Findet IP-Konflikte, falsche Subnetze und fehlendes Multicast | kommt bald | – | – |
-| <img src="docs/assets/icons/crew-link.svg" width="28" alt=""> **Crew Link** | Timetable der Nacht: wer wann spielt, eine Uhr für alle | kommt bald | – | – |
+| <img src="docs/assets/icons/crew-link.svg" width="28" alt=""> **Crew Link** | Timetable der Nacht: wer wann spielt, eine Uhr für alle | Alpha, macOS und Windows | installieren und aktualisieren (ab Link-Suite 1.0.5) | [GitHub](https://github.com/skyplayser/Crew-Link) · [Website](https://skyplayser.github.io/Crew-Link/) |
 | <img src="docs/assets/icons/pl-link.svg" width="28" alt=""> **PL Link** | Patch und Stromlast: DMX-Adressen, Stromkreise und Packlisten | kommt bald | – | – |
 | <img src="docs/assets/icons/db-link.svg" width="28" alt=""> **dB Link** | Lautstärke nach DIN 15905-5: messen, warnen, protokollieren | kommt bald | – | – |
 
@@ -533,6 +534,6 @@ Gewährleistung bereitgestellt.
 <p align="center">
   <sub>Idee SKYPLAYSER/NEXTPHILM<br>
   Prompted with ❤️ made by Claude<br>
-  <a href="https://skyplayser.github.io/VJ-LINK/impressum.html">Impressum</a> ·
-  <a href="https://skyplayser.github.io/VJ-LINK/datenschutz.html">Datenschutz</a></sub>
+  <a href="https://skyplayser.github.io/Link-Suite/de/impressum.html">Impressum</a> ·
+  <a href="https://skyplayser.github.io/Link-Suite/de/datenschutz.html">Datenschutz</a></sub>
 </p>
