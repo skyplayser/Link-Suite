@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self'; style-src 'self'; script-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
-<title>Link-Suite – alle Programme der Link-Suite in einem Fenster</title>
-<meta name="description" content="Link-Suite zeigt alle Programme der Link-Suite (LJ Link, LJL Link, VJ-Link, VD-Link, NET Link, Crew Link, PL Link, dB Link), installiert und aktualisiert sie aus GitHub, startet sie und bringt den Suite-Chat mit EMERGENCY mit. Kostenlos, Version 1.0.4, macOS und Windows.">
+<title>Link-Suite – alle Programme für Veranstaltungstechnik in einem Fenster</title>
+<meta name="description" content="Link-Suite ist die Zentrale der Link-Suite: alle Programme sehen, mit einem Klick aus GitHub installieren und aktualisieren, starten, im Show-Netz sehen, wer was laufen hat, und mit dem Team chatten – mit EMERGENCY. Kostenlos und Open Source für macOS und Windows.">
 <link rel="canonical" href="https://skyplayser.github.io/Link-Suite/de/">
 <link rel="alternate" hreflang="en" href="https://skyplayser.github.io/Link-Suite/">
 <link rel="alternate" hreflang="de" href="https://skyplayser.github.io/Link-Suite/de/">
@@ -18,8 +18,8 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Link-Suite">
 <meta property="og:locale" content="de_DE">
-<meta property="og:title" content="Link-Suite – das Zuhause der Link-Suite">
-<meta property="og:description" content="Alle Programme der Suite in einem Fenster: sehen, was da ist, aus GitHub installieren und aktualisieren, starten, und sehen, wer sonst im Show-Netz ist. Kostenlos, Version 1.0.4.">
+<meta property="og:title" content="Link-Suite – alle Suite-Programme. Ein Fenster.">
+<meta property="og:description" content="Installieren, aktualisieren, starten und sehen, wer im Show-Netz was laufen hat – mit Suite-Chat und EMERGENCY. Kostenlos für macOS und Windows.">
 <meta property="og:image" content="https://skyplayser.github.io/Link-Suite/assets/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -39,269 +39,329 @@
     </a>
     <button class="tool menu-btn" id="menu" aria-label="Menü" aria-controls="nav" aria-expanded="false">&#9776;</button>
     <nav id="nav" aria-label="Hauptmenü">
-      <a href="#programme">Programme</a>
       <a href="#funktionen">Funktionen</a>
-      <a href="#grundsaetze">Grundsätze</a>
-      <a href="#stand">Stand</a>
-      <a href="#download">Download</a>
+      <a href="#suite">Die Suite</a>
+      <a href="#sicherheit">Sicherheit</a>
+      <a href="#fragen">Fragen</a>
+      <a class="btn primary small" href="#download">Download</a>
       <button class="tool" id="theme" type="button">☀ Tag</button>
       <a class="tool" id="lang" href="../" hreflang="en" lang="en" title="English">EN</a>
     </nav>
   </div>
 </header>
 
-<main id="main" class="wrap">
+<main id="main">
   <div class="hero">
-    <img class="icon" src="../assets/icons/link-suite.svg" alt="" width="112" height="112">
-    <span class="kicker">Teil der Link-Suite · kostenlose Programme für Veranstaltungstechnik</span>
-    <h1>Alle Suite-Programme.<br><span class="grad">Ein Fenster.</span></h1>
-    <p class="tag">Link-Suite ist das Zuhause der Link-Suite. Es zeigt alle Programme der Suite mit ihrem Stand, installiert und aktualisiert sie direkt aus GitHub, startet die auf diesem Rechner und listet die Suite-Programme, die es im Show-Netz hört – mit Suite-Chat und EMERGENCY.</p>
-    <div class="cta">
-      <a class="btn primary" href="#download">Link-Suite 1.0.4 herunterladen</a>
-      <a class="btn" href="#programme">Die Suite ansehen</a>
+    <div class="aurora" aria-hidden="true"></div>
+    <div class="wrap">
+      <ul class="suite-row h-in" aria-label="Die Programme der Link-Suite">
+        <li><a href="#suite" title="LJ Link"><img src="../assets/icons/lj-link.svg" alt="LJ Link" width="64" height="64"></a></li>
+        <li><a href="#suite" title="VJ-Link"><img src="../assets/icons/vj-link.svg" alt="VJ-Link" width="64" height="64"></a></li>
+        <li><a href="#suite" title="VD-Link"><img src="../assets/icons/vd-link.svg" alt="VD-Link" width="64" height="64"></a></li>
+        <li><a href="#suite" title="LJL Link"><img src="../assets/icons/ljl-link-256.png" alt="LJL Link" width="64" height="64"></a></li>
+        <li><a href="#suite" title="NET Link"><img src="../assets/icons/net-link.svg" alt="NET Link" width="64" height="64"></a></li>
+        <li><a href="#suite" title="Crew Link"><img src="../assets/icons/crew-link.svg" alt="Crew Link" width="64" height="64"></a></li>
+        <li><a href="#suite" title="PL Link"><img src="../assets/icons/pl-link.svg" alt="PL Link" width="64" height="64"></a></li>
+        <li><a href="#suite" title="dB Link"><img src="../assets/icons/db-link.svg" alt="dB Link" width="64" height="64"></a></li>
+      </ul>
+      <span class="kicker h-in">Die Zentrale der Link-Suite</span>
+      <h1 class="h-in">Alle Suite-Programme.<br><span class="grad">Ein Fenster.</span></h1>
+      <p class="tag h-in">Installieren, aktualisieren, starten – und auf einen Blick sehen, wer im Show-Netz was laufen hat. Link-Suite hält alle Programme für Licht, Video, Sound und die Crew zusammen. Mit einem Klick, geprüft und kostenlos.</p>
+      <div class="cta h-in">
+        <a class="btn primary big" href="#download">Link-Suite 1.0.4 laden</a>
+        <a class="btn big" href="#funktionen">Funktionen ansehen</a>
+      </div>
+      <ul class="chips h-in" aria-label="Auf einen Blick">
+        <li>macOS · Apple-Chip &amp; Intel</li>
+        <li>Windows 10 / 11</li>
+        <li>Kostenlos</li>
+        <li>Open Source</li>
+        <li>Keine Telemetrie</li>
+        <li>Deutsch &amp; Englisch</li>
+      </ul>
+      <div class="shot-wrap h-in">
+        <img class="shot" src="../assets/shots/programme-nacht-de.png" alt="Link-Suite, Tab PROGRAMME: oben die Kennzahlen Update, läuft und installiert, darunter die Programme in den Gruppen Installiert, Verfügbar und Kommt bald, rechts die Details zu LJ Link" width="1480" height="730" fetchpriority="high">
+      </div>
+      <p class="caption">Link-Suite im Demo-Modus mit Beispieldaten.</p>
     </div>
-    <p class="meta">Version 1.0.4 · macOS 13+ (Apple-Chip und Intel) · Windows 10/11, getestet auf Windows 11 (in einer VM) · kostenlos · Open Source (EPL-2.0)</p>
-    <img class="shot" src="../assets/shots/programme-nacht-de.png" alt="Tab PROGRAMME von Link-Suite: oben die Kennzahlen Update, läuft, installiert und Entwicklung, darunter die Gruppen Installiert, Entwicklung, Verfügbar und Kommt bald mit einer Karte je Programm" width="1480" height="920" fetchpriority="high">
-    <p class="caption">Echter Screenshot im Demo-Modus (aufgenommen mit Version 0.3.1): erfundene Ordner, Versionen und Personen.</p>
   </div>
 
-  <div class="note" role="note">
-    <p><strong>Version 1.0.4.</strong> Über Link-Suite bekommst du die Suite: Die Websites der Programme bieten Link-Suite zum Download an, und Link-Suite holt die Programme aus GitHub. Die Einzel-Downloads bleiben in den GitHub-Releases der Programme. Für macOS hat die QA 0.3.1 release-fertig genannt; manches ist nur im Code geprüft. Die Windows-Version ist getestet auf Windows 11 (in einer VM). Link-Suite ist nicht bei Apple oder Microsoft signiert, deshalb warnen beide Systeme einmal beim ersten Start.</p>
-  </div>
-
-  <section id="programme">
-    <p class="eyebrow">Die Link-Suite</p>
-    <h2>Acht Programme, eine Familie</h2>
-    <p class="lead">Kostenlose Programme für Clubs, Festivals und Bühnen. Sie hören zu, zeigen und helfen – und sie reden im Show-Netz miteinander. Link-Suite hält sie zusammen.</p>
-
-    <div class="programs">
-      <article class="prog">
-        <div class="head"><img src="../assets/icons/lj-link.svg" alt="" width="52" height="52"><h3>LJ Link</h3></div>
-        <div class="pills"><span class="pill green">veröffentlicht</span><span class="pill">macOS · Windows</span></div>
-        <p>Zeigt dem Lichtjockey jedes Deck, jede Waveform und jeden Cue von Pioneer- und Denon-Geräten und schickt das Tempo an grandMA, Daslight und mehr.</p>
-        <div class="links"><a href="https://skyplayser.github.io/LJ-Link/">Website</a><a href="https://github.com/skyplayser/LJ-Link">GitHub</a></div>
-      </article>
-      <article class="prog">
-        <div class="head"><img src="../assets/icons/ljl-link-256.png" alt="" width="52" height="52"><h3>LJL Link</h3></div>
-        <div class="pills"><span class="pill amber">Alpha</span><span class="pill">macOS · vom Stick</span></div>
-        <p>Bringt die Serato-Decks vom Mac des DJs in LJ Link in der Booth – direkt vom USB-Stick des Clubs, ohne Installation.</p>
-        <div class="links"><a href="https://skyplayser.github.io/LJL-Link/">Website</a><a href="https://github.com/skyplayser/LJL-Link">GitHub</a></div>
-      </article>
-      <article class="prog">
-        <div class="head"><img src="../assets/icons/vj-link.svg" alt="" width="52" height="52"><h3>VJ-Link</h3></div>
-        <div class="pills"><span class="pill cyan">Beta</span><span class="pill">macOS · Windows</span></div>
-        <p>Live-Visuals, gesteuert vom Lichtpult, auf Bildschirmen, LED-Wänden und Beamern, im Takt der Musik aus LJ Link.</p>
-        <div class="links"><a href="https://skyplayser.github.io/VJ-LINK/de/">Website</a><a href="https://github.com/skyplayser/VJ-LINK">GitHub</a></div>
-      </article>
-      <article class="prog">
-        <div class="head"><img src="../assets/icons/vd-link.svg" alt="" width="52" height="52"><h3>VD-Link</h3></div>
-        <div class="pills"><span class="pill cyan">Beta</span><span class="pill">macOS · Windows</span></div>
-        <p>3D-Lichtvisualisierer für Art-Net und sACN: Dein Lichtpult steuert einen virtuellen Club oder ein Festival, und du siehst die Show, bevor sie hängt.</p>
-        <div class="links"><a href="https://github.com/skyplayser/VD-Link">GitHub</a></div>
-      </article>
-    </div>
-
-    <p class="subhead">Kommt bald – in dieser Reihenfolge</p>
-    <div class="programs">
-      <article class="prog">
-        <div class="head"><img src="../assets/icons/net-link.svg" alt="" width="52" height="52"><h3>NET Link</h3><span class="order">1</span></div>
-        <div class="pills"><span class="pill violet">in Entwicklung</span></div>
-        <p>Wer ist im Show-Netz? Findet IP-Konflikte, falsche Subnetze und fehlendes Multicast – und sagt, was zu ändern ist.</p>
-      </article>
-      <article class="prog">
-        <div class="head"><img src="../assets/icons/crew-link.svg" alt="" width="52" height="52"><h3>Crew Link</h3><span class="order">2</span></div>
-        <div class="pills"><span class="pill violet">Konzept</span></div>
-        <p>Timetable der Nacht: wer wann spielt, Countdown bis Set-Ende und Sperrstunde – eine Uhr für alle.</p>
-      </article>
-      <article class="prog">
-        <div class="head"><img src="../assets/icons/pl-link.svg" alt="" width="52" height="52"><h3>PL Link</h3><span class="order">3</span></div>
-        <div class="pills"><span class="pill violet">Konzept</span></div>
-        <p>Patch und Stromlast: DMX-Adressen, Stromkreise, Kabel- und Packlisten, geplant, bevor das Rig hängt.</p>
-      </article>
-      <article class="prog">
-        <div class="head"><img src="../assets/icons/db-link.svg" alt="" width="52" height="52"><h3>dB Link</h3><span class="order">4</span></div>
-        <div class="pills"><span class="pill violet">Konzept</span></div>
-        <p>Lautstärke nach DIN 15905-5: messen, vor dem Grenzwert warnen und am Ende der Nacht ein Protokoll schreiben.</p>
-      </article>
-    </div>
-    <p class="caption">Termine gibt es nicht. Ein Programm steht hier als veröffentlicht, sobald es das ist.</p>
-
-    <p class="subhead">Und das, das sie zusammenhält</p>
-    <div class="programs">
-      <article class="prog self">
-        <div class="head"><img src="../assets/icons/link-suite.svg" alt="" width="52" height="52"><h3>Link-Suite</h3></div>
-        <div class="pills"><span class="pill green">1.0.4</span><span class="pill">macOS · Windows</span></div>
-        <p>Alle Programme sehen, aus GitHub installieren und aktualisieren, starten, mit dem Team chatten und sehen, wer im Show-Netz ist. Diese Seite.</p>
-        <div class="links"><a href="#download">Download</a><a href="https://github.com/skyplayser/Link-Suite">GitHub</a></div>
-      </article>
-    </div>
-  </section>
-
-  <section id="funktionen">
-    <p class="eyebrow">Version 1.0.4</p>
-    <h2>Was Link-Suite kann</h2>
-    <p class="lead">Eine neue Oberfläche, eine eigene Startanimation, Feinschliff für den Mac und ein Windows-Installer ohne Admin-Rechte – zusätzlich zum Installieren und Aktualisieren aus GitHub.</p>
-    <div class="grid">
-      <div class="card"><h3>Alle Programme auf einen Blick</h3><p>Oben die Kennzahlen, auf die es ankommt – Updates, läuft, installiert, Entwicklung –, darunter die Programme in Gruppen: Installiert, Entwicklung, Verfügbar, Kommt bald. Eine Pille je Karte.</p></div>
-      <div class="card"><h3>Aus GitHub installieren und aktualisieren</h3><p>LJ Link, VJ-Link und VD-Link mit einem Klick direkt aus ihren GitHub-Releases, jede Datei mit SHA-256 geprüft. Aktualisieren klappt auch mehrmals hintereinander; ein hängender Download bricht sauber ab.</p></div>
-      <div class="card"><h3>LJL Link für den Club-Stick</h3><p>„Auf den Stick“ legt LJL Link in einen Ordner oder direkt auf den USB-Stick des Clubs, mit kurzer Anleitung. Die <code>club.json</code> des Clubs kommt weiter von Hand daneben.</p></div>
-      <div class="card"><h3>Startanimation</h3><p>Die Programm-Icons fliegen in ihre Karten. Höchstens etwa 2 Sekunden, überspringbar, ruhig bei „Bewegung reduzieren“, abschaltbar.</p></div>
-      <div class="card"><h3>Zuhause auf dem Mac</h3><p>Fenster ohne Titelleiste, Menüs mit Tastenkürzeln, Über-Fenster, Fortschritt und Update-Zahl am Dock-Symbol, stille Mitteilungen, Menüleisten-Symbol, Willkommen-Karte und ein ordentliches DMG-Fenster.</p></div>
-      <div class="card"><h3>Windows ohne Admin-Rechte</h3><p>Der Installer installiert nur für deinen Benutzer, auf Deutsch oder Englisch.</p></div>
-      <div class="card"><h3>Aktualisiert sich selbst</h3><p>Link-Suite prüft seine eigenen Releases genauso. Die neue Version wird beim Beenden eingesetzt.</p></div>
-      <div class="card"><h3>Entwickleransicht nur bei Bedarf</h3><p>Entwicklerprojekte mit Log-Leiste und Stoppen erscheinen erst, wenn du Entwicklerordner einträgst. Ohne sie: keine npm-Befehle, keine Entwickler-Pillen.</p></div>
-      <div class="card"><h3>Suite-Chat mit EMERGENCY</h3><p>Derselbe Chatraum wie bei LJ Link, LJL Link und VJ-Link, ohne Server. Auf Wunsch bleibt Link-Suite in der Menüleiste (ab Werk aus).</p></div>
-      <div class="card"><h3>IM NETZ</h3><p>Welches Suite-Programm auf welchem Rechner läuft, an welchem Platz, in welcher Version. Fremde Rechner fasst Link-Suite nie an.</p></div>
-    </div>
-  </section>
-
-  <section id="bilder">
-    <p class="eyebrow">Bilder</p>
-    <h2>So sieht es aus</h2>
-    <p class="lead">Echte Screenshots im Demo-Modus, aufgenommen mit Version 0.3.1, mit erfundenen Ordnern, Versionen und Personen.</p>
-    <div class="gallery">
-      <figure><a href="../assets/shots/intro-nacht-de.png"><img src="../assets/shots/intro-nacht-de.png" alt="Standbild der Startanimation: die Programm-Icons auf dem Weg in ihre Karten" width="1480" height="920" loading="lazy" decoding="async"></a><figcaption><b>Startanimation.</b> Die Icons fliegen in ihre Karten (Standbild bei 1,2 s).</figcaption></figure>
-      <figure><a href="../assets/shots/willkommen-nacht-de.png"><img src="../assets/shots/willkommen-nacht-de.png" alt="Willkommen-Karte beim ersten Start: alle Programme an einem Ort, nicht signiert mit Absicht, lokales Netzwerk erlauben" width="1480" height="920" loading="lazy" decoding="async"></a><figcaption><b>Willkommen</b> beim ersten Start.</figcaption></figure>
-      <figure><a href="../assets/shots/im-netz-de.png"><img src="../assets/shots/im-netz-de.png" alt="Tab IM NETZ: Suite-Programme auf vier Rechnern mit Platz, Name, Adresse, Version und Stand" width="1480" height="600" loading="lazy" decoding="async"></a><figcaption><b>IM NETZ.</b> Wer was wo in welcher Version laufen hat. Name und Adressen dieses Rechners sind unkenntlich gemacht.</figcaption></figure>
-      <figure><a href="../assets/shots/chat-de.png"><img src="../assets/shots/chat-de.png" alt="Suite-Chat mit zwei Nachrichten und dem gelben Knopf EMERGENCY" width="1480" height="920" loading="lazy" decoding="async"></a><figcaption><b>Suite-Chat</b> mit EMERGENCY.</figcaption></figure>
-      <figure><a href="../assets/shots/programme-tag-de.png"><img src="../assets/shots/programme-tag-de.png" alt="Tab PROGRAMME im Tagmodus" width="1480" height="920" loading="lazy" decoding="async"></a><figcaption><b>Tagmodus</b> für helle Räume.</figcaption></figure>
-      <figure><a href="../assets/shots/einstellungen-de.png"><img src="../assets/shots/einstellungen-de.png" alt="Tab EINSTELLUNGEN mit Oberfläche, Suite-Chat und Programmen" width="1480" height="920" loading="lazy" decoding="async"></a><figcaption><b>Einstellungen</b> für alle Suite-Programme, markiert mit SUITE.</figcaption></figure>
-    </div>
-  </section>
-
-  <section id="grundsaetze">
-    <p class="eyebrow">Grundsätze der Suite</p>
-    <h2>Hört zu. Zeigt. Fragt.</h2>
-    <p class="lead">Für jedes Programm der Link-Suite gelten dieselben Regeln, auch für Link-Suite selbst.</p>
-    <div class="principles">
-      <div class="principle"><h3>Hört zu</h3><p>Link-Suite steuert kein Gerät und kein anderes Programm im Netz. Andere Rechner werden nur gezeigt, nie angefasst.</p></div>
-      <div class="principle"><h3>Keine Telemetrie</h3><p>Keine Nutzungsdaten, keine Absturzberichte, kein Tracking. Auch diese Website hat keine Tracker.</p></div>
-      <div class="principle"><h3>Kein Server, kein Konto</h3><p>Der Suite-Chat läuft zwischen den Programmen im lokalen Netz, ohne Server und ohne Anmeldung.</p></div>
-      <div class="principle"><h3>Internet nur zu GitHub</h3><p>Link-Suite fragt nur GitHub nach neuen Releases der Suite und lädt die, die du auswählst. Jede Datei wird vor dem Einsetzen mit SHA-256 geprüft.</p></div>
-      <div class="principle"><h3>Erst fragen, ehrlich zum Stand</h3><p>Nichts passiert ohne Klick. Alpha, Beta, „in Entwicklung“ und „nicht signiert“ stehen da, wo sie gelten.</p></div>
-    </div>
-
-    <h3 id="daten">Was deinen Rechner verlässt</h3>
-    <p class="lead">Link-Suite sendet ins lokale Netz, solange der Suite-Chat an ist (ab Werk an, ausschalten in den Einstellungen), und fragt GitHub nach Releases.</p>
-    <div class="table">
-      <table>
-        <thead><tr><th>Daten</th><th>Wer sie bekommt</th></tr></thead>
-        <tbody>
-          <tr><td>„Ich bin da“ alle 5 Sekunden: Programmname, Version, dein Name und Platz im Chat (wenn gesetzt), eine Zufallskennung</td><td>jedes Suite-Programm im lokalen Netz (Multicast <code>239.255.76.76:47676</code>)</td></tr>
-          <tr><td>Chat-Nachrichten und EMERGENCY, die du sendest</td><td>jedes Suite-Programm im lokalen Netz</td></tr>
-          <tr><td>Antwort auf die Netzprüfung von NET Link, mit der IPv4-Adresse jedes Netzwerkadapters</td><td>das NET Link, das gefragt hat</td></tr>
-          <tr><td>„Tschüss“ beim Beenden</td><td>jedes Suite-Programm im lokalen Netz</td></tr>
-          <tr><td>Die Frage nach den neuesten Releases der Suite-Programme und die Downloads, die du startest</td><td>GitHub (<code>api.github.com</code>, <code>github.com</code> und die Download-Server von GitHub). Wie jede Website sieht GitHub deine IP-Adresse. Kein Name und keine Liste deiner Programme wird gesendet.</td></tr>
-          <tr><td>Deine installierten Programme, deine Ordner, das Log von Entwicklerprojekten</td><td>nie – bleibt auf diesem Rechner</td></tr>
-          <tr><td>Nutzungsdaten, Absturzberichte, Telemetrie</td><td>gibt es nicht</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <p class="caption">Der Chat ist unverschlüsselt: Jeder im selben Netzwerk kann mitlesen, und die Programme im Raum geben die letzten Nachrichten an Neue weiter. Schreib nichts Vertrauliches. Ein Entwicklerprojekt, das du startest, ist ein eigenes Programm – was es tut, auch wenn npm Pakete lädt, legt das Projekt fest.</p>
-
-    <h3 id="pruefung">So wird ein Download geprüft</h3>
-    <ul class="checks">
-      <li><b>SHA-256 gegen GitHub:</b> Link-Suite prüft jede Datei mit SHA-256 gegen die Prüfsumme, die GitHub zum Release angibt, und die Größe muss stimmen. Das schützt vor kaputten und vertauschten Downloads – aber nicht vor einem übernommenen GitHub-Konto.</li>
-      <li><b>Ohne Prüfsumme keine Installation:</b> Fehlt die Prüfsumme in einem Release, installiert Link-Suite nicht und öffnet nur die Release-Seite.</li>
-      <li><b>Eine Signatur der Suite kommt später:</b> Eine eigene Signatur der Suite (<code>SHA256SUMS.sig</code>) ist geplant. Hat ein Release schon eine, prüft Link-Suite sie bereits heute, und eine falsche stoppt die Installation.</li>
-      <li><b>Nur aus dem Repository des Programms,</b> nur über HTTPS von GitHub. Auf dem Mac muss im Download das richtige Programm in der richtigen Version liegen; ein laufendes Programm wird nie ersetzt oder beendet.</li>
+  <div class="wrap">
+    <ul class="facts reveal" aria-label="Link-Suite in Zahlen">
+      <li><b>8</b><span>Programme, eine Familie</span></li>
+      <li><b>1</b><span>Klick zum Installieren und Aktualisieren</span></li>
+      <li><b>0</b><span>Konten, Abos und Tracker</span></li>
+      <li><b>2</b><span>Systeme: macOS und Windows</span></li>
     </ul>
-    <p class="caption">Weder Link-Suite noch die Programme, die es installiert, sind bei Apple oder Microsoft signiert. Die Programme schreibt Link-Suite selbst auf die Platte – so wie die eingebauten Updater von LJ Link und VJ-Link. macOS prüft sie dann nicht selbst; an seiner Stelle stehen die Prüfungen von Link-Suite oben.</p>
 
-    <div class="note emergency" role="note">
-      <p><strong>EMERGENCY ist ein Hinweis-Popup fürs Team, keine Alarm- oder Sicherheitsanlage.</strong> Es ist eine Alpha, kann ausfallen oder verspätet ankommen, und jeder im selben Netzwerk kann es auslösen. Es ersetzt keine Durchsagen, Funkgeräte oder das Sicherheitskonzept der Veranstaltung.</p>
-    </div>
-  </section>
+    <section id="so-gehts">
+      <p class="eyebrow">So einfach geht's</p>
+      <h2>In drei Schritten startklar</h2>
+      <ol class="steps3">
+        <li class="reveal"><span class="num">1</span><h3>Link-Suite laden</h3><p>Einmal herunterladen, für Mac oder Windows. Ohne Anmeldung, ohne Konto.</p></li>
+        <li class="reveal"><span class="num">2</span><h3>Programme wählen</h3><p>Auf der Karte <b>Installieren</b> klicken. Link-Suite holt die neueste Version direkt aus GitHub und prüft jede Datei.</p></li>
+        <li class="reveal"><span class="num">3</span><h3>Loslegen</h3><p>Starten, aktualisieren, das Netz im Blick, mit dem Team chatten. Neue Versionen meldet Link-Suite von selbst.</p></li>
+      </ol>
+    </section>
 
-  <section id="stand">
-    <p class="eyebrow">Ehrlich zum Stand</p>
-    <h2>Was geprüft ist, was als Nächstes kommt</h2>
-    <div class="split">
-      <div class="card">
-        <h3>Geprüft für 0.3.1 – macOS release-fertig</h3>
-        <ul>
-          <li><b>Installieren und Aktualisieren, echt:</b> VJ-Link aus GitHub installiert, dann zweimal hintereinander aktualisiert – jedes Mal sauber, ohne Reste. Ein Abbruch lässt die installierte App unverändert. (Entwickler-Build mit demselben Code; die fertige App lässt sich nicht fernsteuern.)</li>
-          <li><b>Langsame Downloads</b> gegen einen gedrosselten lokalen Server, in Node und unter Electron.</li>
-          <li><b>Oberfläche</b> in Tag und Nacht, Deutsch und Englisch, in vier Fenstergrößen; die Startanimation Bild für Bild gemessen.</li>
-          <li><b>Bauen und 146 Unit-Tests</b> grün; beide DMGs bauen; die fertige App startete mit echten Daten.</li>
-          <li><b>Windows:</b> getestet auf Windows 11, in einer VM: Installieren, Aktualisieren (auch mit Admin-Abfrage), Starten, Deinstallieren.</li>
-        </ul>
-      </div>
-      <div class="card">
-        <h3>Nur im Code oder noch nicht</h3>
-        <ul>
-          <li><b>Nur im Code:</b> Dock-Fortschritt und Mitteilungen, das DMG-Fenster im Finder, der helle Systemmodus beim Start.</li>
-          <li><b>Nicht von den QA-Berichten abgedeckt:</b> das Installieren von VD-Link, neu in 1.0.0.</li>
-          <li><b>Nicht geprüft:</b> ein gedrosselter echter GitHub-Download, das Selbst-Update (noch kein Release von Link-Suite), Link-Suite zwischen zwei echten Rechnern oder im Club.</li>
-        </ul>
-      </div>
-      <div class="card">
-        <h3>Als Nächstes</h3>
-        <ul>
-          <li><b>Eine eigene Signatur der Suite</b> an jedem Release (<code>SHA256SUMS.sig</code>).</li>
-          <li><b>NET Link, Crew Link, PL Link und dB Link</b>, wenn sie fertig sind – ohne Termine.</li>
-          <li><b>Club-Stick vorbereiten</b> mit <code>club.json</code>; Bonjour für die Weboberflächen der Suite-Programme.</li>
-        </ul>
-      </div>
-      <div class="card">
-        <h3>Grenzen</h3>
-        <ul>
-          <li><b>Nicht bei Apple oder Microsoft signiert:</b> macOS (Gatekeeper) und Windows (SmartScreen) warnen beim ersten Start. Nach einem Update kann macOS erneut nach dem lokalen Netzwerk fragen.</li>
-          <li><b>Windows:</b> Firewall-Regeln, die Windows beim ersten Start anlegt, bleiben nach dem Deinstallieren stehen (zum Entfernen bräuchte es Admin-Rechte).</li>
-          <li><b>Private Repositories</b> lassen sich nicht über Link-Suite installieren; es fragt nie nach Tokens.</li>
-        </ul>
-      </div>
-    </div>
-  </section>
+    <section id="funktionen">
+      <p class="eyebrow">Funktionen</p>
+      <h2>Alles, was die Suite braucht</h2>
+      <p class="lead">Ein Fenster für alle Programme der Link-Suite – gebaut für die Booth, den FOH und die Nacht davor.</p>
 
-  <section id="download">
-    <p class="eyebrow">Download</p>
-    <h2>Link-Suite 1.0.4 für macOS und Windows</h2>
-    <p class="lead">Lade Link-Suite einmal. Es installiert und aktualisiert LJ Link, LJL Link und VJ-Link für dich, direkt aus GitHub, geprüft mit SHA-256. Kostenlos und Open Source.</p>
-    <div class="dl">
-      <div class="card"><h3>macOS · Apple-Chip</h3><p>M1 und neuer · macOS 13+</p><div class="pills"><span class="pill green">getestet</span></div><a class="btn primary" href="https://github.com/skyplayser/Link-Suite/releases/latest/download/Link-Suite-macos-arm64.dmg">.dmg</a></div>
-      <div class="card"><h3>macOS · Intel</h3><p>Macs mit Intel-Prozessor · macOS 13+</p><div class="pills"><span class="pill">noch auf keinem Intel-Mac ausprobiert</span></div><a class="btn primary" href="https://github.com/skyplayser/Link-Suite/releases/latest/download/Link-Suite-macos-intel.dmg">.dmg</a></div>
-      <div class="card"><h3>Windows</h3><p>Windows 10 / 11 · 64 Bit</p><div class="pills"><span class="pill green">getestet auf Windows 11 (VM)</span></div><a class="btn primary" href="https://github.com/skyplayser/Link-Suite/releases/latest/download/Link-Suite-windows.exe">.exe</a></div>
-    </div>
-    <p class="meta"><a href="https://github.com/skyplayser/Link-Suite/releases">Alle Versionen und Änderungen</a> · Die Einzel-Downloads der Programme bleiben in ihren GitHub-Releases.</p>
+      <div class="feature reveal">
+        <div class="text">
+          <span class="badge">Programme</span>
+          <h3>Alles auf einen Blick</h3>
+          <p>Oben die Zahlen, auf die es ankommt: Updates, laufende und installierte Programme. Darunter jedes Programm als Karte, sortiert nach installiert, verfügbar und kommt bald. Ein Klick auf eine Karte zeigt Version, Herkunft und was neu ist.</p>
+          <ul class="ticks">
+            <li>Installierte Programme werden automatisch gefunden</li>
+            <li>Starten oder nach vorn holen mit einem Klick</li>
+            <li>Tag- und Nachtmodus für helle Räume und dunkle Booths</li>
+          </ul>
+        </div>
+        <figure><img src="../assets/shots/programme-tag-de.png" alt="Tab PROGRAMME im Tagmodus mit den Karten LJ Link, VD-Link, VJ-Link, LJL Link und den kommenden Programmen" width="1480" height="820" loading="lazy" decoding="async"></figure>
+      </div>
 
-    <h3 id="install">Erster Start: die Warnung überspringen</h3>
-    <p class="lead">Link-Suite ist nicht bei Apple oder Microsoft signiert. Eine Signatur kostet Geld und sagt nichts über die Sicherheit aus. Aber beide Systeme warnen deshalb einmal beim ersten Start. Lade Link-Suite nur von dieser Seite oder von GitHub.</p>
-    <div class="grid">
-      <div class="card">
-        <h3>macOS</h3>
-        <p>Meldung: „Link-Suite“ nicht geöffnet – Apple konnte nicht überprüfen, ob „Link-Suite“ frei von Schadsoftware ist.</p>
-        <ol class="steps">
-          <li>Die .dmg öffnen und Link-Suite in den Ordner Programme ziehen.</li>
-          <li>Link-Suite einmal starten und bei der Warnung auf <b>Fertig</b> klicken (nicht „In den Papierkorb legen“).</li>
-          <li><b>Systemeinstellungen → Datenschutz &amp; Sicherheit</b> öffnen, nach unten scrollen und bei Link-Suite auf <b>Dennoch öffnen</b> klicken. Mit Passwort oder Touch ID bestätigen, dann <b>Öffnen</b>.</li>
-          <li><b>Lokales Netzwerk</b> erlauben, wenn macOS fragt. Link-Suite braucht es für den Suite-Chat und IM NETZ.</li>
-        </ol>
-        <p><b>Nach einem Update kann macOS erneut nach dem lokalen Netzwerk fragen.</b> Die App ist nicht signiert, deshalb hält macOS die neue Version für eine neue App. Erlaube es dann noch einmal.</p>
+      <div class="feature flip reveal">
+        <div class="text">
+          <span class="badge">Installieren &amp; Aktualisieren</span>
+          <h3>Ein Klick. Geprüft. Aktuell.</h3>
+          <p>LJ Link, VJ-Link und VD-Link installiert und aktualisiert Link-Suite direkt aus ihren GitHub-Releases. Jede Datei wird geprüft, bevor sie auf deine Platte kommt – und ein laufendes Programm wird nie einfach ersetzt.</p>
+          <ul class="ticks">
+            <li>Nur von GitHub, nur über HTTPS</li>
+            <li>Größe und SHA-256-Prüfsumme müssen stimmen</li>
+            <li>Richtiges Programm in der richtigen Version</li>
+            <li>Ein abgebrochener Download lässt alles, wie es war</li>
+          </ul>
+        </div>
+        <div class="panel-visual" aria-hidden="true">
+          <div class="pv-row"><img src="../assets/icons/lj-link.svg" alt="" width="44" height="44"><div><b>LJ Link</b><span>1.7.10 → <em>1.7.11</em></span></div><i class="pv-btn">Aktualisieren</i></div>
+          <div class="pv-bar"><span></span></div>
+          <div class="pv-checks"><span>HTTPS</span><span>Größe</span><span>SHA-256</span><span>Inhalt</span></div>
+          <div class="pv-row done"><img src="../assets/icons/vj-link.svg" alt="" width="44" height="44"><div><b>VJ-Link</b><span>installiert</span></div><i class="pv-ok">✓</i></div>
+        </div>
       </div>
-      <div class="card">
-        <h3>Windows</h3>
-        <p>Meldung: „Der Computer wurde durch Windows geschützt“ (Microsoft Defender SmartScreen).</p>
-        <ol class="steps">
-          <li>Link-Suite-windows.exe starten.</li>
-          <li>Im blauen Fenster auf <b>Weitere Informationen</b> klicken, dann auf <b>Trotzdem ausführen</b>.</li>
-          <li>Den Installer durchklicken. Er installiert nur für deinen Benutzer und braucht keine Admin-Rechte.</li>
-          <li>Fragt die Windows-Firewall: <b>Private Netzwerke</b> anhaken und Zugriff zulassen (für den Suite-Chat).</li>
-        </ol>
+
+      <div class="feature reveal">
+        <div class="text">
+          <span class="badge">Im Netz</span>
+          <h3>Wer, wo, welche Version</h3>
+          <p>IM NETZ zeigt jedes Suite-Programm im Show-Netz: auf welchem Rechner, an welchem Platz, wer es bedient und in welcher Version. Ein Update für einen anderen Rechner? Link-Suite sagt es dir – und fasst fremde Rechner nie an.</p>
+          <ul class="ticks">
+            <li>Ohne Einrichtung, ohne Server</li>
+            <li>Gruppiert nach Rechnern, mit Platz und Name</li>
+            <li>Sieht auch, wer gerade gegangen ist</li>
+          </ul>
+        </div>
+        <figure><img src="../assets/shots/im-netz-de.png" alt="Tab IM NETZ: Suite-Programme auf vier Rechnern mit Platz, Name, Adresse, Version und Stand" width="1480" height="456" loading="lazy" decoding="async"><figcaption>Name und Adressen dieses Rechners sind unkenntlich gemacht.</figcaption></figure>
       </div>
-      <div class="card">
-        <h3>Schnellstart</h3>
-        <ol class="steps">
-          <li><b>PROGRAMME:</b> auf einer Karte Installieren, Aktualisieren oder Starten.</li>
-          <li><b>LJL Link:</b> „Auf den Stick“ – ein Ordner oder der USB-Stick des Clubs.</li>
-          <li><b>IM NETZ:</b> sehen, welche Suite-Programme wo laufen.</li>
-          <li><b>EINSTELLUNGEN:</b> Name und Platz für den Chat, Sprache, Tag oder Nacht.</li>
-          <li>Die Sprechblase oben rechts öffnet den Chat. EMERGENCY ist der gelbe Knopf.</li>
-        </ol>
+
+      <div class="feature flip reveal">
+        <div class="text">
+          <span class="badge">Suite-Chat</span>
+          <h3>Das Team im Gespräch – mit EMERGENCY</h3>
+          <p>Ein Chatraum für alle Suite-Programme im Netz: LJ Link in der Booth, VJ-Link am VJ-Platz, Link-Suite am FOH. Kein Server, kein Konto, sofort da. Und wenn es drauf ankommt, holt der gelbe EMERGENCY-Knopf alle nach vorn.</p>
+          <ul class="ticks">
+            <li>Name und Platz – jeder weiß, wer schreibt</li>
+            <li>Auf Wunsch weiter in der Menüleiste</li>
+            <li>Derselbe Raum in LJ Link, LJL Link und VJ-Link</li>
+          </ul>
+          <p class="fine">EMERGENCY ist ein Hinweis fürs Team und ersetzt keine Alarm- oder Sicherheitsanlage.</p>
+        </div>
+        <figure><img src="../assets/shots/chat-de.png" alt="Suite-Chat mit Nachrichten von Lena am VJ-Platz und Tom am FOH und dem gelben Knopf EMERGENCY" width="1480" height="820" loading="lazy" decoding="async"></figure>
       </div>
-    </div>
-    <p class="caption">Manche Virenscanner melden unbekannte, unsignierte Programme vorsorglich. Fragen oder Probleme? <a href="https://discord.gg/N6DMca4Bjk" rel="noopener">Discord</a> oder fehlermelden@nextphilm.de. Ein eingebautes „Problem melden“ hat Link-Suite noch nicht.</p>
-  </section>
+
+      <div class="feature reveal">
+        <div class="text">
+          <span class="badge">Einstellungen</span>
+          <h3>Einmal einstellen, überall gültig</h3>
+          <p>Sprache, Tag oder Nacht, Startanimation, Name und Platz im Chat: Was du in Link-Suite einstellst, übernehmen alle Suite-Programme. Deutsch oder Englisch wechselst du jederzeit oben im Fenster mit DE | EN.</p>
+          <ul class="ticks">
+            <li>Markiert mit SUITE, wo es für alle gilt</li>
+            <li>Ein Programm mit eigener Wahl behält sie</li>
+          </ul>
+        </div>
+        <figure><img src="../assets/shots/einstellungen-de.png" alt="Tab EINSTELLUNGEN mit Sprache, Anzeige, Startanimation, Suite-Chat und Programmen" width="1480" height="840" loading="lazy" decoding="async"></figure>
+      </div>
+
+      <div class="grid more-features">
+        <div class="card reveal"><span class="ico" aria-hidden="true">⟳</span><h3>Aktualisiert sich selbst</h3><p>Link-Suite holt seine eigenen Updates genauso geprüft. Ein Klick auf „Jetzt neu starten“, und die neue Version läuft – auf dem Mac und unter Windows, ohne Admin-Abfrage.</p></div>
+        <div class="card reveal"><span class="ico" aria-hidden="true">⌁</span><h3>LJL Link für den Club-Stick</h3><p>„Auf den Stick“ legt LJL Link direkt auf den USB-Stick des Clubs oder in einen Ordner – mit kurzer Anleitung für den Gast-DJ.</p></div>
+        <div class="card reveal"><span class="ico" aria-hidden="true">✦</span><h3>Startanimation</h3><p>Die Programm-Icons fliegen in ihre Karten. Kurz, mit Klick überspringbar, ruhig bei „Bewegung reduzieren“.</p></div>
+        <div class="card reveal"><span class="ico" aria-hidden="true">⌘</span><h3>Zuhause auf dem Mac</h3><p>Fenster ohne Titelleiste, Tastenkürzel, Fortschritt und Update-Zahl am Dock-Symbol, stille Mitteilungen und ein Symbol in der Menüleiste.</p></div>
+        <div class="card reveal"><span class="ico" aria-hidden="true">⊞</span><h3>Windows ohne Admin-Rechte</h3><p>Der Installer installiert nur für deinen Benutzer – auf Deutsch oder Englisch, ohne Admin-Abfrage.</p></div>
+        <div class="card reveal"><span class="ico" aria-hidden="true">&lt;/&gt;</span><h3>Entwickleransicht</h3><p>Für alle, die an der Suite mitbauen: Projekte aus dem eigenen Ordner starten, mit Log-Leiste und Stoppen. Erscheint nur, wenn du sie brauchst.</p></div>
+      </div>
+    </section>
+
+    <section id="suite">
+      <p class="eyebrow">Die Link-Suite</p>
+      <h2>Acht Programme, eine Familie</h2>
+      <p class="lead">Kostenlose Programme für Clubs, Festivals und Bühnen. Sie hören zu, zeigen und helfen – und sie sprechen im Show-Netz miteinander. Link-Suite hält sie zusammen.</p>
+
+      <p class="subhead">Jetzt verfügbar</p>
+      <div class="programs">
+        <article class="prog reveal">
+          <div class="head"><img src="../assets/icons/lj-link.svg" alt="" width="52" height="52"><h3>LJ Link</h3></div>
+          <div class="pills"><span class="pill green">verfügbar</span><span class="pill">macOS · Windows</span></div>
+          <p>Zeigt dem Lichtjockey jedes Deck, jede Waveform und jeden Cue von Pioneer- und Denon-Geräten und schickt das Tempo an grandMA, Daslight und mehr.</p>
+          <div class="links"><a href="https://skyplayser.github.io/LJ-Link/">Website</a><a href="https://github.com/skyplayser/LJ-Link">GitHub</a></div>
+        </article>
+        <article class="prog reveal">
+          <div class="head"><img src="../assets/icons/vj-link.svg" alt="" width="52" height="52"><h3>VJ-Link</h3></div>
+          <div class="pills"><span class="pill green">verfügbar</span><span class="pill">macOS · Windows</span></div>
+          <p>Live-Visuals, gesteuert vom Lichtpult, auf Bildschirmen, LED-Wänden und Beamern – im Takt der Musik aus LJ Link.</p>
+          <div class="links"><a href="https://skyplayser.github.io/VJ-LINK/de/">Website</a><a href="https://github.com/skyplayser/VJ-LINK">GitHub</a></div>
+        </article>
+        <article class="prog reveal">
+          <div class="head"><img src="../assets/icons/vd-link.svg" alt="" width="52" height="52"><h3>VD-Link</h3></div>
+          <div class="pills"><span class="pill green">verfügbar</span><span class="pill">macOS · Windows</span></div>
+          <p>3D-Lichtvisualisierer für Art-Net und sACN: Dein Lichtpult steuert einen virtuellen Club oder ein Festival, und du siehst die Show, bevor sie hängt.</p>
+          <div class="links"><a href="https://github.com/skyplayser/VD-Link">GitHub</a></div>
+        </article>
+        <article class="prog reveal">
+          <div class="head"><img src="../assets/icons/ljl-link-256.png" alt="" width="52" height="52"><h3>LJL Link</h3></div>
+          <div class="pills"><span class="pill green">verfügbar</span><span class="pill">macOS · vom Stick</span></div>
+          <p>Bringt die Serato-Decks vom Mac des DJs in LJ Link in der Booth – direkt vom USB-Stick des Clubs, ohne Installation.</p>
+          <div class="links"><a href="https://skyplayser.github.io/LJL-Link/">Website</a><a href="https://github.com/skyplayser/LJL-Link">GitHub</a></div>
+        </article>
+      </div>
+
+      <p class="subhead">Bald in der Suite</p>
+      <div class="programs">
+        <article class="prog soon reveal">
+          <div class="head"><img src="../assets/icons/net-link.svg" alt="" width="52" height="52"><h3>NET Link</h3></div>
+          <div class="pills"><span class="pill violet">bald</span></div>
+          <p>Wer ist im Show-Netz? Findet IP-Konflikte, falsche Subnetze und fehlendes Multicast – und sagt, was zu ändern ist.</p>
+        </article>
+        <article class="prog soon reveal">
+          <div class="head"><img src="../assets/icons/crew-link.svg" alt="" width="52" height="52"><h3>Crew Link</h3></div>
+          <div class="pills"><span class="pill violet">bald</span></div>
+          <p>Der Timetable der Nacht: wer wann spielt, Countdown bis Set-Ende und Sperrstunde – eine Uhr für alle, auch aufs Handy.</p>
+        </article>
+        <article class="prog soon reveal">
+          <div class="head"><img src="../assets/icons/pl-link.svg" alt="" width="52" height="52"><h3>PL Link</h3></div>
+          <div class="pills"><span class="pill violet">bald</span></div>
+          <p>Patch und Stromlast: DMX-Adressen, Stromkreise, Kabel- und Packlisten – geplant, bevor das Rig hängt.</p>
+        </article>
+        <article class="prog soon reveal">
+          <div class="head"><img src="../assets/icons/db-link.svg" alt="" width="52" height="52"><h3>dB Link</h3></div>
+          <div class="pills"><span class="pill violet">bald</span></div>
+          <p>Lautstärke nach DIN 15905-5: messen, vor dem Grenzwert warnen und am Ende der Nacht das Protokoll schreiben.</p>
+        </article>
+      </div>
+      <p class="caption">Neue Programme kommen mit dem nächsten Update von Link-Suite direkt in dein Fenster.</p>
+    </section>
+
+    <section id="sicherheit">
+      <p class="eyebrow">Sicherheit &amp; Privatsphäre</p>
+      <h2>Hört zu. Zeigt. Fragt.</h2>
+      <p class="lead">Für jedes Programm der Link-Suite gelten dieselben Regeln – auch für Link-Suite selbst.</p>
+      <div class="principles">
+        <div class="principle reveal"><h3>Hört nur zu</h3><p>Link-Suite steuert kein Gerät und kein Programm im Netz. Andere Rechner werden gezeigt, nie angefasst.</p></div>
+        <div class="principle reveal"><h3>Keine Telemetrie</h3><p>Keine Nutzungsdaten, keine Absturzberichte, kein Tracking. Auch diese Website kommt ohne Tracker aus.</p></div>
+        <div class="principle reveal"><h3>Kein Server, kein Konto</h3><p>Der Suite-Chat läuft direkt zwischen den Programmen im lokalen Netz. Keine Anmeldung, nirgends.</p></div>
+        <div class="principle reveal"><h3>Nur GitHub</h3><p>Ins Internet geht Link-Suite nur, um GitHub nach neuen Versionen zu fragen und das zu laden, was du auswählst.</p></div>
+        <div class="principle reveal"><h3>Nichts ohne Klick</h3><p>Installiert, aktualisiert und gestartet wird nur, wenn du es willst.</p></div>
+      </div>
+
+      <details class="more">
+        <summary>Was deinen Rechner verlässt</summary>
+        <p>Link-Suite sendet ins lokale Netz, solange der Suite-Chat an ist (ab Werk an, abschaltbar in den Einstellungen), und fragt GitHub nach Releases.</p>
+        <div class="table">
+          <table>
+            <thead><tr><th>Daten</th><th>Wer sie bekommt</th></tr></thead>
+            <tbody>
+              <tr><td>„Ich bin da“ alle 5 Sekunden: Programmname, Version, dein Name und Platz im Chat (wenn gesetzt), eine Zufallskennung</td><td>jedes Suite-Programm im lokalen Netz (Multicast <code>239.255.76.76:47676</code>)</td></tr>
+              <tr><td>Chat-Nachrichten und EMERGENCY, die du sendest</td><td>jedes Suite-Programm im lokalen Netz</td></tr>
+              <tr><td>Antwort auf die Netzprüfung von NET Link, mit der IPv4-Adresse jedes Netzwerkadapters</td><td>das NET Link, das gefragt hat</td></tr>
+              <tr><td>„Tschüss“ beim Beenden</td><td>jedes Suite-Programm im lokalen Netz</td></tr>
+              <tr><td>Die Frage nach den neuesten Releases der Suite-Programme und die Downloads, die du startest</td><td>GitHub (<code>api.github.com</code>, <code>github.com</code> und die Download-Server von GitHub). Wie jede Website sieht GitHub deine IP-Adresse. Kein Name und keine Liste deiner Programme wird gesendet.</td></tr>
+              <tr><td>Deine installierten Programme, deine Ordner, das Log von Entwicklerprojekten</td><td>niemand – bleibt auf diesem Rechner</td></tr>
+              <tr><td>Nutzungsdaten, Absturzberichte, Telemetrie</td><td>gibt es nicht</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="caption">Der Chat ist bewusst einfach gehalten und unverschlüsselt: Jeder im selben Netzwerk kann mitlesen, und die Programme im Raum geben die letzten Nachrichten an Neue weiter. Schreib dort nichts Vertrauliches. Ein Entwicklerprojekt, das du startest, ist ein eigenes Programm – was es tut, legt das Projekt fest.</p>
+      </details>
+
+      <details class="more">
+        <summary>So prüft Link-Suite jeden Download</summary>
+        <ul class="checks">
+          <li><b>Nur aus dem Repository des Programms,</b> nur über HTTPS von GitHub.</li>
+          <li><b>Größe und SHA-256</b> müssen zur Prüfsumme passen, die GitHub zum Release angibt. Fehlt sie, installiert Link-Suite nicht und öffnet stattdessen die Release-Seite.</li>
+          <li><b>Der Inhalt muss stimmen:</b> genau ein Programm, mit der richtigen Kennung und Version.</li>
+          <li><b>Laufende Programme bleiben unangetastet:</b> ersetzt wird erst, wenn das Programm beendet ist.</li>
+        </ul>
+        <p class="caption">Die Prüfungen schützen vor kaputten und vertauschten Downloads. Link-Suite und die Suite-Programme sind ohne Apple- oder Microsoft-Zertifikat veröffentlicht; die Prüfung übernimmt Link-Suite selbst.</p>
+      </details>
+    </section>
+
+    <section id="download">
+      <div class="dl-band reveal">
+        <img class="icon" src="../assets/icons/link-suite.svg" alt="" width="84" height="84">
+        <p class="eyebrow">Download</p>
+        <h2>Link-Suite 1.0.4 laden</h2>
+        <p class="lead">Einmal laden – den Rest holt Link-Suite. Kostenlos, Open Source, ohne Anmeldung.</p>
+        <div class="dl">
+          <a class="dl-card" href="https://github.com/skyplayser/Link-Suite/releases/latest/download/Link-Suite-macos-arm64.dmg"><b>macOS · Apple-Chip</b><span>M1 und neuer · macOS 13+</span><i>.dmg laden</i></a>
+          <a class="dl-card" href="https://github.com/skyplayser/Link-Suite/releases/latest/download/Link-Suite-macos-intel.dmg"><b>macOS · Intel</b><span>Macs mit Intel-Prozessor · macOS 13+</span><i>.dmg laden</i></a>
+          <a class="dl-card" href="https://github.com/skyplayser/Link-Suite/releases/latest/download/Link-Suite-windows.exe"><b>Windows</b><span>Windows 10 / 11 · 64 Bit</span><i>.exe laden</i></a>
+        </div>
+        <p class="meta"><a href="https://github.com/skyplayser/Link-Suite/releases">Alle Versionen, Änderungen und Prüfsummen</a></p>
+      </div>
+
+      <h3 id="install">Erster Start</h3>
+      <p class="lead">Link-Suite ist ein freies Projekt und erscheint ohne Apple- oder Microsoft-Zertifikat. Beim ersten Start fragt dein System deshalb einmal nach – so geht's weiter. Lade Link-Suite nur von dieser Seite oder von GitHub.</p>
+      <div class="grid">
+        <div class="card">
+          <h3>macOS</h3>
+          <ol class="steps">
+            <li>Die .dmg öffnen und Link-Suite in den Ordner Programme ziehen.</li>
+            <li>Link-Suite starten. Meldet macOS, dass es die App nicht überprüfen konnte, auf <b>Fertig</b> klicken.</li>
+            <li><b>Systemeinstellungen → Datenschutz &amp; Sicherheit</b> öffnen und bei Link-Suite auf <b>Dennoch öffnen</b> klicken, dann <b>Öffnen</b>.</li>
+            <li><b>Lokales Netzwerk</b> erlauben – für Suite-Chat und IM NETZ.</li>
+          </ol>
+          <p class="fine">Tipp: Fragt macOS nach einem Update noch einmal nach dem lokalen Netzwerk, einfach wieder erlauben.</p>
+        </div>
+        <div class="card">
+          <h3>Windows</h3>
+          <ol class="steps">
+            <li>Link-Suite-windows.exe starten.</li>
+            <li>Zeigt Windows „Der Computer wurde durch Windows geschützt“: <b>Weitere Informationen</b>, dann <b>Trotzdem ausführen</b>.</li>
+            <li>Der Installer richtet Link-Suite für deinen Benutzer ein – ohne Admin-Rechte.</li>
+            <li>Fragt die Windows-Firewall: <b>Private Netzwerke</b> zulassen (für den Suite-Chat).</li>
+          </ol>
+        </div>
+        <div class="card">
+          <h3>Schnellstart</h3>
+          <ol class="steps">
+            <li><b>PROGRAMME:</b> auf einer Karte Installieren, Aktualisieren oder Starten.</li>
+            <li><b>LJL Link:</b> „Auf den Stick“ – auf den USB-Stick des Clubs.</li>
+            <li><b>IM NETZ:</b> sehen, welche Suite-Programme wo laufen.</li>
+            <li><b>EINSTELLUNGEN:</b> Name und Platz, Sprache, Tag oder Nacht.</li>
+            <li>Die Sprechblase oben rechts öffnet den Chat. EMERGENCY ist der gelbe Knopf.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section id="fragen">
+      <p class="eyebrow">Fragen</p>
+      <h2>Gut zu wissen</h2>
+      <div class="faq">
+        <details><summary>Was kostet Link-Suite?</summary><p>Nichts. Link-Suite und alle Programme der Suite sind kostenlos und Open Source (EPL-2.0) – ohne Abo, ohne Konto, ohne Werbung.</p></details>
+        <details><summary>Brauche ich Link-Suite, um die Programme zu nutzen?</summary><p>Nein, jedes Programm läuft auch allein, und die Einzel-Downloads bleiben in den GitHub-Releases. Link-Suite macht Installieren, Aktualisieren und den Überblick einfach bequem.</p></details>
+        <details><summary>Funktioniert das ohne Internet?</summary><p>Ja. Starten, IM NETZ und der Suite-Chat laufen komplett im lokalen Netz. Internet braucht Link-Suite nur zum Installieren und Aktualisieren.</p></details>
+        <details><summary>Wie bleibt Link-Suite selbst aktuell?</summary><p>Unter Einstellungen → Über zeigt Link-Suite neue Versionen an, lädt sie, prüft sie und setzt sie mit „Jetzt neu starten“ ein – auf dem Mac und unter Windows.</p></details>
+        <details><summary>Gibt es Link-Suite auf Englisch?</summary><p>Ja. Oben im Fenster wechselst du mit DE | EN jederzeit die Sprache – und alle Suite-Programme ziehen mit.</p></details>
+        <details><summary>Läuft Link-Suite auf Intel-Macs?</summary><p>Ja, dafür gibt es eine eigene Version für Macs mit Intel-Prozessor ab macOS 13.</p></details>
+        <details><summary>Was ist EMERGENCY?</summary><p>Ein auffälliger Hinweis an alle Suite-Programme im Netz, wenn das Team sofort Bescheid wissen muss. EMERGENCY ersetzt keine Durchsagen, Funkgeräte oder das Sicherheitskonzept der Veranstaltung.</p></details>
+        <details><summary>Wo bekomme ich Hilfe?</summary><p>Im <a href="https://discord.gg/N6DMca4Bjk" rel="noopener">Discord</a> der Link-Suite oder per Mail an fehlermelden@nextphilm.de.</p></details>
+      </div>
+    </section>
+  </div>
 </main>
 
 <footer>
@@ -311,7 +371,7 @@
       <a href="https://skyplayser.github.io/LJL-Link/">LJL Link</a>
       <a href="https://skyplayser.github.io/VJ-LINK/de/">VJ-Link</a>
       <a href="https://github.com/skyplayser/VD-Link">VD-Link</a>
-      <span>NET Link · Crew Link · PL Link · dB Link (kommen)</span>
+      <span>NET Link · Crew Link · PL Link · dB Link (bald)</span>
       <a href="https://discord.gg/N6DMca4Bjk" rel="noopener">Discord</a>
     </p>
     <p>Open Source unter der Eclipse Public License 2.0, kostenlos und ohne Gewähr. © 2026 Philipp Spruck / NEXTPHILM. Gebaut mit Electron (MIT). Software, Netz und Geräte können ausfallen: Halte immer einen Plan B bereit.</p>

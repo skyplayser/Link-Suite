@@ -99,6 +99,8 @@ process.on("unhandledRejection", e => { log("unhandledRejection", String((e as E
 if (shotSpec) {
   store.memoryOnly = true;
   store.suite = { ...store.suite, lang: shotSpec.lang, theme: shotSpec.theme, intro: shotSpec.intro > 0, chat: { nick: "Max", where: "Booth", on: true } };
+  // Website-Bilder: so, wie es ohne Entwicklerordner aussieht
+  if (arg("nodev") !== null) store.launcher.devView = false;
 }
 if (demo && !store.suite.chat.nick) store.suite = { ...store.suite, chat: { ...store.suite.chat, nick: "Max", where: "Booth" } };
 
