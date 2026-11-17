@@ -151,7 +151,7 @@ describe("Unter Windows immer der Installer, nie Ersetzen über .neu/.alt (1.0.0
   it("Weg je Quelle und Plattform", () => {
     for (const src of Object.values(SOURCES)) {
       const exe = src.asset("win32", "x64", "1.0.0");
-      if (exe) expect(installWay(src.id, exe, "win32")).toBe("exe");
+      if (exe) expect(installWay(src.id, exe, "win32")).toBe(src.id === "suite" ? "self-exe" : "exe"); // 1.0.3: Selbst-Update
       expect(installWay(src.id, "X.dmg", "win32")).toBeNull();
       expect(installWay(src.id, "X.zip", "win32")).toBeNull();
     }

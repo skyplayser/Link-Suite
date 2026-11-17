@@ -214,6 +214,7 @@ function renderSelf(): void {
     stateEl.textContent = e.message || t("pill.update", { v: e.latest.version });
     const busy = e.phase === "download" || e.phase === "verify" || e.phase === "install" || e.phase === "waiting";
     if (e.phase !== "done") ctl.append(h("button", { class: "btn primary", type: "button", disabled: busy || !e.latest.sha256, text: busy ? t(`inst.phase.${e.phase}`) : t("set.self.update", { v: e.latest.version }), onclick: () => void api.install("suite") }));
+    else if (u?.selfPending) ctl.append(h("button", { class: "btn primary", type: "button", text: t("set.self.restart"), onclick: () => void api.restartForUpdate() }));
   } else stateEl.textContent = t("set.self.current", { v: appInfo.version });
   ctl.append(h("button", { class: "btn small", type: "button", text: t("progs.checkAll"), onclick: () => void api.checkUpdates().then(u => { programs.updates(u); renderSelf(); }) }));
 }
@@ -221,6 +222,7 @@ function renderSelf(): void {
 // ------------------------------------------------------------------ Start
 async function boot(): Promise<void> {
   appInfo = await api.info();
+  programs.selfVersion = appInfo.version;
   const s = await api.settingsGet();
   settings.apply(s);
   applyI18n(document);

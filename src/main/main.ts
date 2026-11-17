@@ -155,10 +155,12 @@ async function scan(): Promise<void> {
         if (next.has(id)) { winMiss.delete(id); continue; }
         const miss = (winMiss.get(id) ?? 0) + (r.complete ? 1 : 0);
         winMiss.set(id, miss);
-        if (miss < 2) next.set(id, prev);
+        if (miss < 2) { next.set(id, prev); log("registry kept", `${id} ${prev.version} (miss ${miss}${r.complete ? "" : ", incomplete"})`); }
       }
       if (!r.complete) log("registry incomplete");
-      else saveInstalledCache(next);
+      // Nur echte Treffer in den Zwischenspeicher (Windows-Test 1.0.2: ein behaltener Eintrag mit alter Version blieb
+      // sonst bis zum Neustart stehen)
+      else saveInstalledCache(r.map);
       installed = next;
     } else installed = new Map();
     devs.clear();
@@ -385,6 +387,7 @@ const installer = new Installer({
   log,
   openFile: async f => shell.openPath(f),
   runInstaller: f => runSetup(f),
+  packaged: app.isPackaged,
   imageRunning: async f => procsOfApp(await processList(), f).length > 0,
   saveCache: c => { if (!demo && !SHOT) store.setLauncher(s => { s.releaseCache = c; }); },
   installedVersion: async id => { if (id === "suite") return null; await refresh(true); return installed.get(id as ProgramId)?.version ?? null; },
@@ -615,11 +618,19 @@ handle("install", async (_e, id) => {
   return installer.snapshot();
 });
 handle("install:cancel", (_e, id) => { const src = sourceById(id); if (src) installer.cancel(src.id); return true; });
+handle("self:restart", () => {
+  if (!installer.pendingSelf) return false;
+  log("self-update restart", installer.pendingSelf.version);
+  app.quit(); // will-quit startet das Update; macOS-Skript bzw. Windows-Installer starten die neue Version
+  return true;
+});
+
 handle("release:page", (_e, id) => {
   const src = sourceById(id);
   const e = src ? installer.snapshot().entries.find(x => x.id === src.id) : null;
   // Nur die Releaseseite aus dem eigenen Repo (pageFor prüft das beim Lesen)
-  const page = e?.latest?.page ?? (src ? `https://github.com/${src.repo}/releases` : null);
+  // Aus dem Zwischenspeicher kann die Seite veraltet sein (Windows-Test 1.0.2: v1.0.1 statt latest) → /releases/latest
+  const page = (e?.latest && !e.cached ? e.latest.page : null) ?? (src ? `https://github.com/${src.repo}/releases/latest` : null);
   if (page && page.startsWith("https://github.com/")) void shell.openExternal(page);
   return true;
 });

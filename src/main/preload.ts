@@ -36,6 +36,7 @@ const api = {
   install: (p: unknown) => ipcRenderer.invoke("install", src(p)),
   cancelInstall: (p: unknown) => ipcRenderer.invoke("install:cancel", src(p)),
   openReleasePage: (p: unknown) => ipcRenderer.invoke("release:page", src(p)),
+  restartForUpdate: () => ipcRenderer.invoke("self:restart"),
   onUpdates: (cb: (u: unknown) => void) => on("updates", cb),
   // macOS-Feinschliff (0.3): Fensterzustand, Menübefehle, Ende der Startanimation, Willkommen gesehen
   onWin: (cb: (w: unknown) => void) => on("win", cb),

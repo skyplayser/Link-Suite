@@ -31,6 +31,8 @@ export interface Bridge {
   /** Startzeit fürs Log (main.log): „script“ = Modul läuft, „cards“ = erste Karten stehen. */
   mark(name: "script" | "cards"): void;
   openReleasePage(id: string): Promise<boolean>;
+  /** Selbst-Update wartet: Link-Suite beenden, das Update einsetzen und neu starten. */
+  restartForUpdate(): Promise<boolean>;
   onUpdates(cb: (u: UpdatesSnapshot) => void): void;
   onWin(cb: (w: { fullscreen: boolean; focused: boolean; platform: string }) => void): void;
   onMenu(cb: (m: { cmd: string; arg?: string }) => void): void;

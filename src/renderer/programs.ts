@@ -21,6 +21,8 @@ const ICON = (p: Program) => "./icons/" + p.icon;
 export class ProgramsView {
   snap: Snapshot | null = null;
   upd: UpdatesSnapshot | null = null;
+  /** Eigene Version; die Kachel UPDATE zählt Link-Suite selbst mit (wie Dock und Tray, Windows-Test 1.0.2). */
+  selfVersion = "";
   private selected: ProgramId | null = null;
   private openMenu: ProgramId | null = null;
   private busy = new Set<ProgramId>();
@@ -161,7 +163,9 @@ export class ProgramsView {
   private renderHero(): void {
     if (!this.snap) return;
     const ps = this.snap.programs;
-    const updates = ps.filter(st => { const e = this.entry(st.id); return !!st.app && !!e?.latest && isNewer(e.latest.version, st.app.version); }).length;
+    const self = this.entry("suite");
+    const updates = ps.filter(st => { const e = this.entry(st.id); return !!st.app && !!e?.latest && isNewer(e.latest.version, st.app.version); }).length
+      + (this.selfVersion && self?.latest && isNewer(self.latest.version, this.selfVersion) ? 1 : 0);
     const installed = ps.filter(st => st.app).length;
     const running = this.runningCount();
     const dev = [...this.groupOf.values()].filter(g => g === "dev").length;
@@ -184,15 +188,20 @@ export class ProgramsView {
 
 
   private lastPhase = new Map<string, string>();
+  private lastStamp = new Map<string, number>();
   updates(u: UpdatesSnapshot): void {
     // Ende von Laden/Installieren: Toast statt bleibendem Hinweis in der Karte (Karte bleibt gleich hoch)
     for (const e of u.entries) {
       const before = this.lastPhase.get(e.id);
       if (before && before !== e.phase && e.phase === "done" && programById(e.id)) this.justInstalled.set(e.id as ProgramId, Date.now());
-      if (before && before !== e.phase && (e.phase === "done" || e.phase === "failed" || e.phase === "cancelled") && e.message) {
+      // Jedes Ende mit Meldung zeigt einen Toast, auch wenn die Phase gleich bleibt (Windows-Test 1.0.2: zweiter Klick
+      // bei GitHub-Limit blieb stumm); Programme ohne Karte (Link-Suite selbst) zeigen ihre Meldung in den Einstellungen
+      const stamped = (e.stamp ?? 0) !== (this.lastStamp.get(e.id) ?? 0);
+      if (before && (before !== e.phase || stamped) && (e.phase === "done" || e.phase === "failed" || e.phase === "cancelled") && e.message) {
         toast(e.message, e.phase === "failed" ? "err" : e.phase === "done" ? "ok" : "info");
       }
       this.lastPhase.set(e.id, e.phase);
+      this.lastStamp.set(e.id, e.stamp ?? 0);
     }
     this.upd = u;
     this.render();

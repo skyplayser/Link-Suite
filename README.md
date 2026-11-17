@@ -12,12 +12,12 @@
 </p>
 
 <p align="center">
-  <a href="#download-and-install"><img alt="Download Link-Suite 1.0.2" src="https://img.shields.io/badge/Download-Link--Suite%201.0.2-FF5C93?style=for-the-badge"></a>
+  <a href="#download-and-install"><img alt="Download Link-Suite 1.0.3" src="https://img.shields.io/badge/Download-Link--Suite%201.0.3-FF5C93?style=for-the-badge"></a>
 </p>
 
 <p align="center">
   <a href="https://github.com/skyplayser/Link-Suite/releases"><img alt="Latest release" src="https://img.shields.io/github/v/release/skyplayser/Link-Suite?include_prereleases&label=release&color=FFB020"></a>
-  <img alt="Version 1.0.2" src="https://img.shields.io/badge/version-1.0.2-FF5C93">
+  <img alt="Version 1.0.3" src="https://img.shields.io/badge/version-1.0.3-FF5C93">
   <img alt="macOS 13+, Apple silicon and Intel" src="https://img.shields.io/badge/macOS%2013%2B-Apple%20silicon%20%7C%20Intel-3DDC84">
   <img alt="Windows 10/11, tested on Windows 11 (in a VM)" src="https://img.shields.io/badge/Windows-tested%20on%20Windows%2011%20(VM)-3DDC84">
   <img alt="Free" src="https://img.shields.io/badge/price-free-B45CFF">
@@ -55,7 +55,7 @@ connection to the internet goes to GitHub, to ask for new releases and to downlo
 server of our own, no account.
 
 > [!NOTE]
-> **Version 1.0.2.** On macOS the QA of 0.3.1 called Link-Suite ready for release: installing and updating a real
+> **Version 1.0.3.** On macOS the QA of 0.3.1 called Link-Suite ready for release: installing and updating a real
 > program twice in a row worked. Some parts were only checked in the code or in a developer build (see
 > [What is tested](#what-is-tested)). The Windows version was **tested on Windows 11 (in a VM)**.
 > Link-Suite is not signed with Apple or Microsoft, so macOS and Windows warn once on the first start
@@ -261,7 +261,7 @@ decided by that project, not by Link-Suite. That is why Link-Suite asks first.
 - It does not switch off Gatekeeper or SmartScreen and changes no system setting.
 - It needs no admin rights and asks for no password. Without admin rights, programs go to `~/Applications`.
 
-## State of version 1.0.2
+## State of version 1.0.3
 
 ### What is new in 0.3
 
@@ -281,7 +281,7 @@ decided by that project, not by Link-Suite. That is why Link-Suite asks first.
 | Check for releases | asks GitHub at start and when you press the button; the check at start can be switched off |
 | Install and update | LJ Link, VJ-Link and VD-Link from their GitHub releases (VD-Link from 1.0.0 on) |
 | LJL Link | *To the stick*: into a folder or straight onto the club's USB stick, with a short guide; `club.json` still by hand |
-| Self-update | from [its own releases](https://github.com/skyplayser/Link-Suite/releases) (`skyplayser/Link-Suite`); the checked new version is put in place when you quit |
+| Self-update | from [its own releases](https://github.com/skyplayser/Link-Suite/releases) (`skyplayser/Link-Suite`); the checked new version is put in place when you quit or click **Restart now** (macOS: replaced by a script; Windows from 1.0.3: the installer runs silently for your user) |
 | Start programs | installed apps, and developer projects with log bar when the developer view is on |
 | Suite chat, ON THE NETWORK, shared settings | as in 0.1 |
 
@@ -312,7 +312,8 @@ From the QA of 0.3 and 0.3.1 and the Windows test of 0.3.2. **Result for macOS: 
   network messages and checks of the Electron settings.
 - **Only in the code, not live:** Dock progress and notifications, the DMG window in the Finder, the system light mode
   at start.
-- **Not tested:** the self-update (there was no release of Link-Suite yet), Link-Suite between two real computers or in a
+- **Self-update:** 1.0.0 → 1.0.1 tested on macOS. On Windows it exists from 1.0.3 on, tested on Windows 11 (in a VM) with a test build of 1.0.3 updating itself to 1.0.2.
+- **Not tested:** Link-Suite between two real computers or in a
   club.
 - **Windows:** tested on Windows 11, in a VM: install, update (also with the admin prompt), start, uninstall.
 
@@ -395,10 +396,10 @@ Network trouble? That is NET Link's job. It is in development; until then the fo
 
 ## For developers
 
-Version **1.0.2**: everything from 0.1 and 0.2 (program list, starting installed apps and developer projects, suite
+Version **1.0.3**: everything from 0.1 and 0.2 (program list, starting installed apps and developer projects, suite
 chat with EMERGENCY, ON THE NETWORK, installing and updating from GitHub, the club stick, the self-update), plus the new
 interface, the start animation with its launcher ending, the macOS polish and the per-user Windows installer. 1.0.1 brings the fixes from the Windows test, 1.0.2 a DE/EN
-switch in the title bar.
+switch in the title bar, 1.0.3 the self-update on Windows.
 Concept, research, design and QA reports are kept outside this repo. Release notes: [`docs/releases/`](docs/releases/) (German).
 
 ### Requirements

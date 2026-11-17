@@ -162,3 +162,5 @@ img{-webkit-user-drag:none}
 /* Schnellumschalter DE/EN im Kopf (17.11.2026): klein, neben den Chips */
 .top .seg.lang-switch{padding:1px;border-radius:999px}
 .top .seg.lang-switch button{padding:3px 8px;border-radius:999px;font:600 11px var(--mono);min-height:20px}
+/* Aktive Wahl bleibt beim Darüberfahren lesbar (Windows-Test 1.0.2: weiß auf weiß); gilt für alle Umschalter */
+.seg button.on:hover,.seg button[aria-checked=true]:hover,.seg button[aria-pressed=true]:hover{color:var(--bg)}

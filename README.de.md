@@ -12,12 +12,12 @@
 </p>
 
 <p align="center">
-  <a href="#herunterladen-und-installieren"><img alt="Link-Suite 1.0.2 herunterladen" src="https://img.shields.io/badge/Download-Link--Suite%201.0.2-FF5C93?style=for-the-badge"></a>
+  <a href="#herunterladen-und-installieren"><img alt="Link-Suite 1.0.3 herunterladen" src="https://img.shields.io/badge/Download-Link--Suite%201.0.3-FF5C93?style=for-the-badge"></a>
 </p>
 
 <p align="center">
   <a href="https://github.com/skyplayser/Link-Suite/releases"><img alt="Neueste Version" src="https://img.shields.io/github/v/release/skyplayser/Link-Suite?include_prereleases&label=Release&color=FFB020"></a>
-  <img alt="Version 1.0.2" src="https://img.shields.io/badge/Version-1.0.2-FF5C93">
+  <img alt="Version 1.0.3" src="https://img.shields.io/badge/Version-1.0.3-FF5C93">
   <img alt="macOS 13+, Apple-Chip und Intel" src="https://img.shields.io/badge/macOS%2013%2B-Apple--Chip%20%7C%20Intel-3DDC84">
   <img alt="Windows 10/11, getestet auf Windows 11 (in einer VM)" src="https://img.shields.io/badge/Windows-getestet%20auf%20Windows%2011%20(VM)-3DDC84">
   <img alt="Kostenlos" src="https://img.shields.io/badge/Preis-kostenlos-B45CFF">
@@ -56,7 +56,7 @@ es nur zu GitHub: um nach neuen Versionen zu fragen und die zu laden, die du aus
 Server, kein Konto.
 
 > [!NOTE]
-> **Version 1.0.2.** Für macOS hat die QA von 0.3.1 Link-Suite release-fertig genannt: Ein echtes Programm ließ sich
+> **Version 1.0.3.** Für macOS hat die QA von 0.3.1 Link-Suite release-fertig genannt: Ein echtes Programm ließ sich
 > installieren und zweimal hintereinander aktualisieren. Manches ist nur im Code oder in einem Entwickler-Build geprüft
 > (siehe [Was geprüft ist](#was-geprüft-ist)). Die Windows-Version ist **getestet auf Windows 11 (in einer VM)**.
 > Link-Suite ist nicht bei Apple oder Microsoft signiert. Deshalb warnen macOS und Windows einmal beim ersten Start
@@ -263,7 +263,7 @@ legt das Projekt fest, nicht Link-Suite. Deshalb fragt Link-Suite vorher.
 - Es schaltet Gatekeeper und SmartScreen nicht ab und ändert keine Systemeinstellung.
 - Es braucht keine Admin-Rechte und fragt nach keinem Passwort. Ohne Admin-Rechte landen Programme in `~/Applications`.
 
-## Stand der Version 1.0.2
+## Stand der Version 1.0.3
 
 ### Was neu ist in 0.3
 
@@ -283,7 +283,7 @@ legt das Projekt fest, nicht Link-Suite. Deshalb fragt Link-Suite vorher.
 | Nach Releases fragen | fragt GitHub beim Start und auf Knopfdruck; die Prüfung beim Start ist abschaltbar |
 | Installieren und Aktualisieren | LJ Link, VJ-Link und VD-Link aus ihren GitHub-Releases (VD-Link ab 1.0.0) |
 | LJL Link | *Auf den Stick*: in einen Ordner oder direkt auf den USB-Stick des Clubs, mit kurzer Anleitung; `club.json` weiter von Hand |
-| Selbst-Update | aus [seinen eigenen Releases](https://github.com/skyplayser/Link-Suite/releases) (`skyplayser/Link-Suite`); die geprüfte neue Version wird beim Beenden eingesetzt |
+| Selbst-Update | aus [seinen eigenen Releases](https://github.com/skyplayser/Link-Suite/releases) (`skyplayser/Link-Suite`); die geprüfte neue Version wird beim Beenden oder mit **Jetzt neu starten** eingesetzt (macOS: per Skript; Windows ab 1.0.3: der Installer läuft still pro Benutzer) |
 | Programme starten | installierte Apps, und Entwicklerprojekte mit Log-Leiste, wenn die Entwickleransicht an ist |
 | Suite-Chat, IM NETZ, gemeinsame Einstellungen | wie in 0.1 |
 
@@ -314,7 +314,8 @@ Aus der QA von 0.3 und 0.3.1 und dem Windows-Test von 0.3.2. **Ergebnis für mac
 - **Sicherheit:** Download-Allowlist, Preload, Über-Fenster, Log ohne Benutzerpfade; aus 0.1 und 0.2: Fuzzing der
   Netz-Nachrichten und Prüfung der Electron-Einstellungen.
 - **Nur im Code, nicht live:** Dock-Fortschritt und Mitteilungen, das DMG-Fenster im Finder, der helle Systemmodus beim Start.
-- **Nicht geprüft:** das Selbst-Update (es gab noch kein Release von Link-Suite), Link-Suite zwischen zwei echten Rechnern
+- **Selbst-Update:** 1.0.0 → 1.0.1 auf macOS getestet. Unter Windows gibt es das ab 1.0.3, getestet auf Windows 11 (in einer VM): ein Test-Build von 1.0.3 hat sich selbst auf 1.0.2 aktualisiert.
+- **Nicht geprüft:** Link-Suite zwischen zwei echten Rechnern
   oder im Club.
 - **Windows:** getestet auf Windows 11, in einer VM: Installieren, Aktualisieren (auch mit Admin-Abfrage), Starten, Deinstallieren.
 
@@ -399,10 +400,10 @@ Probleme im Netz? Dafür ist NET Link da. Es ist in Entwicklung; bis dahin sagt 
 
 ## Für Entwickler
 
-Version **1.0.2**: alles aus 0.1 und 0.2 (Programmliste, installierte Apps und Entwicklerprojekte starten, Suite-Chat
+Version **1.0.3**: alles aus 0.1 und 0.2 (Programmliste, installierte Apps und Entwicklerprojekte starten, Suite-Chat
 mit EMERGENCY, IM NETZ, Installieren und Aktualisieren aus GitHub, Club-Stick, Selbst-Update), dazu die neue Oberfläche,
 die Startanimation mit Launcher-Ende, der macOS-Feinschliff und der Windows-Installer pro Benutzer. 1.0.1 bringt die Korrekturen aus dem Windows-Test, 1.0.2 einen
-DE/EN-Umschalter in der Kopfleiste.
+DE/EN-Umschalter in der Kopfleiste, 1.0.3 das Selbst-Update unter Windows.
 Konzept, Recherche, Design und QA-Berichte liegen außerhalb dieses Repos. Release-Notizen: [`docs/releases/`](docs/releases/).
 
 ### Voraussetzungen

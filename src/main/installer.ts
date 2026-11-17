@@ -38,6 +38,8 @@ export interface UpdateEntry {
   message: string;
   /** Stand aus dem Zwischenspeicher (letzte Prüfung), nicht frisch: vor dem Installieren wird neu geprüft. */
   cached?: boolean;
+  /** Zählt jedes Ende mit Meldung (1.0.3): der Toast erscheint auch, wenn ein zweiter Klick gleich endet. */
+  stamp?: number;
 }
 
 export interface UpdatesSnapshot {
@@ -46,6 +48,8 @@ export interface UpdatesSnapshot {
   selfBlocked: string;
   /** Ergebnis eines Selbst-Updates vom letzten Beenden (aus self-update.log), leer = nichts. */
   selfResult: string;
+  /** Selbst-Update geladen und geprüft, wartet aufs Beenden (1.0.3: Knopf „Jetzt neu starten“). */
+  selfPending: boolean;
   demo: boolean;
   /** GitHub-Kontingent ohne Anmeldung aufgebraucht: bis wann (ms), 0 = nicht. */
   rateLimitedUntil: number;
@@ -131,14 +135,15 @@ export async function readIdle(reader: ReadableStreamDefaultReader<Uint8Array>, 
 
 export const HEADER_MS = 30_000;
 
-export type InstallWay = "self-dmg" | "dmg" | "ljl-zip" | "exe";
+export type InstallWay = "self-dmg" | "self-exe" | "dmg" | "ljl-zip" | "exe";
 /**
  * Welcher Weg für welches Paket? Unter Windows immer der Installer (.exe) – nie Ersetzen über .neu/.alt mit ditto,
  * auch nicht beim Selbst-Update. Unter macOS .dmg (Selbst-Update per Skript) bzw. das LJL-Zip.
+ * Selbst-Update unter Windows (1.0.3): eigener Weg „self-exe“ – der Installer startet erst beim Beenden.
  */
 export function installWay(id: SourceId, asset: string, platform: string): InstallWay | null {
   const kind = kindOf(asset);
-  if (platform === "win32") return kind === "exe" ? "exe" : null;
+  if (platform === "win32") return kind === "exe" ? (id === "suite" ? "self-exe" : "exe") : null;
   if (platform !== "darwin") return null;
   if (kind === "dmg") return id === "suite" ? "self-dmg" : "dmg";
   if (kind === "zip" && id === "ljl") return "ljl-zip";
@@ -180,6 +185,10 @@ export interface InstallerDeps {
   pollMs?: number;
   /** Höchstens so lange auf den Installer warten (Standard 30 min, Tests kürzer). */
   maxWaitMs?: number;
+  /** Fertige App (app.isPackaged)? Windows: Selbst-Update nur dann. */
+  packaged?: boolean;
+  /** Windows: Selbst-Update-Installer beim Beenden starten (Tests ersetzen das). */
+  spawnSelfSetup?(file: string, args: string[]): void;
 }
 
 export class Installer {
@@ -249,7 +258,7 @@ export class Installer {
   snapshot(): UpdatesSnapshot {
     return {
       entries: [...this.entries.values()].map(e => ({ ...e })), checkedAt: this.checkedAt, checking: !!this.checking, platform: this.platform, arch: this.arch,
-      selfBlocked: this.selfBlocker(), selfResult: this.selfResult, demo: this.demo,
+      selfBlocked: this.selfBlocker(), selfResult: this.selfResult, selfPending: !!this.pendingSelf, demo: this.demo,
       rateLimitedUntil: this.rateLimitedUntil > Date.now() ? this.rateLimitedUntil : 0, lastGood: this.lastGood,
     };
   }
@@ -266,6 +275,8 @@ export class Installer {
   selfResult = "";
   /** Leer, wenn die laufende App sich selbst ersetzen kann; sonst der Grund (für Hinweis + „Seite öffnen“). */
   selfBlocker(): string {
+    // Windows (1.0.3): der NSIS-Installer pro Benutzer ersetzt die App selbst, ohne Administratorrechte
+    if (this.platform === "win32") return this.d.packaged ? "" : this.d.say("inst.err.selfDev");
     const bundle = runningAppBundle();
     if (this.platform !== "darwin" || !bundle) return this.d.say("inst.err.selfDev");
     if (bundle.startsWith("/Volumes/") || bundle.includes("/AppTranslocation/")) return this.d.say("inst.self.move");
@@ -274,9 +285,12 @@ export class Installer {
   }
 
   get selfLog(): string { return path.join(this.d.dataDir, "self-update.log"); }
+  /** Windows: welche Version das Selbst-Update einsetzen sollte; beim nächsten Start mit der eigenen verglichen. */
+  get selfMark(): string { return path.join(this.d.dataDir, "self-update.json"); }
 
   /** Beim Start: Ergebnis des Skripts vom letzten Beenden lesen (Zeile LINKSUITE-RESULT), dann Log entfernen. */
   readSelfResult(): void {
+    this.readSelfMark();
     let text = "";
     try { text = fs.readFileSync(this.selfLog, "utf8").slice(-20_000); } catch { return; }
     const m = [...text.matchAll(/^LINKSUITE-RESULT: (ok|fail)\s*(.*)$/gm)].at(-1);
@@ -285,8 +299,20 @@ export class Installer {
     try { fs.rmSync(this.selfLog, { force: true }); } catch { /* bleibt */ }
   }
 
+  /** Windows: Marke vom letzten Beenden – läuft jetzt die erwartete Version? (Der Installer schreibt kein Log.) */
+  private readSelfMark(): void {
+    let want = "";
+    try { want = String((JSON.parse(fs.readFileSync(this.selfMark, "utf8")) as { version?: unknown }).version ?? ""); } catch { return; }
+    try { fs.rmSync(this.selfMark, { force: true }); } catch { /* bleibt */ }
+    if (!want) return;
+    this.selfResult = want === this.d.version ? this.d.say("inst.self.ok", { v: want }) : this.d.say("inst.self.failed", { why: `installer, ${this.d.version} ≠ ${want.slice(0, 40)}` });
+    this.d.log?.("self-update result", `${this.d.version} (wanted ${want.slice(0, 40)})`);
+  }
+
   private set(id: SourceId, p: Partial<UpdateEntry>): void {
-    Object.assign(this.entries.get(id)!, p);
+    const e = this.entries.get(id)!;
+    if ((p.phase === "done" || p.phase === "failed" || p.phase === "cancelled") && p.message) p.stamp = (e.stamp ?? 0) + 1;
+    Object.assign(e, p);
     this.d.onChange();
   }
 
@@ -433,7 +459,15 @@ export class Installer {
     const src = SOURCES[id];
     if (e.cached && !this.demo) await this.check(true); // Zwischenspeicher nie zum Installieren nutzen
     const rel = e.latest;
-    if (!rel || e.cached || this.aborts.has(id)) return;
+    if (this.aborts.has(id)) return;
+    // Nie stumm (Windows-Test 1.0.2): GitHub-Limit oder kein frischer Stand → Grund an der Karte
+    if (!rel || e.cached) {
+      const until = this.rateLimitedUntil > Date.now() ? this.rateLimitedUntil : 0;
+      const msg = until ? this.d.say("inst.err.rateLimited", { time: new Date(until).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" }) }) : this.d.say("inst.err.noFresh");
+      this.d.log?.("install skipped", `${id}: ${until ? "rate limit" : "no fresh release"}`);
+      this.set(id, { phase: "failed", message: msg });
+      return;
+    }
     if (this.demo) { this.set(id, { phase: "done", message: this.d.say("inst.demo", { name: src.name, v: rel.version }) }); return; }
     const ctl = new AbortController();
     this.aborts.set(id, ctl);
@@ -454,6 +488,7 @@ export class Installer {
       const way = installWay(id, rel.asset, this.platform);
       let msg = "";
       if (way === "self-dmg") { msg = await this.selfUpdate(file, rel, dir); keepDir = true; }
+      else if (way === "self-exe") { msg = await this.selfUpdateWin(file, rel); keepDir = true; }
       else if (way === "dmg") msg = await this.installDmg(id, file, rel);
       else if (way === "ljl-zip") msg = await this.installLjl(file, rel, dir);
       else if (way === "exe") {
@@ -754,12 +789,31 @@ export class Installer {
     return this.d.say("inst.selfReady", { v: rel.version });
   }
 
+  /**
+   * Windows (1.0.3): Installer ist geladen und geprüft (Größe, SHA-256). Beim Beenden startet er still pro Benutzer
+   * (`--updated /S --force-run`, wie electron-updater): ersetzt die App und startet die neue. Ergebnis über selfMark.
+   */
+  private async selfUpdateWin(file: string, rel: ReleaseInfo): Promise<string> {
+    const blocked = this.selfBlocker();
+    if (blocked) throw new Error(blocked);
+    this.pendingSelf = { script: "", dmg: file, app: "", version: rel.version };
+    return this.d.say("inst.selfReady", { v: rel.version });
+  }
+
   pendingSelf: { script: string; dmg: string; app: string; version: string } | null = null;
 
   /** Beim Beenden: Skript starten (es wartet auf diese PID). */
   runPendingSelfUpdate(): boolean {
     const p = this.pendingSelf;
     if (!p) return false;
+    if (this.platform === "win32") {
+      try { fs.writeFileSync(this.selfMark, JSON.stringify({ version: p.version, at: new Date().toISOString() })); } catch { /* ohne Marke kein Ergebnis */ }
+      const args = ["--updated", "/S", "--force-run"];
+      if (this.d.spawnSelfSetup) this.d.spawnSelfSetup(p.dmg, args);
+      else spawn(p.dmg, args, { detached: true, stdio: "ignore" }).on("error", e => this.d.log?.("self-update failed", e.message)).unref();
+      this.d.log?.("self-update started", p.version);
+      return true;
+    }
     // Log im Datenordner: beim nächsten Start liest readSelfResult das Ergebnis und zeigt Fehler als Hinweis
     const log = fs.openSync(this.selfLog, "w");
     spawn("/bin/bash", [p.script, String(process.pid), p.dmg, p.app, SOURCES.suite.bundleIds[0]!, p.version], { detached: true, stdio: ["ignore", log, log] }).unref();
