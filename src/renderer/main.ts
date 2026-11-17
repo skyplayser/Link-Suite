@@ -201,8 +201,7 @@ function renderSelf(): void {
   const stateEl = $("self-state");
   ctl.replaceChildren();
   const page = () => h("button", { class: "btn", type: "button", text: t("prog.openPage"), onclick: () => void api.openReleasePage("suite") });
-  if (u?.selfResult) { stateEl.textContent = u.selfResult; }
-  else if (!e || e.check === "unknown" || e.check === "checking") { stateEl.textContent = t("set.self.unchecked"); }
+  if (!e || e.check === "unknown" || e.check === "checking") { stateEl.textContent = t("set.self.unchecked"); }
   else if (e.check === "missing") stateEl.textContent = t("set.self.none");
   else if (e.check === "error") stateEl.textContent = `${t("pill.checkMissing")} · ${e.error}`;
   else if (e.latest && isNewer(e.latest.version, appInfo.version) && u?.selfBlocked) {
@@ -216,6 +215,10 @@ function renderSelf(): void {
     if (e.phase !== "done") ctl.append(h("button", { class: "btn primary", type: "button", disabled: busy || !e.latest.sha256, text: busy ? t(`inst.phase.${e.phase}`) : t("set.self.update", { v: e.latest.version }), onclick: () => void api.install("suite") }));
     else if (u?.selfPending) ctl.append(h("button", { class: "btn primary", type: "button", text: t("set.self.restart"), onclick: () => void api.restartForUpdate() }));
   } else stateEl.textContent = t("set.self.current", { v: appInfo.version });
+  // Ergebnis vom letzten Beenden zuerst, der Knopf bleibt (Windows-Test 1.0.3: nach Fehlschlag kein „Aktualisieren“)
+  // Ist alles aktuell, reicht die Meldung allein („wurde auf … aktualisiert“)
+  const upToDate = stateEl.textContent === t("set.self.current", { v: appInfo.version });
+  if (u?.selfResult) stateEl.textContent = upToDate ? u.selfResult : `${u.selfResult} · ${stateEl.textContent}`;
   ctl.append(h("button", { class: "btn small", type: "button", text: t("progs.checkAll"), onclick: () => void api.checkUpdates().then(u => { programs.updates(u); renderSelf(); }) }));
 }
 
