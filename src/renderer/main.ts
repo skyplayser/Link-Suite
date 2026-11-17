@@ -5,7 +5,7 @@ import { isProgramId } from "../core/catalog";
 import type { SettingsSnapshot } from "../core/state";
 import { api, type Info } from "./api";
 import { ChatUi } from "./chat";
-import { applyI18n, onLang, setLang, t } from "./i18n";
+import { applyI18n, currentLang, onLang, setLang, t } from "./i18n";
 import { playLauncherIntro } from "./intro/launcher-intro";
 import { LogDock } from "./logdock";
 import { NetworkView } from "./network";
@@ -108,6 +108,18 @@ const settings = new SettingsView(s => {
   applyTheme();
   setLang(s.suite.lang, s.locale);
 });
+
+// Schnellumschalter DE/EN im Kopf (Wunsch Entwickler 17.11.): ein Klick statt Einstellungen → Sprache
+const topLang = $("top-lang");
+function renderTopLang(): void {
+  for (const b of topLang.querySelectorAll<HTMLButtonElement>("button[data-v]")) b.setAttribute("aria-pressed", String(b.dataset.v === currentLang()));
+}
+topLang.addEventListener("click", e => {
+  const b = (e.target as Element).closest<HTMLButtonElement>("button[data-v]");
+  if (b && b.dataset.v !== currentLang()) void settings.setLang(b.dataset.v === "en" ? "en" : "de");
+});
+renderTopLang();
+onLang(renderTopLang);
 
 onLang(() => { renderSelf(); programs.render(); log.update(); network.render(); renderChips(); renderFoot(); settings.renderDevDirs(); });
 

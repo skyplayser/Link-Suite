@@ -45,6 +45,9 @@ export class SettingsView {
     $("btn-trademarks").addEventListener("click", () => void info(t("set.trademarks"), t("set.trademarks.text")));
   }
 
+  /** Schnellumschalter DE/EN oben rechts: setzt die Sprache für die ganze Suite (wie Einstellungen → Sprache). */
+  setLang(v: "de" | "en"): Promise<void> { return this.set({ lang: v }); }
+
   private async set(patch: Record<string, unknown>): Promise<void> {
     this.apply(await api.settingsSet(patch));
   }
