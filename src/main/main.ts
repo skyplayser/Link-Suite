@@ -14,7 +14,7 @@ import { procsOfApp, procsOfDevProject, type Proc } from "../core/procs";
 import type { Route } from "../core/settings";
 import type { AppFound, LaunchResult, LogBatch, NetSnapshot, ProgramState, SettingsSnapshot, ShotSpec, Snapshot } from "../core/state";
 import { CHAT_GROUP, CHAT_PORT } from "../core/suitechat";
-import { findInstalledMac, findInstalledWin, launchApp, processList, type Installed } from "./apps";
+import { findInstalledMac, findInstalledWin, launchApp, processList, runSetup, type Installed } from "./apps";
 import { createDemo, DEMO_GONE, DEMO_MESSAGES, DEMO_PEERS, DEMO_RELEASES, type Demo } from "./demo";
 import { DevRunner, devEnv, nodeProbe } from "./devrun";
 import { Installer } from "./installer";
@@ -384,6 +384,8 @@ const installer = new Installer({
   say,
   log,
   openFile: async f => shell.openPath(f),
+  runInstaller: f => runSetup(f),
+  imageRunning: async f => procsOfApp(await processList(), f).length > 0,
   saveCache: c => { if (!demo && !SHOT) store.setLauncher(s => { s.releaseCache = c; }); },
   installedVersion: async id => { if (id === "suite") return null; await refresh(true); return installed.get(id as ProgramId)?.version ?? null; },
   // QA-Schalter „GitHub nicht erreichbar“: nur im Entwickler-Build oder Demo, nie in der fertigen App (keine freie URL)
@@ -393,7 +395,8 @@ let updTimer: NodeJS.Timeout | undefined;
 const phases = new Map<string, string>();
 if (!demo && !SHOT) installer.loadCache(store.launcher.releaseCache);
 installer.readSelfResult();
-installer.cleanupSync(); // Reste früherer Downloads (z. B. eine noch gesperrte .exe) beim Start aufräumen
+// Reste früherer Downloads beim Start aufräumen; gesperrte Dateien (z. B. offene UAC-Abfrage) später erneut (1.0.1)
+installer.cleanupSync(true);
 // Demo und Screenshots: feste Releases ohne Netz (damit die Update-Pillen zu sehen sind)
 if (demo || SHOT) installer.setDemo(DEMO_RELEASES);
 
@@ -700,11 +703,19 @@ function createWindow(): void {
   // Fenster robust zeigen (Windows-Test 0.2.0: ready-to-show kam in der VM nie): ready-to-show ODER did-finish-load
   // ODER spätestens nach 3 s – auf allen Systemen.
   const w = win;
+  // 1.0.1 (Windows-Realtest: dom-ready erst nach 4 s, davor 1 s leeres Fenster): Windows zeigt das Fenster sofort in
+  // der Hintergrundfarbe der Startfläche; das erste Bild der Oberfläche ist genau diese Fläche (#intro ab dem Laden),
+  // es gibt also keinen Wechsel leer → Oberfläche → Startanimation. Andere Systeme: wie bisher, spätestens nach 1,5 s.
   const reveal = (why: string) => { if (!w.isDestroyed() && !w.isVisible()) { log("window show", why); w.show(); } };
   w.once("ready-to-show", () => reveal("ready-to-show"));
+  w.webContents.once("did-start-loading", () => log("did-start-loading"));
   w.webContents.once("dom-ready", () => { log("dom-ready"); reveal("dom-ready"); });
-  w.webContents.once("did-finish-load", () => { log("did-finish-load"); reveal("did-finish-load"); });
-  setTimeout(() => reveal("timeout 3s"), 3000);
+  w.webContents.once("did-finish-load", () => {
+    log("did-finish-load"); reveal("did-finish-load");
+    try { const g = app.getGPUFeatureStatus(); log("gpu", `compositing ${g.gpu_compositing} raster ${g.rasterization}`); } catch { /* nur Log */ }
+  });
+  if (process.platform === "win32" && !shotSpec) reveal("early");
+  setTimeout(() => reveal("timeout 1.5s"), 1500);
   w.webContents.on("did-fail-load", (_e, code, desc, url, isMain) => log("did-fail-load", `${code} ${desc} ${isMain ? "main" : "sub"} ${url}`));
   w.webContents.on("render-process-gone", (_e, d) => log("render-process-gone", `${d.reason} exit ${d.exitCode}`));
   w.webContents.on("preload-error", (_e, p, err) => log("preload-error", `${path.basename(p)} ${err?.message}`));
@@ -928,13 +939,18 @@ app.whenReady().then(async () => {
     chatStarted = true;
     void chat.init().then(() => { send("chat"); send("net"); startDemoPeers(); });
   };
+  ipcMain.on("ui:mark", (e, name, ms) => {
+    if (!win || e.sender !== win.webContents || (name !== "script" && name !== "cards") || typeof ms !== "number" || !Number.isFinite(ms)) return;
+    log(`ui ${name}`, `${Math.max(0, Math.min(600_000, Math.round(ms)))} ms nach Navigationsstart`);
+  });
   ipcMain.on("ui:introDone", e => { if (win && e.sender === win.webContents) setTimeout(startChat, 500); });
   win!.webContents.once("did-finish-load", () => {
     setTimeout(startChat, 6000);
     setTimeout(() => {
       void nodeProbe(); // Login-Shell früh fragen, damit der erste Entwicklerstart nicht wartet
-      // Update-Prüfung beim Start (höchstens 1×/h, abschaltbar); nie im Demo und nie beim Screenshot
-      if (!demo && !SHOT && store.launcher.checkUpdates) setTimeout(() => void installer.check(false), 1500);
+      // Update-Prüfung beim Start (höchstens 1×/h, abschaltbar); nie im Demo und nie beim Screenshot. Kennt der
+      // Zwischenspeicher ein Programm des Katalogs nicht (neue Version der Suite), sofort und dieses zuerst (1.0.1).
+      if (!demo && !SHOT && store.launcher.checkUpdates) setTimeout(() => void installer.check(false), installer.staleIds().length ? 0 : 1500);
     }, 300);
   });
   setInterval(() => { void refresh(); }, 3000).unref();

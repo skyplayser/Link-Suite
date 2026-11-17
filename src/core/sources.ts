@@ -40,6 +40,28 @@ export const SOURCES: Readonly<Record<SourceId, ReleaseSource>> = {
 /** Programme, deren Releases es geben wird, die aber noch nicht öffentlich sind (seit 1.0.0 keins mehr). */
 export const SOON_PUBLIC: ReadonlySet<string> = new Set<string>();
 
+/**
+ * Katalog-Version für den Release-Zwischenspeicher (1.0.1): erhöhen, wenn sich die Quelle eines Programms ändert
+ * (Repo, Dateinamen). Neue Programme erkennt der Zwischenspeicher auch ohne Erhöhung (Liste `checked`).
+ * 1 = bis 1.0.0 (ohne Angabe), 2 = ab 1.0.1.
+ */
+export const CATALOG_VERSION = 2;
+
+/**
+ * Welche Programme muss der Start sofort prüfen, weil der Zwischenspeicher sie nicht kennt? Alter Speicher (ohne
+ * Katalog-Version): alle, die keinen Eintrag haben. Andere Katalog-Version: alle. Sonst: alle außer `checked`.
+ */
+export function staleSources(cache: { catalog?: unknown; checked?: unknown; entries?: Record<string, unknown> } | undefined): SourceId[] {
+  const ids = Object.keys(SOURCES) as SourceId[];
+  if (!cache) return [];
+  const entries = cache.entries && typeof cache.entries === "object" ? cache.entries : {};
+  let known: Set<string>;
+  if (cache.catalog === undefined) known = new Set(Object.keys(entries));
+  else if (cache.catalog !== CATALOG_VERSION) known = new Set();
+  else known = new Set(Array.isArray(cache.checked) ? cache.checked.filter((x): x is string => typeof x === "string") : Object.keys(entries));
+  return ids.filter(id => !known.has(id));
+}
+
 export function sourceById(id: unknown): ReleaseSource | null {
   return typeof id === "string" && Object.hasOwn(SOURCES, id) ? SOURCES[id as SourceId] : null;
 }

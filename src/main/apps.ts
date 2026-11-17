@@ -8,6 +8,7 @@ import { CATALOG, type Program, type ProgramId } from "../core/catalog";
 import { keepSpotlightHit, matchRegistry, mdfindQuery, parseRegQuery, pickBest, type Found } from "../core/finder";
 import { matchProgram, parsePlistJson } from "../core/plist";
 import { parsePs, parseTasklist, type Proc } from "../core/procs";
+import { parseSetupOutput, SETUP_PS, withShellDiag, type SetupExit } from "../core/winsetup";
 
 const PLUTIL = "/usr/bin/plutil";
 const MDFIND = "/usr/bin/mdfind";
@@ -158,5 +159,34 @@ export function launchApp(appPath: string): Promise<{ ok: boolean; error?: strin
       return;
     }
     execFile(OPEN, ["-a", appPath], { timeout: 15000 }, err => resolve(err ? { ok: false, error: err.message } : { ok: true }));
+  });
+}
+
+/**
+ * Windows (1.0.1): Installer über PowerShell Start-Process öffnen (ShellExecuteEx – UAC-Abfrage wie beim Doppelklick)
+ * und warten, bis genau dieser Prozess endet. Fester Pfad zu powershell.exe, Pfad der .exe nur über die Umgebung.
+ * Windows-Test 1.0.1: mit `detached` (DETACHED_PROCESS, ohne Konsole) blieb die Ausgabe leer. Darum ohne `detached`,
+ * mit verborgener Konsole (`windowsHide`) und Pipes; stderr und Exit-Code von PowerShell gehen ins Log.
+ * Ohne `detached` liegt PowerShell im Job-Objekt von Node und endet mit der Link-Suite; der Installer selbst ist ein
+ * Enkel und verlässt den Job (libuv: SILENT_BREAKAWAY_OK) – er läuft weiter, wenn die Link-Suite beendet wird.
+ */
+export function runSetup(file: string): Promise<SetupExit> {
+  const SYS = process.env.SystemRoot ?? "C:\\Windows";
+  const ps = path.join(SYS, "System32", "WindowsPowerShell", "v1.0", "powershell.exe");
+  return new Promise(resolve => {
+    let out = "", err = "";
+    let settled = false;
+    const finish = (r: SetupExit) => { if (!settled) { settled = true; resolve(r); } };
+    try {
+      const c = spawn(ps, ["-NoProfile", "-NonInteractive", "-Command", SETUP_PS], {
+        windowsHide: true, stdio: ["ignore", "pipe", "pipe"], env: { ...process.env, LINKSUITE_SETUP: file },
+      });
+      c.stdout!.setEncoding("utf8");
+      c.stderr!.setEncoding("utf8");
+      c.stdout!.on("data", (d: string) => { if (out.length < 64_000) out += d; });
+      c.stderr!.on("data", (d: string) => { if (err.length < 4000) err += d; });
+      c.once("error", e => finish({ code: null, error: e.message, pid: null, noShell: true }));
+      c.once("close", (code, signal) => finish(withShellDiag(parseSetupOutput(out), code, signal, err)));
+    } catch (e) { finish({ code: null, error: (e as Error).message, pid: null, noShell: true }); }
   });
 }

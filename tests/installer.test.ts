@@ -120,7 +120,7 @@ describe("Windows-Installer über die Shell (QA Windows B1/R2, Harness)", () => 
       isRunning: async () => false, askQuit: async () => false, pickLjlTarget: async () => null, onChange() {},
       say: (k, v) => (v ? `${k} ${JSON.stringify(v)}` : k), log: (e, d) => logs.push(`${e} ${d ?? ""}`), platform: "win32", pollMs: 10, ...over,
     });
-    const x = ins as unknown as { runWindowsInstaller(id: string, f: string): Promise<void>; waitForVersion(id: string, v: string): Promise<string> };
+    const x = ins as unknown as { runWindowsInstaller(id: string, f: string): Promise<void>; awaitWindowsSetup(id: string, f: string, v: string, s: AbortSignal): Promise<{ phase: string; message: string }> };
     return { x, logs };
   };
   it("Erfolg: ShellExecute meldet nichts → weiter", async () => {
@@ -140,8 +140,10 @@ describe("Windows-Installer über die Shell (QA Windows B1/R2, Harness)", () => 
   });
   it("Registry-Nachschau: fertig, sobald die neue Version da ist", async () => {
     const seen = ["1.7.10", "1.7.10", "1.7.11"];
-    const { x } = win({ installedVersion: async () => seen.shift() ?? "1.7.11" });
-    expect(await x.waitForVersion("lj", "1.7.11")).toContain("inst.done");
+    const { x } = win({ installedVersion: async () => seen.shift() ?? "1.7.11", openFile: async () => "" });
+    const r = await x.awaitWindowsSetup("lj", "C:\\dl\\LJ-Link-windows.exe", "1.7.11", new AbortController().signal);
+    expect(r.phase).toBe("done");
+    expect(r.message).toContain("inst.done");
   });
 });
 

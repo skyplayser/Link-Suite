@@ -14,6 +14,8 @@ import { SettingsView } from "./settings";
 import { $, h, info as infoDialog } from "./ui";
 import { isNewer } from "../core/version";
 
+api.mark("script"); // Startzeit fürs Log (1.0.1): wann läuft das Modul?
+
 const TABS = ["programs", "network", "stick", "settings"] as const;
 type Tab = (typeof TABS)[number];
 let tab: Tab = "programs";
@@ -224,6 +226,7 @@ async function boot(): Promise<void> {
   programs.updates(await api.updates());
   programs.update(await api.state());
   renderChips(); renderFoot();
+  api.mark("cards");
   if (withIntro) introStarted = intro(appInfo.shot ? appInfo.shot.intro : null);
 
   api.onState(st => { programs.update(st); renderChips(); renderFoot(); });
@@ -271,4 +274,9 @@ async function shot(i: Info): Promise<void> {
   await api.shotReady();
 }
 
-void boot();
+// Scheitert der Start, nie hinter der Startfläche hängen bleiben
+boot().catch((e: unknown) => {
+  console.error("boot failed", String((e as Error)?.message ?? e));
+  document.getElementById("intro")?.remove();
+  document.documentElement.classList.remove("intro-run");
+});

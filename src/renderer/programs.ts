@@ -1,7 +1,9 @@
 // Tab PROGRAMME: Programmkarten, „Kommt bald“, Detailspalte, ⋯-Menü, Rückfragen vor dem Start (Design
 // „Programmkarte im Detail“, „Dialoge“). Die Oberfläche schickt nur Kennungen; was startbar ist, entscheidet der
 // Hauptprozess (und prüft es beim Start erneut).
+import { updateTarget } from "../core/card";
 import { CATALOG, MAIN_ORDER, programById, soonPrograms, type Program, type ProgramId } from "../core/catalog";
+import { groupFor, GROUPS, mayRegroup, type Group } from "../core/groups";
 import { firstMissing, type NeedKey } from "../core/need";
 import type { Route } from "../core/settings";
 import type { ProgramState, Snapshot } from "../core/state";
@@ -15,8 +17,6 @@ import { $, clock, duration, h, hhmm, icon, modal, toast } from "./ui";
 
 const ICON = (p: Program) => "./icons/" + p.icon;
 
-type Group = "installed" | "dev" | "avail" | "soon";
-const GROUPS: readonly Group[] = ["installed", "dev", "avail", "soon"];
 
 export class ProgramsView {
   snap: Snapshot | null = null;
@@ -29,10 +29,14 @@ export class ProgramsView {
 
   constructor(private readonly goTab: (tab: string) => void) {
     $("rescan").addEventListener("click", () => { void this.rescan(); });
-    $("check-all").addEventListener("click", () => { void api.checkUpdates().then(u => { this.regroup = true; this.updates(u); }); });
+    $("check-all").addEventListener("click", () => { void api.checkUpdates().then(u => this.updates(u)); });
     // Nie unter dem Mauszeiger umsortieren (QA Windows F3): Umgruppieren wartet, bis die Maus das Raster verlässt
+    // bzw. das Fenster im Hintergrund ruht (1.0.1); geprüft beim Verlassen, beim Fokuswechsel und jede Sekunde
     $("prog-pane").addEventListener("pointerenter", () => { this.hovering = true; });
-    $("prog-pane").addEventListener("pointerleave", () => { this.hovering = false; if (this.regroup) this.render(); });
+    $("prog-pane").addEventListener("pointerleave", () => { this.hovering = false; this.regroupWhenCalm(); });
+    for (const ev of ["pointermove", "pointerdown", "wheel", "keydown"]) document.addEventListener(ev, () => { this.lastInput = Date.now(); }, { passive: true, capture: true });
+    window.addEventListener("blur", () => this.regroupWhenCalm());
+    window.setInterval(() => this.regroupWhenCalm(), 1000);
     document.addEventListener("click", e => {
       if (this.openMenu && !(e.target as Element).closest?.(".menu-wrap")) { this.openMenu = null; this.render(); }
     });
@@ -46,7 +50,7 @@ export class ProgramsView {
 
   async rescan(): Promise<void> {
     this.scanningNow = true; this.renderBar();
-    try { this.regroup = true; this.update(await api.scan()); } finally { this.scanningNow = false; this.renderBar(); }
+    try { this.update(await api.scan()); } finally { this.scanningNow = false; this.renderBar(); }
   }
 
   /** Entwickleransicht (QA Windows U1): aus = Entwicklerwege, Pfade und npm sind unsichtbar. */
@@ -60,12 +64,10 @@ export class ProgramsView {
   }
 
   update(s: Snapshot): void {
-    const prevFull = this.raw?.fullScan ?? false;
     this.raw = s;
-    // Erster vollständiger Suchlauf: Gruppen jetzt bilden (vorher kein „Noch nichts installiert“)
+    // Erster vollständiger Suchlauf: Gruppen jetzt bilden (vorher kein „Noch nichts installiert“). Spätere Wechsel
+    // (Suchlauf nach dem Zwischenspeicher, von außen installiert) sortieren still im nächsten ruhigen Moment ein.
     if (s.scannedAt && !this.snap?.scannedAt) this.forceRegroup = true;
-    // Erster vollständiger Suchlauf nach dem Zwischenspeicher: still einsortieren (nicht unter der Maus)
-    if (s.fullScan && !prevFull) this.regroup = true;
     this.snap = this.devView ? s : { ...s, programs: s.programs.map(st => {
       const running = !!st.run && (st.run.state === "running" || st.run.state === "stopping");
       if (running) return st; // ein laufender Entwicklerstart bleibt sichtbar
@@ -85,34 +87,55 @@ export class ProgramsView {
     if (!on && this.pending) { this.pending = false; this.render(); }
   }
 
-  /** Gruppe je Programm; wechselt nur nach Suchlauf/Installation bzw. neuer Prüfung, nie beim Starten (Raster springt sonst). */
+  /** Gruppe je Programm; wechselt nur in ruhigen Momenten bzw. nach eigener Installation (Raster springt sonst). */
   private groupOf = new Map<ProgramId, Group>();
-
-  /**
-   * Umgruppieren nur nach „Neu suchen“, „Alle prüfen“, Installation oder dem ersten Suchlauf – nie durch die
-   * regelmäßige Aktualisierung, nie unter dem Mauszeiger, nie bei offenem Menü (QA Windows F3).
-   */
-  private regroup = true;
   private forceRegroup = false;
   private hovering = false;
+  private lastInput = 0;
+  /** Eigene Installation fertig: dieses Programm sofort einsortieren, sobald es gefunden ist (höchstens 60 s lang). */
+  private justInstalled = new Map<ProgramId, number>();
+
+  private wanted(): Map<ProgramId, Group> {
+    const out = new Map<ProgramId, Group>();
+    for (const p of [...MAIN_ORDER.map(id => programById(id)!), ...soonPrograms()]) {
+      const st = this.state(p.id);
+      if (!st) continue;
+      // Release auch ohne Netz, wenn eines bekannt war (N1)
+      out.set(p.id, groupFor({ app: !!st.app, dev: st.routes.includes("dev") || !!st.run, stickOnly: !!p.stickOnly, release: !!this.entry(p.id)?.latest }));
+    }
+    return out;
+  }
+
+  /**
+   * Umgruppieren (QA Windows F3, 1.0.1): erster Suchlauf und Entwickleransicht sofort; eigene Installation sofort, sobald
+   * das Programm gefunden ist; alles andere (auch von außen installiert) nur bei geschlossenem Menü und ohne Zeiger über
+   * dem Raster (mayRegroup).
+   */
   private groups(): Map<Group, Program[]> {
-    const fresh = [...MAIN_ORDER, ...soonPrograms().map(p => p.id)].some(id => !this.groupOf.has(id));
-    if ((this.regroup && !this.hovering && !this.openMenu) || fresh || this.forceRegroup) {
-      this.regroup = false;
+    const want = this.wanted();
+    const now = Date.now();
+    let own = false;
+    for (const [id, at] of this.justInstalled) {
+      if (now - at > 60_000) this.justInstalled.delete(id);
+      else if (want.get(id) === "installed" && this.groupOf.get(id) !== "installed") { own = true; this.justInstalled.delete(id); }
+    }
+    const fresh = [...want.keys()].some(id => !this.groupOf.has(id));
+    const differs = [...want].some(([id, g]) => this.groupOf.get(id) !== g);
+    if (mayRegroup({ force: this.forceRegroup || own, fresh, differs, hovering: this.hovering, menuOpen: !!this.openMenu, focused: document.hasFocus(), idleMs: now - this.lastInput })) {
       this.forceRegroup = false;
-      for (const p of [...MAIN_ORDER.map(id => programById(id)!), ...soonPrograms()]) {
-        const st = this.state(p.id)!;
-        const e = this.entry(p.id);
-        let g: Group = "soon";
-        if (st.app) g = "installed";
-        else if (st.routes.includes("dev") || st.run) g = "dev";
-        else if (p.stickOnly || e?.latest) g = "avail"; // auch ohne Netz, wenn ein Release bekannt war (N1)
-        this.groupOf.set(p.id, g);
-      }
+      for (const [id, g] of want) this.groupOf.set(id, g);
     }
     const out = new Map<Group, Program[]>(GROUPS.map(g => [g, []]));
     for (const p of [...MAIN_ORDER.map(id => programById(id)!), ...soonPrograms()]) out.get(this.groupOf.get(p.id) ?? "soon")!.push(p);
     return out;
+  }
+
+  /** Steht ein Wechsel aus und ist es jetzt ruhig: neu zeichnen (sortiert dabei um). */
+  private regroupWhenCalm(): void {
+    if (!this.snap || this.frozen) return;
+    const want = this.wanted();
+    const differs = [...want].some(([id, g]) => this.groupOf.get(id) !== g);
+    if (differs && mayRegroup({ force: false, fresh: false, differs, hovering: this.hovering, menuOpen: !!this.openMenu, focused: document.hasFocus(), idleMs: Date.now() - this.lastInput })) this.render();
   }
 
   render(): void {
@@ -165,7 +188,7 @@ export class ProgramsView {
     // Ende von Laden/Installieren: Toast statt bleibendem Hinweis in der Karte (Karte bleibt gleich hoch)
     for (const e of u.entries) {
       const before = this.lastPhase.get(e.id);
-      if (before && before !== e.phase && e.phase === "done") this.regroup = true;
+      if (before && before !== e.phase && e.phase === "done" && programById(e.id)) this.justInstalled.set(e.id as ProgramId, Date.now());
       if (before && before !== e.phase && (e.phase === "done" || e.phase === "failed" || e.phase === "cancelled") && e.message) {
         toast(e.message, e.phase === "failed" ? "err" : e.phase === "done" ? "ok" : "info");
       }
@@ -206,10 +229,9 @@ export class ProgramsView {
     return h("em", { "data-since": r.startedAt, "data-pid": r.pid, text: `PID ${r.pid} · ${clock(Date.now() - r.startedAt)}` });
   }
 
-  private updateDue(p: Program, st: ProgramState): boolean {
-    const e = this.entry(p.id);
-    return !!st.app && !p.stickOnly && !!e?.latest && isNewer(e.latest.version, st.app.version);
-  }
+  private updateDue(p: Program, st: ProgramState): boolean { return this.updateTo(p, st) !== null; }
+  /** Zielversion des Updates (auch während einer laufenden Prüfung, aus dem letzten Stand). */
+  private updateTo(p: Program, st: ProgramState): string | null { return updateTarget(this.entry(p.id)?.latest, st.app?.version, !!p.stickOnly); }
 
 
   private devRunning(st: ProgramState): boolean { return !!st.run && (st.run.state === "running" || st.run.state === "stopping"); }
@@ -252,7 +274,8 @@ export class ProgramsView {
     const vers = h("span", { class: "vers" });
     if (st.app) {
       vers.append(h("b", { text: st.app.version || "?" }));
-      if (this.updateDue(p, st)) vers.append(" ", h("span", { class: "to", text: `→ ${l!.version}` }));
+      const to = this.updateTo(p, st);
+      if (to) vers.append(" ", h("span", { class: "to", text: `→ ${to}` }));
     } else if (st.dev && st.route === "dev") {
       vers.append(h("b", { text: st.dev.version || "?" }));
       if (l && !p.stickOnly) vers.append(h("span", { class: "chan", text: t("meta.chan", { stage: this.stageWord(p), v: l.version }) }));
@@ -301,8 +324,11 @@ export class ProgramsView {
 
   /** Laden/Prüfen/Einsetzen: feste Zeile gleicher Höhe statt der Knöpfe (Design 0.3 P2.8). */
   private loadRow(p: Program, e: UpdateEntry): HTMLElement[] {
-    // Installer offen (Windows): nur der Hinweis, kein Balken, kein Abbrechen (überlappte sonst)
-    if (e.phase === "waiting") return [h("div", { class: "prog-load" }, h("span", { class: "lbl", text: t("inst.phase.waiting") }))];
+    // Installer offen (Windows): Hinweis ohne Balken und „Zurücksetzen“ (1.0.1); der Hinweis kürzt sich, nichts überlappt
+    if (e.phase === "waiting") return [
+      h("div", { class: "prog-load wait" }, h("span", { class: "lbl", text: t("inst.phase.waiting") })),
+      h("button", { class: "btn", type: "button", title: t("prog.reset.tip"), "data-key": `${p.id}:reset`, onclick: (ev: Event) => { ev.stopPropagation(); void api.cancelInstall(p.id); } }, h("span", { text: t("prog.reset") })),
+    ];
     const bar = h("i");
     const full = e.phase !== "download";
     bar.style.width = `${full ? 100 : Math.round(e.progress * 100)}%`; // CSSOM, kein style-Attribut

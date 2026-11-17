@@ -28,6 +28,8 @@ export interface Bridge {
   checkUpdates(): Promise<UpdatesSnapshot>;
   install(id: string): Promise<UpdatesSnapshot>;
   cancelInstall(id: string): Promise<boolean>;
+  /** Startzeit fürs Log (main.log): „script“ = Modul läuft, „cards“ = erste Karten stehen. */
+  mark(name: "script" | "cards"): void;
   openReleasePage(id: string): Promise<boolean>;
   onUpdates(cb: (u: UpdatesSnapshot) => void): void;
   onWin(cb: (w: { fullscreen: boolean; focused: boolean; platform: string }) => void): void;

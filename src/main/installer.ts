@@ -11,8 +11,9 @@ import os from "node:os";
 import path from "node:path";
 import { parsePlistJson, type AppInfo } from "../core/plist";
 import { isNewer } from "../core/version";
+import { setupVerdict, type SetupExit } from "../core/winsetup";
 import {
-  pageFor, sourceById,
+  CATALOG_VERSION, pageFor, sourceById, staleSources,
   allowedUrl, bundleMatches, checkSignature, installVerdict, kindOf, MAX_DOWNLOAD, MAX_REDIRECTS, pickRelease, REQUIRE_SIGNATURE,
   sizeOk, SOURCES, SUITE_PUBLIC_KEYS, symlinkInside, unsafeZipEntries, urlBelongsToRepo, type ReleaseInfo, type ReleaseSource, type SourceId,
 } from "../core/release";
@@ -163,6 +164,13 @@ export interface InstallerDeps {
   offline?: boolean;
   /** Windows: Datei über die Shell öffnen (ShellExecute, damit UAC erscheinen kann); Fehlertext oder "". */
   openFile?(file: string): Promise<string>;
+  /**
+   * Windows (1.0.1): Installer öffnen (PowerShell Start-Process = ShellExecuteEx, UAC bleibt) und auflösen, sobald
+   * genau dieser Prozess endet. Fehlt die Funktion oder PowerShell (noShell), gilt der Ersatzweg openFile + tasklist.
+   */
+  runInstaller?(file: string): Promise<SetupExit>;
+  /** Windows: läuft noch ein Prozess mit dem Namen dieser .exe (tasklist)? */
+  imageRunning?(file: string): Promise<boolean>;
   /** Windows: installierte Version neu lesen (Registry), null = nicht installiert. */
   installedVersion?(id: SourceId): Promise<string | null>;
   /** Releases zwischenspeichern (launcher.json). */
@@ -170,6 +178,8 @@ export interface InstallerDeps {
   /** Windows-Weg auch auf anderen Systemen testen (Tests) und Takt der Registry-Nachschau. */
   platform?: string;
   pollMs?: number;
+  /** Höchstens so lange auf den Installer warten (Standard 30 min, Tests kürzer). */
+  maxWaitMs?: number;
 }
 
 export class Installer {
@@ -196,6 +206,8 @@ export class Installer {
    */
   loadCache(c: Record<string, unknown> | undefined): void {
     if (!c) return;
+    // 1.0.1 (Realtest 1.0.0 Befund 3): Programme, die der Speicher nicht kennt (neuer Katalog), prüft der Start sofort
+    for (const id of staleSources(c as { catalog?: unknown; checked?: unknown; entries?: Record<string, unknown> })) this.stale.add(id);
     const at = typeof c.at === "number" ? c.at : 0;
     const entries = c.entries && typeof c.entries === "object" ? (c.entries as Record<string, unknown>) : {};
     for (const [id, v] of Object.entries(entries)) {
@@ -214,12 +226,23 @@ export class Installer {
     if (at) { this.checkedAt = Math.min(at, Date.now() - 3_600_001); this.lastGood = at; } // zählt nicht als frische Prüfung
   }
 
-  /** Für launcher.json: gelungene Prüfungen (ohne Prüfsummenlisten). */
+  /**
+   * Für launcher.json: zuletzt bekannte Releases (ohne Prüfsummenlisten), Katalog-Version und welche Programme geprüft
+   * sind (auch „noch nicht veröffentlicht“), damit ein neuer Katalog erkannt wird.
+   */
   cacheData(): Record<string, unknown> {
     const entries: Record<string, unknown> = {};
-    for (const e of this.entries.values()) if (e.latest && !e.cached) entries[e.id] = e.latest;
-    return { at: this.checkedAt, entries };
+    const checked: string[] = [];
+    for (const e of this.entries.values()) {
+      if (e.latest) entries[e.id] = e.latest;
+      if (!this.stale.has(e.id) && (e.latest || e.check === "missing")) checked.push(e.id);
+    }
+    return { at: this.lastGood || this.checkedAt, catalog: CATALOG_VERSION, checked, entries };
   }
+
+  /** Programme, die der Zwischenspeicher noch nicht kannte und die noch nicht geprüft sind. */
+  private readonly stale = new Set<SourceId>();
+  staleIds(): SourceId[] { return [...this.stale]; }
 
   get downloadsDir(): string { return path.join(this.d.dataDir, "downloads"); }
 
@@ -273,20 +296,28 @@ export class Installer {
   /** releases/latest je Repo. `force`: auf Knopfdruck; sonst höchstens 1×/h. */
   check(force = false): Promise<void> {
     if (this.checking) return this.checking;
-    if (!force && Date.now() - this.checkedAt < 3_600_000) return Promise.resolve();
+    // Nicht fällig, aber neue Programme im Katalog: nur diese prüfen (1.0.1)
+    const due = force || Date.now() - this.checkedAt >= 3_600_000;
+    const only = due ? null : new Set(this.stale);
+    if (only && !only.size) return Promise.resolve();
     // Kontingent aufgebraucht: bis zum Zurücksetzen gar nicht fragen (keine Wiederholungs-Schleife)
     if (this.rateLimitedUntil > Date.now()) { this.d.onChange(); return Promise.resolve(); }
     this.checking = (async () => {
       const before = new Map([...this.entries].map(([id, e]) => [id, e.check]));
-      for (const e of this.entries.values()) e.check = "checking";
+      // Unbekannte Programme zuerst (falls das Kontingent knapp ist)
+      const list = (Object.values(SOURCES) as ReleaseSource[]).filter(s => !only || only.has(s.id))
+        .sort((a, b) => Number(this.stale.has(b.id)) - Number(this.stale.has(a.id)));
+      for (const src of list) this.entries.get(src.id)!.check = "checking";
       this.d.onChange();
+      this.d.log?.("release check", `${only ? "new" : "all"}: ${list.map(s => s.id).join(",")}`);
       let limited = 0, okAny = false;
       // nacheinander: bei 403 „rate limit“ sofort aufhören, statt weitere Anfragen zu verbrauchen
-      for (const src of Object.values(SOURCES) as ReleaseSource[]) {
+      for (const src of list) {
         if (limited) { this.set(src.id, { check: this.entries.get(src.id)!.latest ? "ok" : "error", error: "rate limit" }); continue; }
         try {
           const json = await this.latestJson(src.repo);
           okAny = true;
+          this.stale.delete(src.id);
           if (json === null) { this.set(src.id, { check: "missing", latest: null, error: "", cached: false }); continue; }
           const rel = pickRelease(json, src, this.platform, this.arch);
           this.set(src.id, { check: rel ? "ok" : "error", latest: rel, error: rel ? "" : "bad release", cached: false });
@@ -302,8 +333,9 @@ export class Installer {
         }
       }
       if (limited) this.rateLimitedUntil = limited;
-      this.checkedAt = Date.now();
-      if (okAny && !limited) { this.lastGood = this.checkedAt; this.d.saveCache?.(this.cacheData()); }
+      if (!only) this.checkedAt = Date.now();
+      if (okAny && !limited) { if (!only) this.lastGood = this.checkedAt; this.d.saveCache?.(this.cacheData()); }
+      this.d.log?.("release check done", list.map(s => `${s.id}=${this.entries.get(s.id)!.check}`).join(" "));
     })();
     return this.checking.finally(() => { this.checking = null; this.d.onChange(); });
   }
@@ -425,10 +457,15 @@ export class Installer {
       else if (way === "dmg") msg = await this.installDmg(id, file, rel);
       else if (way === "ljl-zip") msg = await this.installLjl(file, rel, dir);
       else if (way === "exe") {
-        // Installer sichtbar über die Shell; die Karte zeigt „Installer geöffnet …“, bis die Version wechselt (max. 10 min)
-        await this.runWindowsInstaller(id, file);
-        this.set(id, { phase: "waiting", progress: 1, message: "" });
-        msg = await this.waitForVersion(id, rel.version);
+        // Installer sichtbar über die Shell; die Karte zeigt „Installer geöffnet …“ (mit „Zurücksetzen“), bis er endet
+        // oder die neue Version in der Registry steht. Danach AKTUELL, ABGEBROCHEN oder FEHLER; der Download wird gelöscht.
+        const r = await this.awaitWindowsSetup(id, file, rel.version, ctl.signal);
+        if (r.phase !== "done") {
+          this.d.log?.("installer result", `${id}: ${r.phase}`);
+          this.set(id, { phase: r.phase, message: r.message });
+          return;
+        }
+        msg = r.message;
       }
       else throw new Error("unsupported");
       if (this.leftover.length) { msg += " " + this.d.say("inst.leftover", { path: this.leftover.join(", ") }); this.leftover = []; }
@@ -441,7 +478,7 @@ export class Installer {
       this.aborts.delete(id);
       // Download-Ordner sofort aufräumen; hält Windows die .exe noch fest, später erneut (und beim nächsten Start)
       if (!keepDir) await rmOwn(dir).catch(() => {
-        for (const ms of [30_000, 120_000]) setTimeout(() => { void rmOwn(dir).catch(e => this.d.log?.("cleanup failed", (e as Error).message)); }, ms).unref();
+        for (const ms of [30_000, 120_000, 600_000]) setTimeout(() => { void rmOwn(dir).catch(e => this.d.log?.("cleanup failed", (e as Error).message)); }, ms).unref();
       });
     }
   }
@@ -630,15 +667,75 @@ export class Installer {
     }
   }
 
-  /** Nach dem Öffnen des Installers die Registry nachsehen, bis die neue Version da ist (alle 4 s, höchstens 10 min). */
-  private async waitForVersion(id: SourceId, version: string): Promise<string> {
-    const until = Date.now() + 10 * 60_000;
-    while (Date.now() < until) {
-      await new Promise(r => setTimeout(r, this.d.pollMs ?? 4000));
+  /**
+   * Windows (1.0.1, Realtest 1.0.0 Befund 1): Installer öffnen und warten, bis er endet oder die neue Version in der
+   * Registry steht. Endet er ohne Installation, noch zweimal kurz nachsehen, dann ABGEBROCHEN bzw. FEHLER (Exit-Code).
+   * „Zurücksetzen“ (signal) beendet nur das Warten; der fremde Installer bleibt offen und wird nicht angefasst.
+   * Startet der Installer sich unter demselben Namen neu (z. B. mit Rechten), wird per tasklist weiter gewartet.
+   */
+  async awaitWindowsSetup(id: SourceId, file: string, version: string, signal: AbortSignal): Promise<{ phase: "done" | "cancelled" | "failed"; message: string }> {
+    if (this.platform !== "win32") throw new Error("Windows only");
+    const name = SOURCES[id].name;
+    const poll = this.d.pollMs ?? 4000;
+    const sleep = (ms: number) => new Promise<void>(r => setTimeout(r, ms));
+    const never = new Promise<void>(() => {});
+    const current = async (): Promise<string | null> => {
       const v = this.d.installedVersion ? await this.d.installedVersion(id).catch(() => null) : null;
-      if (v && !isNewer(version, v)) return this.d.say("inst.done", { name: SOURCES[id].name, v, path: "" }).replace(/:\s*$/, "");
+      return v && !isNewer(version, v) ? v : null;
+    };
+    const done = (v: string) => ({ phase: "done" as const, message: this.d.say("inst.done", { name, v, path: "" }).replace(/:\s*$/, "") });
+    let exit: SetupExit | null = null;
+    let ended: Promise<void> = never;
+    let viaTasklist = false;
+    let seen = false;
+    const fallback = async () => { viaTasklist = true; ended = never; exit = null; await this.runWindowsInstaller(id, file); };
+    if (this.d.runInstaller) {
+      ended = this.d.runInstaller(file).then(r => { exit = r; }, (e: unknown) => { exit = { code: null, error: (e as Error).message, pid: null, noShell: true }; });
+    } else await fallback();
+    this.set(id, { phase: "waiting", progress: 1, message: "" });
+    const aborted = new Promise<void>(r => { if (signal.aborted) r(); else signal.addEventListener("abort", () => r(), { once: true }); });
+    const until = Date.now() + (this.d.maxWaitMs ?? 30 * 60_000);
+    for (;;) {
+      await Promise.race([sleep(poll), ended, aborted]);
+      const v = await current();
+      if (v) return done(v);
+      if (signal.aborted) { this.d.log?.("installer wait reset", id); return { phase: "cancelled", message: this.d.say("inst.win.reset", { name }) }; }
+      if (Date.now() > until) return { phase: "cancelled", message: this.d.say("inst.winTimeout") };
+      // Ersatzweg ohne PowerShell bzw. Neustart unter demselben Namen: Ende = der Name verschwindet aus tasklist
+      if (viaTasklist) {
+        if (!this.d.imageRunning) continue;
+        const running = await this.d.imageRunning(file).catch(() => true);
+        if (running) { seen = true; continue; }
+        if (!seen) continue; // UAC-Frage offen oder noch nicht gestartet
+        exit = { code: null, error: "", pid: null };
+      }
+      const x = exit as SetupExit | null;
+      if (!x) continue;
+      if (x.noShell) {
+        this.d.log?.("installer powershell missing", [x.error, x.diag].filter(Boolean).join(" · "));
+        // Sicherheitsnetz: läuft der Installer doch schon (Ausgabe verloren), nicht ein zweites Mal öffnen
+        if (this.d.imageRunning && await this.d.imageRunning(file).catch(() => false)) { viaTasklist = true; seen = true; exit = null; ended = never; continue; }
+        await fallback();
+        continue;
+      }
+      if (x.follow) { this.d.log?.("installer follow", id); viaTasklist = true; seen = true; exit = null; ended = never; continue; }
+      ended = never;
+      this.d.log?.("installer ended", `${id}: code ${x.code ?? "?"}${x.error ? " " + x.error : ""}${x.diag ? " · " + x.diag : ""}`);
+      // Neustart unter demselben Namen (nicht bei Abbruch oder Fehler): weiter warten, bis auch dieser endet
+      if (!viaTasklist && !x.error && x.code !== 1223 && this.d.imageRunning && await this.d.imageRunning(file).catch(() => false)) {
+        viaTasklist = true; seen = true; exit = null; continue;
+      }
+      // Registry noch zweimal kurz nachsehen (der Eintrag kommt manchmal erst nach dem Ende)
+      for (let i = 0; i < 2; i++) {
+        await sleep(Math.min(poll, 1500));
+        const w = await current();
+        if (w) return done(w);
+      }
+      if (x.error) return { phase: "failed", message: this.d.say("inst.err.winOpen", { msg: x.error }) };
+      return setupVerdict(x, false) === "failed"
+        ? { phase: "failed", message: this.d.say("inst.win.failed", { name, code: String(x.code) }) }
+        : { phase: "cancelled", message: this.d.say("inst.win.closed", { name }) };
     }
-    return this.d.say("inst.winTimeout");
   }
 
   // ------------------------------------------------------------------ Selbst-Update
@@ -669,11 +766,54 @@ export class Installer {
     return true;
   }
 
-  /** Download-Ordner leeren (beim Beenden), außer ein Selbst-Update wartet noch darauf. */
-  cleanupSync(): void {
-    if (this.pendingSelf) return;
-    try { fs.rmSync(this.downloadsDir, { recursive: true, force: true }); } catch { /* bleibt bis zum nächsten Mal */ }
+  /**
+   * Download-Ordner leeren (beim Start und Beenden), außer ein Selbst-Update wartet noch darauf. Windows-Nachtest 1.0.1:
+   * Eine gesperrte .exe (offene UAC-Abfrage) ließ sonst auch alle anderen Reste liegen. Darum Eintrag für Eintrag;
+   * Fehler einzeln überspringen und loggen. Mit `retry` werden genau diese Reste später erneut versucht (nie Ordner,
+   * die erst danach entstehen, z. B. ein laufender Download).
+   */
+  cleanupSync(retry = false): string[] {
+    if (this.pendingSelf) return [];
+    const left = cleanDir(this.downloadsDir, (f, why) => this.d.log?.("cleanup skipped", `${path.basename(path.dirname(f))}/${path.basename(f)}: ${why}`));
+    if (retry && left.length) {
+      for (const ms of [30_000, 120_000, 600_000]) setTimeout(() => {
+        for (const f of left) if (fs.existsSync(f)) cleanDir(f, () => {}, true);
+      }, ms).unref();
+    }
+    return left;
   }
+}
+
+/**
+ * Inhalt von `dir` löschen, Eintrag für Eintrag (bei `self` auch `dir` selbst). Scheitert ein Ordner, werden seine
+ * Einträge einzeln versucht. Gibt zurück, was liegen blieb (oberste Ebene); `skip` meldet jede gesperrte Datei.
+ * Unter Windows ohne asar-Sonderbehandlung (process.noAsar), damit nichts als Archiv gelesen wird.
+ */
+export function cleanDir(dir: string, skip: (file: string, why: string) => void, self = false, rm: (p: string) => void = p => fs.rmSync(p, { recursive: true, force: true })): string[] {
+  const prev = process.noAsar;
+  process.noAsar = true;
+  try {
+    const one = (p: string): boolean => {
+      try { rm(p); return true; } catch (e) {
+        let st: fs.Stats | null = null;
+        try { st = fs.lstatSync(p); } catch { return true; } // schon weg
+        if (st.isDirectory()) {
+          let kids: string[] = [];
+          try { kids = fs.readdirSync(p); } catch { /* nicht lesbar */ }
+          let all = true;
+          for (const k of kids) if (!one(path.join(p, k))) all = false;
+          if (all) { try { fs.rmdirSync(p); return true; } catch { /* noch belegt */ } }
+          return false;
+        }
+        skip(p, (e as NodeJS.ErrnoException).code ?? (e as Error).message);
+        return false;
+      }
+    };
+    if (self) return one(dir) ? [] : [dir];
+    let names: string[] = [];
+    try { names = fs.readdirSync(dir); } catch { return []; }
+    return names.map(n => path.join(dir, n)).filter(p => !one(p));
+  } finally { process.noAsar = prev; }
 }
 
 /** Der .app-Ordner, aus dem Link-Suite läuft (nur in der fertigen App). (VJ-Link runningAppBundle) */

@@ -41,6 +41,8 @@ const api = {
   onWin: (cb: (w: unknown) => void) => on("win", cb),
   onMenu: (cb: (m: unknown) => void) => on("menu", cb),
   introDone: () => { ipcRenderer.send("ui:introDone"); },
+  // Startzeiten fürs Log (1.0.1, Windows: dom-ready erst nach 4 s): nur feste Namen und eine Zahl
+  mark: (name: unknown) => { if (name === "script" || name === "cards") ipcRenderer.send("ui:mark", name, Math.round(performance.now())); },
   welcomeDone: () => ipcRenderer.invoke("welcome:done"),
   openHelp: () => ipcRenderer.invoke("help:readme"),
   // Suite-Chat (Namen wie VJ-Link preload)
