@@ -51,6 +51,8 @@ export interface UpdatesSnapshot {
   /** Selbst-Update geladen und geprüft, wartet aufs Beenden (1.0.3: Knopf „Jetzt neu starten“). */
   selfPending: boolean;
   demo: boolean;
+  /** Nur in der Antwort auf „install“: warum nichts gestartet wurde (1.0.6, nie stumm). */
+  error?: string;
   /** GitHub-Kontingent ohne Anmeldung aufgebraucht: bis wann (ms), 0 = nicht. */
   rateLimitedUntil: number;
   /** Zeit der letzten gelungenen Prüfung (auch aus dem Zwischenspeicher). */

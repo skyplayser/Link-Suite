@@ -408,6 +408,7 @@ export const TEXTS: Record<string, Entry> = {
   "inst.err.zip": { de: "Zip-Archiv unsicher oder kaputt (Pfade oder Links nach außen).", en: "Zip archive unsafe or broken (paths or links pointing outside)." },
   "set.self.restart": { de: "Jetzt neu starten", en: "Restart now" },
   "inst.err.rateLimited": { de: "GitHub-Abfragen für diese Stunde aufgebraucht – Laden geht wieder ab {time}.", en: "GitHub requests used up for this hour – downloading works again from {time}." },
+  "inst.err.unknownSource": { de: "{name} lässt sich in dieser Version von Link-Suite nicht installieren. Bitte Link-Suite aktualisieren oder „Seite öffnen“.", en: "{name} cannot be installed with this version of Link-Suite. Please update Link-Suite or use “Open page”." },
   "inst.err.noFresh": { de: "GitHub gerade nicht erreichbar – kein frischer Stand zum Laden. Bitte später erneut.", en: "GitHub is not reachable right now – no fresh release to download. Please try again later." },
   "inst.err.selfDev": { de: "Selbst-Update geht nur in der fertigen App.", en: "Self-update only works in the packaged app." },
   "inst.quit.title": { de: "{name} läuft", en: "{name} is running" },

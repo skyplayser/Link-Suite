@@ -19,7 +19,7 @@ describe("Katalog", () => {
     expect(programById("vj")!.bundleIds).toEqual(["de.nextphilm.vjlink"]);
     expect(programById("vd")!.bundleIds).toEqual(["de.nextphilm.vdlink"]);
     const dirs = Object.fromEntries(CATALOG.filter(p => p.devDir).map(p => [p.id, p.devDir]));
-    expect(dirs).toEqual({ vj: "~/VJ-Link", vd: "~/VD-Link", net: "~/NET-Link", crew: "~/Crew-Link", pl: "~/PL-Link", db: "~/dB-Link" });
+    expect(dirs).toEqual({ vj: "~/Link-Suite/VJ-Link", vd: "~/Link-Suite/VD-Link", net: "~/Link-Suite/NET-Link", crew: "~/Link-Suite/Crew-Link", pl: "~/Link-Suite/PL-Link", db: "~/Link-Suite/dB-Link" });
     for (const p of CATALOG) { expect(p.line.de).toBeTruthy(); expect(p.line.en).toBeTruthy(); expect(p.icon).toMatch(/\.(svg|png)$/); }
   });
 

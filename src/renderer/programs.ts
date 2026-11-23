@@ -327,7 +327,7 @@ export class ProgramsView {
     const label = p.stickOnly ? t("prog.ljlGet") : st.app ? t("prog.update") : t("prog.install");
     return h("button", {
       class: "btn" + (primary ? " primary main" : ""), type: "button", "data-key": `${p.id}:install`,
-      onclick: (ev: Event) => { ev.stopPropagation(); void api.install(p.id).then(u => this.updates(u)); },
+      onclick: (ev: Event) => { ev.stopPropagation(); void api.install(p.id).then(u => { if (u.error) toast(u.error, "err"); this.updates(u); }); },
     }, icon(p.stickOnly ? "usb" : "download"), h("span", { text: label }));
   }
 

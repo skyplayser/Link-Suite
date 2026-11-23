@@ -1,11 +1,8 @@
 // Schmale Brücke zur Oberfläche: nur benannte Funktionen. Argumente sind Kennungen aus catalog.ts („vj“, „app“ …),
 // nie Pfade oder Befehle; der Hauptprozess prüft sie noch einmal.
 import { contextBridge, ipcRenderer } from "electron";
+import { progArg as id, srcArg as src } from "./ipc-args"; // aus Katalog und Quellen abgeleitet (1.0.6)
 
-const IDS = new Set(["lj", "ljl", "vj", "vd", "net", "crew", "pl", "db"]);
-const id = (v: unknown) => (typeof v === "string" && IDS.has(v) ? v : "");
-const SRC = new Set(["lj", "vj", "vd", "ljl", "suite"]);
-const src = (v: unknown) => (typeof v === "string" && SRC.has(v) ? v : "");
 const route = (v: unknown) => (v === "app" || v === "dev" ? v : "");
 const num = (v: unknown) => (typeof v === "number" && Number.isFinite(v) && v >= 0 ? v : 0);
 const on = (channel: string, cb: (payload: unknown) => void) => { ipcRenderer.on(channel, (_e, p) => cb(p)); };
@@ -30,7 +27,7 @@ const api = {
   pickDevDir: (p: unknown) => ipcRenderer.invoke("devdir:pick", id(p)),
   resetDevDir: (p: unknown) => ipcRenderer.invoke("devdir:reset", id(p)),
   shotReady: () => ipcRenderer.invoke("shot:ready"),
-  // Installieren/Aktualisieren (0.2): nur Kennungen lj, vj, ljl, suite
+  // Installieren/Aktualisieren: Kennungen der Release-Quellen (SOURCES)
   updates: () => ipcRenderer.invoke("updates:get"),
   checkUpdates: () => ipcRenderer.invoke("updates:check"),
   install: (p: unknown) => ipcRenderer.invoke("install", src(p)),

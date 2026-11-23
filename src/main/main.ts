@@ -615,11 +615,23 @@ handle("welcome:done", () => { store.setLauncher(s => { s.welcomed = true; }); r
 handle("updates:check", async () => { if (!demo && !SHOT) await installer.check(true); return installer.snapshot(); });
 handle("install", async (_e, id) => {
   const src = sourceById(id);
-  if (!src) return installer.snapshot(); // im Demo/Screenshot spielt der Installer nur (installer.demo)
+  // Nie stumm (1.0.6: Crew Link fehlte in der Brücke, der Klick tat nichts): Meldung an der Oberfläche und ins Log
+  if (!src) return { ...installer.snapshot(), error: unknownSource("install", id) };
   void installer.install(src.id).then(() => refresh(true));
   return installer.snapshot();
 });
-handle("install:cancel", (_e, id) => { const src = sourceById(id); if (src) installer.cancel(src.id); return true; });
+handle("install:cancel", (_e, id) => {
+  const src = sourceById(id);
+  if (!src) { unknownSource("install:cancel", id); return false; }
+  installer.cancel(src.id);
+  return true;
+});
+/** Unbekannte Release-Quelle: Log-Eintrag und Meldung mit dem Programmnamen (falls im Katalog). */
+function unknownSource(what: string, id: unknown): string {
+  const raw = typeof id === "string" ? id.slice(0, 16) : typeof id;
+  log("install unknown source", `${what} ${JSON.stringify(raw)}`);
+  return say("inst.err.unknownSource", { name: programById(id)?.name ?? (raw || "?") });
+}
 handle("self:restart", () => {
   if (!installer.pendingSelf) return false;
   log("self-update restart", installer.pendingSelf.version);

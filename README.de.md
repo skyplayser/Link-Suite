@@ -12,13 +12,13 @@
 </p>
 
 <p align="center">
-  <a href="#herunterladen-und-installieren"><img alt="Link-Suite 1.0.5 herunterladen" src="https://img.shields.io/badge/Download-Link--Suite%201.0.5-FF5C93?style=for-the-badge"></a>
+  <a href="#herunterladen-und-installieren"><img alt="Link-Suite 1.0.6 herunterladen" src="https://img.shields.io/badge/Download-Link--Suite%201.0.6-FF5C93?style=for-the-badge"></a>
 </p>
 
 <p align="center">
   <a href="https://github.com/skyplayser/Link-Suite/releases"><img alt="Neueste Version" src="https://img.shields.io/github/v/release/skyplayser/Link-Suite?include_prereleases&label=Release&color=FFB020"></a>
   <a href="https://github.com/skyplayser/Link-Suite/releases"><img alt="Downloads" src="https://img.shields.io/github/downloads/skyplayser/Link-Suite/total?label=Downloads&color=22C8F0"></a>
-  <img alt="Version 1.0.5" src="https://img.shields.io/badge/Version-1.0.5-FF5C93">
+  <img alt="Version 1.0.6" src="https://img.shields.io/badge/Version-1.0.6-FF5C93">
   <img alt="macOS 13+, Apple-Chip und Intel" src="https://img.shields.io/badge/macOS%2013%2B-Apple--Chip%20%7C%20Intel-3DDC84">
   <img alt="Windows 10/11, getestet auf Windows 11 (in einer VM)" src="https://img.shields.io/badge/Windows-getestet%20auf%20Windows%2011%20(VM)-3DDC84">
   <img alt="Kostenlos" src="https://img.shields.io/badge/Preis-kostenlos-B45CFF">
@@ -57,7 +57,7 @@ es nur zu GitHub: um nach neuen Versionen zu fragen und die zu laden, die du aus
 Server, kein Konto.
 
 > [!NOTE]
-> **Version 1.0.5.** Für macOS hat die QA von 0.3.1 Link-Suite release-fertig genannt: Ein echtes Programm ließ sich
+> **Version 1.0.6.** Für macOS hat die QA von 0.3.1 Link-Suite release-fertig genannt: Ein echtes Programm ließ sich
 > installieren und zweimal hintereinander aktualisieren. Manches ist nur im Code oder in einem Entwickler-Build geprüft
 > (siehe [Was geprüft ist](#was-geprüft-ist)). Die Windows-Version ist **getestet auf Windows 11 (in einer VM)**.
 > Link-Suite ist nicht bei Apple oder Microsoft signiert. Deshalb warnen macOS und Windows einmal beim ersten Start
@@ -192,7 +192,7 @@ Sprache, Tag oder Nacht, dein Name und Platz im Chat und die Startanimation – 
 | <img src="docs/assets/icons/vj-link.svg" width="28" alt=""> **VJ-Link** | Live-Visuals, gesteuert vom Lichtpult, im Takt der Musik | Beta, macOS und Windows | installieren und aktualisieren | [GitHub](https://github.com/skyplayser/VJ-LINK) · [Website](https://skyplayser.github.io/VJ-LINK/) |
 | <img src="docs/assets/icons/vd-link.svg" width="28" alt=""> **VD-Link** | 3D-Lichtvisualisierer für Art-Net und sACN: die Show sehen, bevor sie hängt | Beta, macOS und Windows | installieren und aktualisieren | [GitHub](https://github.com/skyplayser/VD-Link) |
 | <img src="docs/assets/icons/net-link.svg" width="28" alt=""> **NET Link** | Wer ist im Show-Netz? Findet IP-Konflikte, falsche Subnetze und fehlendes Multicast | kommt bald | – | – |
-| <img src="docs/assets/icons/crew-link.svg" width="28" alt=""> **Crew Link** | Timetable der Nacht: wer wann spielt, eine Uhr für alle | Alpha, macOS und Windows | installieren und aktualisieren (ab Link-Suite 1.0.5) | [GitHub](https://github.com/skyplayser/Crew-Link) · [Website](https://skyplayser.github.io/Crew-Link/) |
+| <img src="docs/assets/icons/crew-link.svg" width="28" alt=""> **Crew Link** | Timetable der Nacht: wer wann spielt, eine Uhr für alle | Alpha, macOS und Windows | installieren und aktualisieren (ab Link-Suite 1.0.6) | [GitHub](https://github.com/skyplayser/Crew-Link) · [Website](https://skyplayser.github.io/Crew-Link/) |
 | <img src="docs/assets/icons/pl-link.svg" width="28" alt=""> **PL Link** | Patch und Stromlast: DMX-Adressen, Stromkreise und Packlisten | kommt bald | – | – |
 | <img src="docs/assets/icons/db-link.svg" width="28" alt=""> **dB Link** | Lautstärke nach DIN 15905-5: messen, warnen, protokollieren | kommt bald | – | – |
 
@@ -264,7 +264,7 @@ legt das Projekt fest, nicht Link-Suite. Deshalb fragt Link-Suite vorher.
 - Es schaltet Gatekeeper und SmartScreen nicht ab und ändert keine Systemeinstellung.
 - Es braucht keine Admin-Rechte und fragt nach keinem Passwort. Ohne Admin-Rechte landen Programme in `~/Applications`.
 
-## Stand der Version 1.0.5
+## Stand der Version 1.0.6
 
 ### Was neu ist in 0.3
 
@@ -282,7 +282,7 @@ legt das Projekt fest, nicht Link-Suite. Deshalb fragt Link-Suite vorher.
 | Bereich | Stand |
 |---|---|
 | Nach Releases fragen | fragt GitHub beim Start und auf Knopfdruck; die Prüfung beim Start ist abschaltbar |
-| Installieren und Aktualisieren | LJ Link, VJ-Link, VD-Link und Crew Link aus ihren GitHub-Releases (VD-Link ab 1.0.0, Crew Link ab 1.0.5, auch als Vorabversion) |
+| Installieren und Aktualisieren | LJ Link, VJ-Link, VD-Link und Crew Link aus ihren GitHub-Releases (VD-Link ab 1.0.0, Crew Link ab 1.0.6, auch als Vorabversion) |
 | LJL Link | *Auf den Stick*: in einen Ordner oder direkt auf den USB-Stick des Clubs, mit kurzer Anleitung; `club.json` weiter von Hand |
 | Selbst-Update | aus [seinen eigenen Releases](https://github.com/skyplayser/Link-Suite/releases) (`skyplayser/Link-Suite`); die geprüfte neue Version wird beim Beenden oder mit **Jetzt neu starten** eingesetzt (macOS: per Skript; Windows ab 1.0.3: der Installer läuft still pro Benutzer) |
 | Programme starten | installierte Apps, und Entwicklerprojekte mit Log-Leiste, wenn die Entwickleransicht an ist |
@@ -401,7 +401,7 @@ Probleme im Netz? Dafür ist NET Link da. Es ist in Entwicklung; bis dahin sagt 
 
 ## Für Entwickler
 
-Version **1.0.5**: alles aus 0.1 und 0.2 (Programmliste, installierte Apps und Entwicklerprojekte starten, Suite-Chat
+Version **1.0.6**: alles aus 0.1 und 0.2 (Programmliste, installierte Apps und Entwicklerprojekte starten, Suite-Chat
 mit EMERGENCY, IM NETZ, Installieren und Aktualisieren aus GitHub, Club-Stick, Selbst-Update), dazu die neue Oberfläche,
 die Startanimation mit Launcher-Ende, der macOS-Feinschliff und der Windows-Installer pro Benutzer. 1.0.1 bringt die Korrekturen aus dem Windows-Test, 1.0.2 einen
 DE/EN-Umschalter in der Kopfleiste, 1.0.3 das Selbst-Update unter Windows.
