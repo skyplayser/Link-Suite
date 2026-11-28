@@ -123,6 +123,10 @@ export interface LauncherSettings {
   installedCache?: InstalledCache;
   /** Letzte Releases aus GitHub: ohne Netz bleibt „verfügbar“ statt „kommt bald“ (Mac-QA 0.3.1 N1). Nur Daten, keine Freigabe. */
   releaseCache?: Record<string, unknown>;
+  /** KI-Hilfe-Assistent: Hinweis bestätigt, mit Stand und Zeitpunkt (vorher sendet nichts). Zurücksetzen in den Einstellungen. */
+  helpConsent?: { v: number; at: string };
+  /** Infobox „Funktioniert etwas nicht?“ ausgeblendet. */
+  helpHintHidden?: boolean;
 }
 
 export interface CachedApp { path: string; version: string; bundleId: string; onVolume: boolean }
@@ -192,6 +196,12 @@ export function parseLauncherJson(text: string | null): LauncherSettings {
   if (typeof o.notify === "boolean") out.notify = o.notify;
   if (typeof o.welcomed === "boolean") out.welcomed = o.welcomed;
   if (typeof o.devView === "boolean") out.devView = o.devView;
+  if (o.helpConsent && typeof o.helpConsent === "object") {
+    const c = o.helpConsent as Record<string, unknown>;
+    if (typeof c.v === "number" && Number.isInteger(c.v) && c.v > 0 && typeof c.at === "string" && c.at.length <= 40) out.helpConsent = { v: c.v, at: c.at };
+  }
+  // helpDeviceId (1.0.7-Vorabstand) wird nicht mehr gelesen: die Kennung lebt nur noch im Arbeitsspeicher
+  if (o.helpHintHidden === true) out.helpHintHidden = true;
   const ic = parseInstalledCache(o.installedCache);
   if (ic) out.installedCache = ic;
   if (o.releaseCache && typeof o.releaseCache === "object" && !Array.isArray(o.releaseCache)) out.releaseCache = o.releaseCache as Record<string, unknown>;

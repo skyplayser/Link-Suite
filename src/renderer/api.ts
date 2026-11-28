@@ -2,6 +2,8 @@
 import type { ChatState } from "../core/suitechat";
 import type { LogLine } from "../core/ringlog";
 import type { UpdatesSnapshot } from "../main/installer";
+import type { HelpEvent } from "../main/helpdesk";
+import type { HelpReport } from "../core/helpdesk";
 import type { LaunchResult, LogBatch, NetSnapshot, SettingsSnapshot, ShotSpec, Snapshot } from "../core/state";
 
 export interface Info { version: string; demo: boolean; platform: string; locale: string; shot: ShotSpec | null }
@@ -48,6 +50,22 @@ export interface Bridge {
   onLogs(cb: (b: LogBatch) => void): void;
   onNet(cb: () => void): void;
   onSettings(cb: (s: SettingsSnapshot) => void): void;
+  helpState(): Promise<HelpState>;
+  helpHintHide(): Promise<boolean>;
+  helpConsent(): Promise<boolean>;
+  helpSend(m: { message: string; program: string | null; conversationId: string | null; diag: boolean }): Promise<{ req: number; prefix: string; diag: boolean } | { error: string }>;
+  helpDiag(id: string): Promise<string | null>;
+  helpReset(): Promise<boolean>;
+  /** Laufenden Chat im Hauptprozess ablegen (nur Arbeitsspeicher); ohne Wert: lesen. */
+  helpMem(v?: string): Promise<string>;
+  helpCancel(req: number): Promise<boolean>;
+  helpReport(conversationId: string): Promise<HelpReport | { error: string; message: string }>;
+  helpMail(mailto: string): Promise<boolean>;
+  helpOpen(url: string): Promise<boolean>;
+  helpCopy(text: string): Promise<boolean>;
+  onHelp(cb: (e: HelpEvent & { req: number }) => void): void;
 }
+
+export interface HelpState { consent: boolean; os: string; programs: { id: string; name: string; version: string | null; diag: { at: string; fresh: boolean; running: boolean } | null }[]; allowed: boolean }
 
 export const api = (window as unknown as { suite: Bridge }).suite;

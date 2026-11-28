@@ -14,6 +14,7 @@
 <!-- Icons als Inline-SVG-Symbole (aus design/muster.html) -->
 <svg width="0" height="0" class="sr" aria-hidden="true">
   <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 4h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-5 4v-4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm3 6.5a1.5 1.5 0 1 0 0 .01zm5 0a1.5 1.5 0 1 0 0 .01zm5 0a1.5 1.5 0 1 0 0 .01z"/></symbol>
+  <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M9.4 9.3a2.7 2.7 0 0 1 5.2.9c0 1.8-2.6 2.3-2.6 3.9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="17.1" r="1.1" fill="currentColor"/></symbol>
   <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></symbol>
   <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></symbol>
   <symbol id="i-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="1.5"/></symbol>
@@ -54,6 +55,7 @@
       <button class="chip" type="button" id="chip-net"></button>
       <span class="chip" id="chip-listen" hidden></span>
       <div class="seg lang-switch" id="top-lang" role="group" aria-label="Sprache / Language"><button type="button" data-v="de" lang="de" title="Deutsch">DE</button><button type="button" data-v="en" lang="en" title="English">EN</button></div>
+      <button class="iconbtn help-btn" id="help-btn" type="button" aria-expanded="false" aria-controls="help-panel" title="Hilfe-Assistent" data-i18n-title="help.button" data-i18n-aria="help.button"><svg class="ico" aria-hidden="true"><use href="#i-help"/></svg><i class="spk a" aria-hidden="true"></i><i class="spk b" aria-hidden="true"></i><i class="spk c" aria-hidden="true"></i></button>
       <button class="iconbtn chat-btn" id="chat-btn" type="button" aria-expanded="false" title="Suite-Chat" data-i18n-title="chat.button" data-i18n-aria="chat.button" hidden><svg class="ico fill" aria-hidden="true"><use href="#i-chat"/></svg><b class="chat-unread" id="chat-unread" hidden></b></button>
     </div>
   </header>
@@ -74,6 +76,12 @@
             </div>
             <div class="acts"><button class="btn" type="button" id="w-ok" data-i18n="w.ok">Verstanden</button><button class="btn ghost" type="button" id="w-more" data-i18n="w.more">Mehr dazu</button></div>
           </section>
+          <aside class="help-hint" id="help-hint" aria-labelledby="hh-title" hidden>
+            <span class="hh-ico" aria-hidden="true"><svg class="ico"><use href="#i-help"/></svg></span>
+            <div class="hh-txt"><b id="hh-title" data-i18n="hint.title">Funktioniert etwas nicht?</b> <span data-i18n="hint.text">Jetzt Soforthilfe vom KI-Hilfe-Assistenten – direkt hier in Link-Suite.</span></div>
+            <button class="btn primary" type="button" id="hh-open" data-i18n="hint.open">Chat öffnen</button>
+            <button class="iconbtn hh-x" type="button" id="hh-hide" data-i18n-title="hint.hide" data-i18n-aria="hint.hide">×</button>
+          </aside>
           <section class="hero" aria-labelledby="hero-h">
             <div class="hero-txt">
               <div class="hero-mark" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
@@ -143,6 +151,7 @@
           <button type="button" class="on" data-sec="ui" data-i18n="set.nav.ui">Oberfläche</button>
           <button type="button" data-sec="chat" data-i18n="set.nav.chat">Suite-Chat</button>
           <button type="button" data-sec="programs" data-i18n="set.nav.programs">Programme</button>
+          <button type="button" data-sec="help" data-i18n="set.nav.help">KI-Hilfe-Assistent</button>
           <button type="button" data-sec="about" data-i18n="set.nav.about">Über</button>
         </nav>
         <div class="set-content" id="set-content">
@@ -179,6 +188,10 @@
           <div class="set-row off mac-only"><div class="set-label"><b><span data-i18n="set.installDir">Installationsordner</span> <span class="ver" data-i18n="common.v02">ab 0.2</span></b><small data-i18n="set.installDir.sub"></small></div>
             <div class="set-ctl"><span class="path">/Applications</span><button class="btn small" type="button" disabled data-i18n="common.change">Ändern …</button></div></div>
 
+          <h3 id="sec-help" data-i18n="set.nav.help">KI-Hilfe-Assistent</h3>
+          <div class="set-row"><div class="set-label"><b data-i18n="set.help.reset">Hinweis zurücksetzen und Kennung löschen</b><small data-i18n="set.help.reset.sub"></small><small class="muted" id="help-reset-state"></small></div>
+            <div class="set-ctl"><button class="btn small" type="button" id="help-reset" data-i18n="set.help.reset.btn">Zurücksetzen</button></div></div>
+
           <h3 id="sec-about" data-i18n="set.nav.about">Über</h3>
           <div class="about"><img src="./icons/link-suite.svg" alt=""><div><b id="about-name">Link-Suite</b><span class="muted small" data-i18n="set.about.text"></span></div></div>
           <div class="set-row"><div class="set-label"><b data-i18n="set.self">Link-Suite selbst</b><small id="self-state"></small></div>
@@ -190,6 +203,22 @@
       </div>
     </section>
   </main>
+</div>
+
+<!-- KI-Hilfe-Assistent (api.link-suite.de über den Hauptprozess); Inhalt baut src/renderer/help.ts -->
+<div id="help-panel" class="chat-panel help-panel" role="dialog" aria-labelledby="help-title" hidden>
+  <div class="chat-head"><strong id="help-title" data-i18n="help.title">KI-Hilfe-Assistent</strong>
+    <button id="help-new" class="chat-link" type="button" hidden data-i18n="help.new">Neuer Chat</button>
+    <button id="help-close" class="chat-link" type="button" data-i18n="common.close">Schließen</button></div>
+  <div id="help-consent" class="help-consent"></div>
+  <label id="help-prog-row" class="help-prog" hidden><span data-i18n="help.program">Worum geht es?</span> <select id="help-prog" class="input"></select></label>
+  <div id="help-diag" class="help-diag" hidden></div>
+  <div id="help-list" class="chat-list help-list" aria-live="polite" hidden></div>
+  <form id="help-form" class="help-form" hidden>
+    <textarea class="input" id="help-input" rows="2" maxlength="1800" data-i18n-ph="help.ph" data-i18n-aria="help.ph"></textarea>
+    <button class="btn primary" id="help-send" type="submit" data-i18n="help.send">Senden</button>
+  </form>
+  <div id="help-foot" class="help-foot" hidden><span id="help-left" class="help-left"></span><button id="help-report" class="chat-link" type="button" data-i18n="help.report">Fehler per E-Mail melden</button></div>
 </div>
 
 <!-- Suite-Chat und EMERGENCY: Markup aus VJ-Link src/renderer/index.html:337–363, Schlüssel chat.* -->

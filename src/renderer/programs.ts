@@ -24,6 +24,8 @@ export class ProgramsView {
   /** Eigene Version; die Kachel UPDATE zählt Link-Suite selbst mit (wie Dock und Tray, Windows-Test 1.0.2). */
   selfVersion = "";
   private selected: ProgramId | null = null;
+  /** Gewähltes Programm (z. B. für den Hilfe-Assistenten). */
+  get selectedId(): ProgramId | null { return this.selected; }
   private openMenu: ProgramId | null = null;
   private busy = new Set<ProgramId>();
   private scanningNow = false;

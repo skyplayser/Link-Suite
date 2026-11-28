@@ -5,6 +5,7 @@ import { isProgramId } from "../core/catalog";
 import type { SettingsSnapshot } from "../core/state";
 import { api, type Info } from "./api";
 import { ChatUi } from "./chat";
+import { HelpUi } from "./help";
 import { applyI18n, currentLang, onLang, setLang, t } from "./i18n";
 import { playLauncherIntro } from "./intro/launcher-intro";
 import { LogDock } from "./logdock";
@@ -239,6 +240,12 @@ async function boot(): Promise<void> {
     $("w-ok").addEventListener("click", () => { $("welcome").hidden = true; void api.welcomeDone(); });
     $("w-more").addEventListener("click", () => { void api.openHelp(); });
   }
+  // Infobox zum Hilfe-Assistenten (1.0.7), bis man sie ausblendet; nicht in Screenshots
+  if (!s.helpHintHidden && !appInfo.shot) {
+    $("help-hint").hidden = false;
+    $("hh-open").addEventListener("click", () => { if ($("help-panel").hidden) $("help-btn").click(); });
+    $("hh-hide").addEventListener("click", () => { $("help-hint").hidden = true; void api.helpHintHide(); });
+  }
   goTab("programs");
   programs.updates(await api.updates());
   programs.update(await api.state());
@@ -262,6 +269,7 @@ async function boot(): Promise<void> {
     if (m.cmd === "tab" && m.arg && (TABS as readonly string[]).includes(m.arg)) goTab(m.arg as Tab, true);
     else if (m.cmd === "rescan") { goTab("programs"); }
     else if (m.cmd === "chat") $("chat-btn").click();
+    else if (m.cmd === "assistant") $("help-btn").click();
     else if (m.cmd === "select" && m.arg && isProgramId(m.arg)) { goTab("programs"); programs.select(m.arg as ProgramId, true); }
     else if (m.cmd === "log" && m.arg && isProgramId(m.arg)) { goTab("programs"); void log.show(m.arg as ProgramId); }
     else programs.menuCommand(m.cmd);
@@ -269,6 +277,15 @@ async function boot(): Promise<void> {
   api.onNet(() => void network.refresh());
   api.onSettings(x => settings.apply(x));
   new ChatUi(api);
+  const help = new HelpUi(api, () => programs.selectedId);
+  // Hilfe und Suite-Chat liegen an derselben Stelle: immer nur eins offen
+  $("chat-btn").addEventListener("click", () => { if (!$("help-panel").hidden) void help.setOpen(false); });
+  // Einstellungen → KI-Hilfe-Assistent: Hinweis zurücksetzen, Verlauf und Kennung löschen
+  $("help-reset").addEventListener("click", async () => {
+    await api.helpReset();
+    await help.resetAll();
+    $("help-reset-state").textContent = t("set.help.reset.done");
+  });
   void network.refresh();
 
   if (appInfo.shot) await shot(appInfo);

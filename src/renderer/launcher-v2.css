@@ -164,3 +164,70 @@ img{-webkit-user-drag:none}
 .top .seg.lang-switch button{padding:3px 8px;border-radius:999px;font:600 11px var(--mono);min-height:20px}
 /* Aktive Wahl bleibt beim Darüberfahren lesbar (Windows-Test 1.0.2: weiß auf weiß); gilt für alle Umschalter */
 .seg button.on:hover,.seg button[aria-checked=true]:hover,.seg button[aria-pressed=true]:hover{color:var(--bg)}
+
+/* ================================================================ F · KI-Hilfe-Assistent (help.ts) – im Stil des Suite-Chats */
+.help-panel{width:min(440px,calc(100vw - 28px));max-height:min(640px,calc(100vh - 90px))}
+.help-consent{display:flex;flex-direction:column;gap:8px;font-size:12.5px;line-height:1.5}
+.help-consent[hidden]{display:none}
+.help-consent p{margin:0}
+.help-consent a,.help-msg a{color:var(--accent-text,var(--accent));text-decoration:underline;cursor:pointer}
+.help-consent .btn{align-self:flex-start}
+.help-prog{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--dim)}
+.help-prog[hidden]{display:none}
+.help-prog select{flex:1;min-width:0}
+.help-list{min-height:180px}
+.help-msg{max-width:92%;font-size:12.5px;line-height:1.5}
+.help-msg p{margin:0 0 6px}
+.help-msg p:last-child{margin-bottom:0}
+.help-msg ol,.help-msg ul{margin:0 0 6px;padding-left:20px}
+.help-msg li{margin:2px 0}
+.help-msg code{font:11.5px var(--mono);background:color-mix(in srgb,var(--line) 60%,transparent);border-radius:4px;padding:0 4px}
+.help-msg.note{color:var(--dim)}
+.help-wait{color:var(--dim);font-style:italic}
+.help-ctx{display:block;margin-top:4px;color:var(--dim);font-size:10.5px}
+.help-src{font-size:11.5px;color:var(--dim)}
+.help-src a{margin-right:6px}
+.help-form{display:flex;gap:6px;align-items:flex-end}
+.help-form[hidden]{display:none}
+.help-form textarea{flex:1;min-width:0;resize:none;font:inherit;line-height:1.4;min-height:44px;max-height:140px}
+.help-foot{display:flex;align-items:center;gap:10px;font-size:11.5px}
+.help-foot[hidden]{display:none}
+.help-left{flex:1;color:var(--amber-ink)}
+.help-report{align-self:stretch;border:1px solid var(--line);border-radius:var(--r-l);padding:8px 10px;background:var(--raise);font-size:12.5px}
+.help-report p{margin:0 0 6px}
+.help-report-btns{display:flex;gap:6px;flex-wrap:wrap}
+.help-report pre{white-space:pre-wrap;overflow-wrap:anywhere;font:11px var(--mono);max-height:200px;overflow:auto;margin:6px 0 0;user-select:text}
+.help-report summary{cursor:pointer;color:var(--dim)}
+/* Infobox „Funktioniert etwas nicht?“ über dem Hero (1.0.7) */
+.help-hint{flex:none;display:flex;align-items:center;gap:12px;padding:10px 12px 10px 14px;border:1px solid var(--accent-line);border-left:3px solid var(--accent);border-radius:var(--r-card);background:linear-gradient(90deg,var(--accent-soft),transparent 70%),var(--panel)}
+.help-hint[hidden]{display:none}
+.help-hint .hh-ico{display:grid;place-items:center;width:32px;height:32px;border-radius:10px;background:var(--accent-soft);color:var(--accent-text);flex:none}
+.help-hint .hh-ico svg.ico{width:20px;height:20px}
+.help-hint .hh-txt{flex:1;min-width:0;font-size:13px;color:var(--dim)}
+.help-hint .hh-txt b{color:var(--strong);font-weight:700}
+.help-hint .hh-x{font-size:18px;line-height:1;color:var(--dim)}
+.help-diag{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;font-size:12px}
+.help-diag[hidden]{display:none}
+.help-diag-on{display:flex;align-items:center;gap:6px;flex:1;min-width:0}
+.help-diag-pre{flex-basis:100%;white-space:pre-wrap;overflow-wrap:anywhere;font:11px var(--mono);max-height:160px;overflow:auto;margin:0;padding:6px 8px;border:1px solid var(--line);border-radius:var(--r-l);background:var(--raise);user-select:text}
+/* KI-Funkeln am Hilfe-Knopf: Ring in den Suite-Farben und drei kleine Sterne (ruhig bei „Bewegung reduzieren“) */
+.help-btn{position:relative;overflow:visible;isolation:isolate}
+.help-btn::before{content:"";position:absolute;inset:-2px;border-radius:inherit;padding:1.5px;z-index:-1;
+  background:conic-gradient(from var(--spin,0deg),#FF3B3B,#FFB020,#3DDC84,#22C8F0,#B45CFF,#FF5C93,#FF3B3B);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);
+  opacity:.85;animation:help-spin 6s linear infinite}
+.help-btn svg.ico{color:var(--strong)}
+.help-btn .spk{position:absolute;width:7px;height:7px;pointer-events:none;background:#fff;opacity:0;
+  clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%);filter:drop-shadow(0 0 3px rgba(255,92,147,.9));animation:help-twinkle 2.8s ease-in-out infinite}
+.help-btn .spk.a{top:-3px;right:-2px}
+.help-btn .spk.b{bottom:-2px;left:-3px;width:5px;height:5px;animation-delay:.9s;filter:drop-shadow(0 0 3px rgba(34,200,240,.9))}
+.help-btn .spk.c{top:2px;left:-4px;width:4px;height:4px;animation-delay:1.8s;filter:drop-shadow(0 0 3px rgba(255,176,32,.9))}
+[data-theme=light] .help-btn .spk{background:#FF5C93}
+[data-theme=light] .help-btn .spk.b{background:#22C8F0}
+[data-theme=light] .help-btn .spk.c{background:#FFB020}
+.help-btn:hover::before,.help-btn[aria-expanded=true]::before{opacity:1;animation-duration:2.5s}
+@property --spin{syntax:"<angle>";inherits:false;initial-value:0deg}
+@keyframes help-spin{to{--spin:360deg}}
+@keyframes help-twinkle{0%,100%{opacity:0;transform:scale(.4) rotate(0deg)}45%{opacity:1;transform:scale(1) rotate(45deg)}70%{opacity:0;transform:scale(.6) rotate(90deg)}}
+.help-hint .hh-ico{position:relative}
+@media (prefers-reduced-motion:reduce){.help-btn::before{animation:none}.help-btn .spk{animation:none;opacity:.8}}

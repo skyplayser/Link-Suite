@@ -87,6 +87,8 @@ export interface SettingsSnapshot {
   notify: boolean;
   /** Willkommen-Karte schon gesehen. */
   welcomed: boolean;
+  /** Infobox zum Hilfe-Assistenten ausgeblendet (1.0.7). */
+  helpHintHidden: boolean;
   /** Entwickleransicht an (gespeichert oder ab Werk: es gibt einen Entwicklerordner). */
   devView: boolean;
   platform: string;

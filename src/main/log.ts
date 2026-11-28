@@ -18,10 +18,12 @@ export function initLog(dir: string): string {
 }
 
 const home = os.homedir();
-/** Benutzerordner kürzen, Zeilenumbrüche raus, Länge begrenzen. */
+const tmp = os.tmpdir();
+/** Benutzerordner (auch klein geschrieben) und Temp-Ordner kürzen, Zeilenumbrüche raus, Länge begrenzen. */
 export function scrub(s: string): string {
   let out = String(s);
-  if (home && home.length > 1) out = out.split(home).join("~");
+  if (tmp && tmp.length > 4) out = out.split(tmp).join("<tmp>");
+  if (home && home.length > 1) out = out.split(home).join("~").split(home.toLowerCase()).join("~");
   return out.replace(/[\r\n]+/g, " ⏎ ").slice(0, 600);
 }
 

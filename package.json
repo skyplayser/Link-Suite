@@ -1,6 +1,6 @@
 {
   "name": "link-suite",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "productName": "Link-Suite",
   "description": "Link-Suite: zeigt und startet die Programme der Link-Suite (installierte Apps und Entwicklerprojekte), mit Suite-Chat und Übersicht im Netz.",
   "license": "EPL-2.0",
@@ -8,8 +8,8 @@
   "type": "module",
   "main": "dist-electron/main.cjs",
   "author": {
-    "name": "Philipp Spruck / NEXTPHILM",
-    "email": "anfrage@nextphilm.de"
+    "name": "Philipp Spruck",
+    "email": "linksuite@nextphilm.de"
   },
   "homepage": "https://github.com/skyplayser/Link-Suite",
   "repository": {
@@ -47,7 +47,7 @@
     "appId": "de.nextphilm.linksuite",
     "afterPack": "build/after-pack.cjs",
     "productName": "Link-Suite",
-    "copyright": "© 2026 Philipp Spruck / NEXTPHILM",
+    "copyright": "© 2026 Philipp Spruck",
     "directories": {
       "output": "release",
       "buildResources": "build"

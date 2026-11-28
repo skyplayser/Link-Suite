@@ -12,13 +12,13 @@
 </p>
 
 <p align="center">
-  <a href="#herunterladen-und-installieren"><img alt="Link-Suite 1.0.6 herunterladen" src="https://img.shields.io/badge/Download-Link--Suite%201.0.6-FF5C93?style=for-the-badge"></a>
+  <a href="#herunterladen-und-installieren"><img alt="Link-Suite 1.0.7 herunterladen" src="https://img.shields.io/badge/Download-Link--Suite%201.0.7-FF5C93?style=for-the-badge"></a>
 </p>
 
 <p align="center">
   <a href="https://github.com/skyplayser/Link-Suite/releases"><img alt="Neueste Version" src="https://img.shields.io/github/v/release/skyplayser/Link-Suite?include_prereleases&label=Release&color=FFB020"></a>
   <a href="https://github.com/skyplayser/Link-Suite/releases"><img alt="Downloads" src="https://img.shields.io/github/downloads/skyplayser/Link-Suite/total?label=Downloads&color=22C8F0"></a>
-  <img alt="Version 1.0.6" src="https://img.shields.io/badge/Version-1.0.6-FF5C93">
+  <img alt="Version 1.0.7" src="https://img.shields.io/badge/Version-1.0.7-FF5C93">
   <img alt="macOS 13+, Apple-Chip und Intel" src="https://img.shields.io/badge/macOS%2013%2B-Apple--Chip%20%7C%20Intel-3DDC84">
   <img alt="Windows 10/11, getestet auf Windows 11 (in einer VM)" src="https://img.shields.io/badge/Windows-getestet%20auf%20Windows%2011%20(VM)-3DDC84">
   <img alt="Kostenlos" src="https://img.shields.io/badge/Preis-kostenlos-B45CFF">
@@ -52,12 +52,12 @@ anderes Suite-Programm offen ist.
 Programme aus GitHub und prüft jede Datei mit SHA-256. Die Einzel-Downloads bleiben in den GitHub-Releases der Programme.
 Alle Programme der Suite haben jetzt dieselbe Startanimation und einen Hinweis auf Link-Suite.
 
-Link-Suite hört zu, wie alle Programme der Suite. Es steuert kein Gerät und kein anderes Programm im Netz. Ins Internet geht
-es nur zu GitHub: um nach neuen Versionen zu fragen und die zu laden, die du auswählst. Keine Telemetrie, kein eigener
-Server, kein Konto.
+Link-Suite hört zu, wie alle Programme der Suite. Es steuert kein Gerät und kein anderes Programm im Netz. Ins Internet
+geht es zu GitHub (nach neuen Versionen fragen, die gewählten laden) und – nur wenn du ihn startest – zum KI-Hilfe-Assistenten
+auf `api.link-suite.de`. Keine Telemetrie, kein Konto.
 
 > [!NOTE]
-> **Version 1.0.6.** Für macOS hat die QA von 0.3.1 Link-Suite release-fertig genannt: Ein echtes Programm ließ sich
+> **Version 1.0.7.** Für macOS hat die QA von 0.3.1 Link-Suite release-fertig genannt: Ein echtes Programm ließ sich
 > installieren und zweimal hintereinander aktualisieren. Manches ist nur im Code oder in einem Entwickler-Build geprüft
 > (siehe [Was geprüft ist](#was-geprüft-ist)). Die Windows-Version ist **getestet auf Windows 11 (in einer VM)**.
 > Link-Suite ist nicht bei Apple oder Microsoft signiert. Deshalb warnen macOS und Windows einmal beim ersten Start
@@ -212,8 +212,8 @@ flowchart LR
   L <-.->|"Suite-Chat · here · EMERGENCY<br/>nur lokales Netz"| N["Suite-Programme<br/>auf anderen Rechnern"]
 ```
 
-Ins Internet gehen nur die Frage nach neuen Versionen und die Downloads, und nur zu GitHub. Alles andere bleibt auf diesem
-Rechner und im lokalen Netz.
+Ins Internet gehen nur die Frage nach neuen Versionen und die Downloads, und nur zu GitHub. Den KI-Hilfe-Assistenten
+erreicht Link-Suite nur, wenn du ihn nutzt (siehe Tabelle). Alles andere bleibt auf diesem Rechner und im lokalen Netz.
 
 ### So wird ein Download geprüft
 
@@ -245,8 +245,10 @@ Suite-Chat*), und fragt GitHub nach Releases.
 | Antwort auf die Netzprüfung von NET Link (`echo`), mit der IPv4-Adresse jedes Netzwerkadapters | das NET Link, das gefragt hat |
 | „Tschüss“ beim Beenden | jedes Suite-Programm im lokalen Netz |
 | Die Frage nach den neuesten Releases der Suite-Programme und die Downloads, die du startest | GitHub (`api.github.com`, `github.com` und die Download-Server von GitHub). Wie jede Website sieht GitHub deine IP-Adresse. Kein Name, keine Liste deiner Programme wird gesendet |
-| Liste deiner installierten Programme, deine Ordner, das Log von Entwicklerprojekten | nie – bleibt auf diesem Rechner |
-| Nutzungsdaten, Absturzberichte, Telemetrie | gibt es nicht |
+| Nur im KI-Hilfe-Assistenten, nach deiner Bestätigung: deine Nachrichten, bei der ersten das gewählte Programm mit Version und dein System, eine zufällige Kennung (nur im Arbeitsspeicher) | unser Server `api.link-suite.de` (sieht deine IP-Adresse); Nachrichten und Programm/System gehen weiter an Anthropic (USA). Bei uns gelöscht 24 h nach der letzten Nachricht |
+| Nur wenn du das Häkchen „Diagnose mitschicken“ setzt: Zustand, Prüfungen und letzte Fehlermeldungen des Programms; bei Link-Suite selbst auch die installierten Suite-Programme mit Version und Fehlerzeilen aus `main.log` | wie oben, als Teil der Nachricht; du siehst den Text vorher, Benutzerordner, E-Mail- und öffentliche IP-Adressen sind entfernt |
+| Liste deiner installierten Programme, deine Ordner, das Log von Entwicklerprojekten | nie – außer in der Diagnose von Link-Suite, wenn du sie im Assistenten ankreuzt |
+| Nutzungsdaten, Absturzberichte, Telemetrie | gibt es nicht; Fehlerzeilen nur in der Diagnose, wenn du sie ankreuzt |
 
 Der Chat ist **unverschlüsselt**. Jeder im selben Netzwerk kann mitlesen, und die Programme im Raum behalten die letzten
 Nachrichten und geben bis zu 20 an Neue weiter. Schreib nichts Vertrauliches. Nachrichten liegen nur im Arbeitsspeicher, nie
@@ -264,7 +266,7 @@ legt das Projekt fest, nicht Link-Suite. Deshalb fragt Link-Suite vorher.
 - Es schaltet Gatekeeper und SmartScreen nicht ab und ändert keine Systemeinstellung.
 - Es braucht keine Admin-Rechte und fragt nach keinem Passwort. Ohne Admin-Rechte landen Programme in `~/Applications`.
 
-## Stand der Version 1.0.6
+## Stand der Version 1.0.7
 
 ### Was neu ist in 0.3
 
@@ -286,6 +288,7 @@ legt das Projekt fest, nicht Link-Suite. Deshalb fragt Link-Suite vorher.
 | LJL Link | *Auf den Stick*: in einen Ordner oder direkt auf den USB-Stick des Clubs, mit kurzer Anleitung; `club.json` weiter von Hand |
 | Selbst-Update | aus [seinen eigenen Releases](https://github.com/skyplayser/Link-Suite/releases) (`skyplayser/Link-Suite`); die geprüfte neue Version wird beim Beenden oder mit **Jetzt neu starten** eingesetzt (macOS: per Skript; Windows ab 1.0.3: der Installer läuft still pro Benutzer) |
 | Programme starten | installierte Apps, und Entwicklerprojekte mit Log-Leiste, wenn die Entwickleransicht an ist |
+| Hilfe-Assistent (ab 1.0.7) | der KI-Hilfe-Assistent von [link-suite.de](https://link-suite.de/helpdesk/) in der App (Fragezeichen oben rechts); schickt das gewählte Programm, seine Version und das System mit; sendet nichts, bevor du den Hinweis bestätigt hast; Diagnose des Programms nur per Häkchen (ab Werk aus, Text vorher sichtbar); höchstens 25 Nachrichten pro Chat, danach eine vorbereitete E-Mail, die du selbst abschickst; zurücksetzen unter Einstellungen → KI-Hilfe-Assistent |
 | Suite-Chat, IM NETZ, gemeinsame Einstellungen | wie in 0.1 |
 
 ### Noch offen
@@ -401,7 +404,7 @@ Probleme im Netz? Dafür ist NET Link da. Es ist in Entwicklung; bis dahin sagt 
 
 ## Für Entwickler
 
-Version **1.0.6**: alles aus 0.1 und 0.2 (Programmliste, installierte Apps und Entwicklerprojekte starten, Suite-Chat
+Version **1.0.7**: alles aus 0.1 und 0.2 (Programmliste, installierte Apps und Entwicklerprojekte starten, Suite-Chat
 mit EMERGENCY, IM NETZ, Installieren und Aktualisieren aus GitHub, Club-Stick, Selbst-Update), dazu die neue Oberfläche,
 die Startanimation mit Launcher-Ende, der macOS-Feinschliff und der Windows-Installer pro Benutzer. 1.0.1 bringt die Korrekturen aus dem Windows-Test, 1.0.2 einen
 DE/EN-Umschalter in der Kopfleiste, 1.0.3 das Selbst-Update unter Windows.
@@ -525,7 +528,7 @@ Link-Suite ist kostenlos und ohne Gewähr. Software, Netz und Geräte können au
 
 ## Lizenz
 
-© 2026 Philipp Spruck / NEXTPHILM. Link-Suite steht unter der [Eclipse Public License 2.0](LICENSE) und wird ohne jede
+© 2026 Philipp Spruck. Link-Suite steht unter der [Eclipse Public License 2.0](LICENSE) und wird ohne jede
 Gewährleistung bereitgestellt.
 
 <br>

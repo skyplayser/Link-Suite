@@ -23,6 +23,9 @@ import { boundsVisible } from "../core/settings";
 import { isNewer } from "../core/version";
 import { Store } from "./store";
 import { sourceById } from "../core/release";
+import { HELP_MAILTO, HELP_NOTICE_V, HELP_PROGRAMS, contextPrefix, helpSlug, osLabel, safeHref } from "../core/helpdesk";
+import { Helpdesk } from "./helpdesk";
+import { DIAG_FRESH_MS, formatDiagnose, logErrors, parseDiagnose, type Diag } from "../core/diagnose";
 import { adapterList, ChatNet } from "./suitechat";
 
 const VERSION = app.getVersion();
@@ -421,7 +424,7 @@ function settingsSnapshot(): SettingsSnapshot {
       return { id: p.id, stored: d.stored, abs: d.abs ?? "", custom: d.custom, status: a?.status ?? "no-folder", missing: a ? firstMissing(a) : "folder" };
     }),
     locale: app.getLocale(), suiteFile: store.suiteFile, checkUpdates: store.launcher.checkUpdates,
-    notify: store.launcher.notify, devView: devView(), welcomed: store.launcher.welcomed || !!demo && !process.env.LINKSUITE_WELCOME || (!!SHOT && !process.env.LINKSUITE_WELCOME), platform: process.platform,
+    notify: store.launcher.notify, devView: devView(), helpHintHidden: store.launcher.helpHintHidden === true, welcomed: store.launcher.welcomed || !!demo && !process.env.LINKSUITE_WELCOME || (!!SHOT && !process.env.LINKSUITE_WELCOME), platform: process.platform,
   };
 }
 
@@ -611,6 +614,7 @@ handle("devdir:reset", async (_e, id) => {
 });
 handle("updates:get", () => installer.snapshot());
 handle("help:readme", () => { void shell.openExternal(`${GITHUB}#readme`); return true; });
+handle("help:hint:hide", () => { store.setLauncher(s => { s.helpHintHidden = true; }); return true; });
 handle("welcome:done", () => { store.setLauncher(s => { s.welcomed = true; }); return true; });
 handle("updates:check", async () => { if (!demo && !SHOT) await installer.check(true); return installer.snapshot(); });
 handle("install", async (_e, id) => {
@@ -632,6 +636,105 @@ function unknownSource(what: string, id: unknown): string {
   log("install unknown source", `${what} ${JSON.stringify(raw)}`);
   return say("inst.err.unknownSource", { name: programById(id)?.name ?? (raw || "?") });
 }
+// ------------------------------------------------------------------ KI-Hilfe-Assistent (api.link-suite.de)
+const helpdesk = new Helpdesk({
+  version: VERSION,
+  emit: (req, e) => send("help:event", { req, ...e }),
+  say,
+  log,
+});
+const helpOs = () => osLabel(process.platform, process.getSystemVersion());
+/** Hinweis im aktuellen Stand bestätigt? (Ändert sich der Hinweis, steigt HELP_NOTICE_V und Link-Suite fragt neu.) */
+const helpOk = () => !SHOT && (store.launcher.helpConsent?.v ?? 0) >= HELP_NOTICE_V;
+/** Diagnose-Text, den der Nutzer gesehen hat (je Programm); genau der geht mit (Rechtsprüfung A1/M6). */
+const diagShown = new Map<string, string>();
+/** Laufender Chat der Oberfläche, nur im Arbeitsspeicher: übersteht ein Neuladen (Sprachwechsel), nicht das Beenden. */
+let helpMem = "";
+/** Programme für die Auswahl: Name, Kennung beim Dienst und – wenn installiert – Version. */
+function helpPrograms(): { id: string; name: string; version: string | null }[] {
+  return HELP_PROGRAMS.map(id => {
+    if (id === "suite") return { id, name: "Link-Suite", version: VERSION };
+    const p = programById(id)!;
+    return { id, name: p.name, version: programState(p).app?.version ?? null };
+  });
+}
+/** Suite-Diagnose v1 (design/diagnose/SPEC.md): Datei des Programms im Datenordner; für Link-Suite selbst gebaut. */
+function readDiag(id: string): Diag | null {
+  if (id === "suite") {
+    const entries = installer.snapshot().entries;
+    const installed = CATALOG.map(p => [p.name, programState(p).app?.version] as const).filter(([, v]) => v).map(([n, v]) => `${n} ${v}`);
+    let errs: { at: string; text: string }[] = [];
+    try { errs = logErrors(fs.readFileSync(path.join(app.getPath("userData"), "logs", "main.log"), "utf8").slice(-200_000)); } catch { /* ohne Log */ }
+    return {
+      id, app: "Link-Suite", version: VERSION, at: new Date().toISOString(), running: true, os: helpOs(), arch: process.arch,
+      summary: [
+        [say("diag.installed"), installed.join(", ") || "–"],
+        [say("diag.releases"), entries.map(e => `${e.id} ${e.check}${e.latest ? ` ${e.latest.version}` : ""}${e.error ? ` (${e.error.slice(0, 60)})` : ""}`).join(", ")],
+        [say("diag.chat"), store.suite.chat.on ? say("diag.on") : say("diag.off")],
+      ],
+      checks: [], errors: errs,
+    };
+  }
+  try {
+    const file = path.join(store.dir, "diagnose", `${id}.json`);
+    const st = fs.statSync(file);
+    if (!st.isFile() || st.size > 16 * 1024) return null;
+    return parseDiagnose(fs.readFileSync(file, "utf8"), id);
+  } catch { return null; }
+}
+handle("help:state", () => ({
+  consent: helpOk(), os: helpOs(), allowed: !SHOT,
+  programs: helpPrograms().map(p => { const d = readDiag(p.id); return { ...p, diag: d ? { at: d.at, fresh: Date.now() - Date.parse(d.at) < DIAG_FRESH_MS, running: d.running } : null }; }),
+}));
+handle("help:diag", (_e, id) => {
+  if (!helpOk() || typeof id !== "string" || !HELP_PROGRAMS.includes(id)) return null;
+  const d = readDiag(id);
+  const text = d ? formatDiagnose(d, lang()) : null;
+  if (text) diagShown.set(id, text); else diagShown.delete(id);
+  return text;
+});
+handle("help:mem", (_e, v) => { if (typeof v === "string" && v.length <= 400_000) helpMem = v; return helpMem; });
+handle("help:reset", () => {
+  helpdesk.reset();
+  diagShown.clear();
+  helpMem = "";
+  store.setLauncher(s => { delete s.helpConsent; });
+  log("help reset");
+  return true;
+});
+handle("help:consent", (_e, yes) => { if (yes === true && !SHOT) store.setLauncher(s => { s.helpConsent = { v: HELP_NOTICE_V, at: new Date().toISOString() }; }); return helpOk(); });
+handle("help:send", (_e, raw) => {
+  if (!helpOk()) return { error: say("help.err.consent") };
+  const o = (raw && typeof raw === "object" ? raw : {}) as Record<string, unknown>;
+  const text = typeof o.message === "string" ? o.message.trim().slice(0, 1800) : "";
+  if (!text) return { error: say("help.err.empty") };
+  const pid = typeof o.program === "string" && HELP_PROGRAMS.includes(o.program) ? o.program : null;
+  const conv = typeof o.conversationId === "string" && /^[A-Za-z0-9_-]{1,100}$/.test(o.conversationId) ? o.conversationId : null;
+  // Erste Nachricht: Programm, Version und System vorn (der Launcher kennt sie, link-suite.de nicht)
+  const prog = pid ? helpPrograms().find(p => p.id === pid) ?? null : null;
+  const prefix = conv ? "" : contextPrefix(prog?.name ?? null, prog?.version ?? null, helpOs());
+  // Diagnose nur, wenn der Nutzer das Häkchen gesetzt hat – und genau den Text, den er dabei gesehen hat
+  const diagText = o.diag === true && pid ? diagShown.get(pid) ?? "" : "";
+  if (pid) diagShown.delete(pid); // nach dem Senden wieder aus
+  const diag = !!diagText;
+  const message = prefix + text + (diagText ? `\n\n---\n${diagText}` : "");
+  if (diag) log("help diag attached", `${pid} ${diagText.length} chars`);
+  const req = helpdesk.send({ conversationId: conv, program: helpSlug(pid), lang: lang(), message, log: !!diag });
+  return { req, prefix: prefix.trim(), diag: !!diag };
+});
+handle("help:cancel", (_e, req) => { if (typeof req === "number") helpdesk.cancel(req); return true; });
+handle("help:report", async (_e, conv) => {
+  if (!helpOk() || typeof conv !== "string" || !/^[A-Za-z0-9_-]{1,100}$/.test(conv)) return { error: "bad_request", message: say("help.err.net") };
+  return helpdesk.report(conv, lang());
+});
+handle("help:mail", (_e, mailto) => {
+  if (typeof mailto !== "string" || !HELP_MAILTO.test(mailto) || mailto.length > 20000) return false;
+  void shell.openExternal(mailto);
+  return true;
+});
+handle("help:open", (_e, url) => { const u = typeof url === "string" ? safeHref(url) : null; if (u) void shell.openExternal(u); return !!u; });
+handle("help:copy", (_e, text) => { if (typeof text !== "string") return false; clipboard.writeText(text.slice(0, 20000)); return true; });
+
 handle("self:restart", () => {
   if (!installer.pendingSelf) return false;
   log("self-update restart", installer.pendingSelf.version);
@@ -840,6 +943,7 @@ function buildMenu(): void {
       { label: L("chat.button"), accelerator: "Shift+CmdOrCtrl+C", click: cmd("chat") },
     ] },
     { label: L("mm.help"), role: "help", submenu: [
+      { label: L("help.button"), click: cmd("assistant") },
       { label: L("mm.helpReadme"), click: () => void shell.openExternal(`${GITHUB}#readme`) },
       { label: L("mm.whatsNew"), click: () => void shell.openExternal(`${GITHUB}/releases`) },
       { label: L("mm.report"), click: () => void shell.openExternal(`${GITHUB}/issues`) },
@@ -921,6 +1025,7 @@ for (const sig of ["SIGTERM", "SIGINT"] as const) process.on(sig, () => { quitti
 
 // Demo/Screenshot: eigenen Temp-Ordner beim Beenden löschen (nur genau diesen, QA Befund 9)
 app.on("will-quit", () => {
+  helpdesk.cancelAll();
   installer.runPendingSelfUpdate();
   installer.cleanupSync();
   if (tempRoot && path.basename(tempRoot).startsWith("link-suite-demo-") && tempRoot.startsWith(os.tmpdir())) {

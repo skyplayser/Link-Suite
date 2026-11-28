@@ -53,6 +53,28 @@ const api = {
   onLogs: (cb: (b: unknown) => void) => on("logs", cb),
   onNet: (cb: () => void) => on("net", () => cb()),
   onSettings: (cb: (s: unknown) => void) => on("settings", cb),
+  // KI-Hilfe-Assistent: Aufrufe an api.link-suite.de macht nur der Hauptprozess
+  helpState: () => ipcRenderer.invoke("help:state"),
+  helpHintHide: () => ipcRenderer.invoke("help:hint:hide"),
+  helpReset: () => ipcRenderer.invoke("help:reset"),
+  helpMem: (v: unknown) => ipcRenderer.invoke("help:mem", typeof v === "string" ? v : null),
+  helpDiag: (id: unknown) => ipcRenderer.invoke("help:diag", typeof id === "string" ? id.slice(0, 20) : ""),
+  helpConsent: () => ipcRenderer.invoke("help:consent", true),
+  helpSend: (m: unknown) => {
+    const o = (m && typeof m === "object" ? m : {}) as Record<string, unknown>;
+    return ipcRenderer.invoke("help:send", {
+      message: typeof o.message === "string" ? o.message.slice(0, 2000) : "",
+      program: typeof o.program === "string" ? o.program.slice(0, 20) : null,
+      conversationId: typeof o.conversationId === "string" ? o.conversationId.slice(0, 100) : null,
+      diag: o.diag === true,
+    });
+  },
+  helpCancel: (req: unknown) => ipcRenderer.invoke("help:cancel", num(req)),
+  helpReport: (conv: unknown) => ipcRenderer.invoke("help:report", typeof conv === "string" ? conv.slice(0, 100) : ""),
+  helpMail: (mailto: unknown) => ipcRenderer.invoke("help:mail", typeof mailto === "string" ? mailto : ""),
+  helpOpen: (url: unknown) => ipcRenderer.invoke("help:open", typeof url === "string" ? url : ""),
+  helpCopy: (text: unknown) => ipcRenderer.invoke("help:copy", typeof text === "string" ? text : ""),
+  onHelp: (cb: (e: unknown) => void) => on("help:event", cb),
 };
 
 contextBridge.exposeInMainWorld("suite", api);
