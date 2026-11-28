@@ -26,7 +26,7 @@
 </p>
 
 <p align="center">
-  <a href="https://skyplayser.github.io/Link-Suite/de/">Website</a> &nbsp;·&nbsp;
+  <a href="https://link-suite.de/launcher/">Website</a> &nbsp;·&nbsp;
   <a href="#herunterladen-und-installieren">Download</a> &nbsp;·&nbsp;
   <a href="#schnellstart">Schnellstart</a> &nbsp;·&nbsp;
   <a href="#die-programme-der-suite">Die Programme</a> &nbsp;·&nbsp;
@@ -187,12 +187,12 @@ Sprache, Tag oder Nacht, dein Name und Platz im Chat und die Startanimation – 
 
 | Programm | Was es macht | Stand | Über Link-Suite | Links |
 |---|---|---|---|---|
-| <img src="docs/assets/icons/lj-link.svg" width="28" alt=""> **LJ Link** | Zeigt dem Lichtjockey jedes Deck, jede Waveform und jeden Cue von Pioneer- und Denon-Geräten und schickt das Tempo ans Lichtpult | veröffentlicht, macOS und Windows | installieren und aktualisieren | [GitHub](https://github.com/skyplayser/LJ-Link) · [Website](https://skyplayser.github.io/LJ-Link/) |
-| <img src="docs/assets/icons/ljl-link-256.png" width="28" alt=""> **LJL Link** | Bringt die Serato-Decks vom Mac des DJs in LJ Link, direkt vom USB-Stick des Clubs | Alpha, macOS | in einen Ordner oder auf den Stick | [GitHub](https://github.com/skyplayser/LJL-Link) · [Website](https://skyplayser.github.io/LJL-Link/) |
-| <img src="docs/assets/icons/vj-link.svg" width="28" alt=""> **VJ-Link** | Live-Visuals, gesteuert vom Lichtpult, im Takt der Musik | Beta, macOS und Windows | installieren und aktualisieren | [GitHub](https://github.com/skyplayser/VJ-LINK) · [Website](https://skyplayser.github.io/VJ-LINK/) |
+| <img src="docs/assets/icons/lj-link.svg" width="28" alt=""> **LJ Link** | Zeigt dem Lichtjockey jedes Deck, jede Waveform und jeden Cue von Pioneer- und Denon-Geräten und schickt das Tempo ans Lichtpult | veröffentlicht, macOS und Windows | installieren und aktualisieren | [GitHub](https://github.com/skyplayser/LJ-Link) · [Website](https://link-suite.de/lj-link/) |
+| <img src="docs/assets/icons/ljl-link-256.png" width="28" alt=""> **LJL Link** | Bringt die Serato-Decks vom Mac des DJs in LJ Link, direkt vom USB-Stick des Clubs | Alpha, macOS | in einen Ordner oder auf den Stick | [GitHub](https://github.com/skyplayser/LJL-Link) · [Website](https://link-suite.de/ljl-link/) |
+| <img src="docs/assets/icons/vj-link.svg" width="28" alt=""> **VJ-Link** | Live-Visuals, gesteuert vom Lichtpult, im Takt der Musik | Beta, macOS und Windows | installieren und aktualisieren | [GitHub](https://github.com/skyplayser/VJ-LINK) · [Website](https://link-suite.de/vj-link/) |
 | <img src="docs/assets/icons/vd-link.svg" width="28" alt=""> **VD-Link** | 3D-Lichtvisualisierer für Art-Net und sACN: die Show sehen, bevor sie hängt | Beta, macOS und Windows | installieren und aktualisieren | [GitHub](https://github.com/skyplayser/VD-Link) |
 | <img src="docs/assets/icons/net-link.svg" width="28" alt=""> **NET Link** | Wer ist im Show-Netz? Findet IP-Konflikte, falsche Subnetze und fehlendes Multicast | kommt bald | – | – |
-| <img src="docs/assets/icons/crew-link.svg" width="28" alt=""> **Crew Link** | Timetable der Nacht: wer wann spielt, eine Uhr für alle | Alpha, macOS und Windows | installieren und aktualisieren (ab Link-Suite 1.0.6) | [GitHub](https://github.com/skyplayser/Crew-Link) · [Website](https://skyplayser.github.io/Crew-Link/) |
+| <img src="docs/assets/icons/crew-link.svg" width="28" alt=""> **Crew Link** | Timetable der Nacht: wer wann spielt, eine Uhr für alle | Alpha, macOS und Windows | installieren und aktualisieren (ab Link-Suite 1.0.6) | [GitHub](https://github.com/skyplayser/Crew-Link) · [Website](https://link-suite.de/crew-link/) |
 | <img src="docs/assets/icons/pl-link.svg" width="28" alt=""> **PL Link** | Patch und Stromlast: DMX-Adressen, Stromkreise und Packlisten | kommt bald | – | – |
 | <img src="docs/assets/icons/db-link.svg" width="28" alt=""> **dB Link** | Lautstärke nach DIN 15905-5: messen, warnen, protokollieren | kommt bald | – | – |
 
@@ -338,7 +338,7 @@ beim gewünschten Programm auf **Installieren** drücken.
 
 Link-Suite ist **nicht bei Apple oder Microsoft signiert** (auf dem Mac ad-hoc signiert, nicht notarisiert). Eine Signatur
 kostet Geld und sagt nichts über die Sicherheit aus. Aber beide Systeme warnen deshalb einmal beim ersten Start. Lade
-Link-Suite nur von dieser GitHub-Seite oder von [der Website](https://skyplayser.github.io/Link-Suite/de/).
+Link-Suite nur von dieser GitHub-Seite oder von [der Website](https://link-suite.de/launcher/).
 
 **macOS** („Link-Suite“ nicht geöffnet – Apple konnte nicht überprüfen, ob „Link-Suite“ frei von Schadsoftware ist):
 
@@ -506,9 +506,8 @@ Gepackte App: Electron-Fuses über `build.electronFuses` (electron-builder): Run
 
 ### Website
 
-Die Website unter [skyplayser.github.io/Link-Suite](https://skyplayser.github.io/Link-Suite/de/) ist einfaches HTML in
-[`docs/`](docs/) für GitHub Pages: `docs/index.html` (Englisch), `docs/de/index.html` (Deutsch), `docs/assets/` (CSS,
-Skript, Logos, Screenshots). Kein Build-Schritt, keine Tracker, keine externen Schriften oder CDNs.
+Die Website ist [link-suite.de/launcher](https://link-suite.de/launcher/). In [`docs/`](docs/) liegen nur noch die
+Release-Texte und die Seiten, die die alten GitHub-Pages-Adressen dorthin weiterleiten.
 
 ## Danksagung und Hinweise
 
@@ -534,6 +533,6 @@ Gewährleistung bereitgestellt.
 <p align="center">
   <sub>Idee SKYPLAYSER/NEXTPHILM<br>
   Prompted with ❤️ made by Claude<br>
-  <a href="https://skyplayser.github.io/Link-Suite/de/impressum.html">Impressum</a> ·
-  <a href="https://skyplayser.github.io/Link-Suite/de/datenschutz.html">Datenschutz</a></sub>
+  <a href="https://link-suite.de/impressum/">Impressum</a> ·
+  <a href="https://link-suite.de/datenschutz/">Datenschutz</a></sub>
 </p>
