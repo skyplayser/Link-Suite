@@ -4,6 +4,8 @@ Stand 28.11.2026 · Auftrag des Entwicklers: „Der Chatbot soll direkt in die P
 bekommen mit dem nächsten Update eine Schnittstelle, um dem Chatbot Debugging-Infos zu geben.“
 
 Gemeinsamer Baustein – bitte nicht neu erfinden: Spezifikation hier, Schreiber zum Kopieren in `diagnose-writer.ts`.
+**Vorlage v1.1 (28.11.2026):** `clean()` filtert jetzt alles aus „Was nie hinein darf“ (vorher nur den exakten
+Benutzerordner). Wer v1 kopiert hat (z. B. Crew Link), bitte `clean()` und `isShowIp()` aus v1.1 übernehmen.
 Der Leser steckt im Launcher (`src/main/diagnose.ts`, ab Link-Suite 1.0.7).
 
 ## Idee in einem Satz

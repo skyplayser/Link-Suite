@@ -1,6 +1,6 @@
 // Suite-Diagnose v1 – Schreiber für Electron/Node-Programme der Link-Suite.
 // Herkunft: Suite-Launcher/design/diagnose/diagnose-writer.ts (EPL-2.0). Spezifikation: SPEC.md daneben.
-// Kopieren, nicht ändern; Fragen an die Sitzung „Suite-Launcher“.
+// Kopieren, nicht ändern; Fragen an die Sitzung „Suite-Launcher“. Vorlage v1.1 (28.11.2026): Filter clean() erweitert.
 //
 // Einbau (Hauptprozess):
 //   import { startDiagnose } from "./diagnose-writer";
@@ -25,11 +25,45 @@ export function suiteDataDir(): string {
   return path.join(process.env.XDG_CONFIG_HOME || path.join(home, ".config"), "Link-Suite");
 }
 
-/** Benutzerordner als ~, Zeilenumbrüche raus, Länge begrenzen. */
-function clean(s: unknown, max: number): string {
-  let t = String(s ?? "");
-  if (home && home.length > 1) t = t.split(home).join("~");
-  return t.replace(/[\r\n\t]+/g, " ").slice(0, max);
+const tmp = os.tmpdir();
+const host = os.hostname().replace(/\.local$/i, "");
+
+/** Show-Netz: privat, Loopback, Link-Local und Art-Net (2.x/10.x). Alles andere gilt als öffentlich. */
+export function isShowIp(ip: string): boolean {
+  const m = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/.exec(ip);
+  if (!m) return false;
+  const a = Number(m[1]), b = Number(m[2]);
+  return a === 10 || a === 2 || a === 127 || (a === 192 && b === 168) || (a === 172 && b >= 16 && b <= 31) || (a === 169 && b === 254);
+}
+
+const esc = (x: string) => x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+/**
+ * Vorlage v1.1 (28.11.2026, nach den Funden von VJ-Link cleanDiagText und VD-Link diagText): was nie in die Diagnose
+ * darf (SPEC.md), schon beim Schreiben entfernen – nur die erste Zeile (kein Stack), Temp- und Benutzerordner in jeder
+ * Schreibweise, Rechnername, file:-Adressen, Windows-Pfade, /Volumes, UNC-Freigaben, E-Mail, MAC, IPv6 (Uhrzeiten und
+ * Timecodes bleiben), öffentliche IPv4, Kennungen ab 32 Zeichen. Der Launcher filtert beim Lesen noch einmal.
+ */
+export function clean(s: unknown, max: number, env = { home, tmp, host }): string {
+  let t = String(s ?? "").split(/\r?\n/)[0]!;
+  for (const dir of [env.tmp.replace(/^\/var\//, "/private/var/"), env.tmp]) if (dir && dir.length > 3) t = t.replace(new RegExp(esc(dir), "gi"), "[tmp]");
+  if (env.home && env.home.length > 1) t = t.replace(new RegExp(esc(env.home), "gi"), "~");
+  if (env.host && env.host.length > 2) t = t.replace(new RegExp(esc(env.host), "gi"), "[Rechner]");
+  t = t
+    .replace(/file:\/\/[^\s"')]+/gi, "[Datei]")
+    .replace(/\b[A-Za-z]:[\\/]+Users[\\/]+[^\\/"']+/gi, "~")          // C:\Users\Name, auch Kurznamen wie PHILIP~1
+    .replace(/\/(?:Users|home)\/[^/\s"']+/g, "~")
+    .replace(/\/private\/var\/folders\/[^\s"']*/g, "[tmp]")
+    .replace(/\/Volumes\/[^/\s"']+/g, "/Volumes/[Laufwerk]")
+    .replace(/\\\\[^\\\s"']+\\[^\\\s"']+/g, "[Freigabe]")
+    .replace(/\b[A-Za-z]:[\\/][^\s"']*/g, "[Pfad]")                   // übrige Windows-Pfade
+    .replace(/[\w.+-]+@[\w-]+\.[\w.-]+/g, "[E-Mail]")
+    .replace(/\b[0-9a-f]{2}(?:[:-][0-9a-f]{2}){5}\b/gi, "[MAC]")
+    .replace(/(?<![\w:.])[0-9a-f]*(?::[0-9a-f]*){2,}(?![\w:])/gi, m => (/::/.test(m) || m.split(":").length >= 6) && !/^\d{1,2}(?::\d{2}){1,3}$/.test(m) ? "[IPv6]" : m)
+    .replace(/\b\d{1,3}(?:\.\d{1,3}){3}\b/g, ip => (isShowIp(ip) ? ip : "[IP]"))
+    .replace(/\b[\w-]+\.(?:local|lan|fritz\.box)\b/gi, "[Rechner]")
+    .replace(/\b[A-Za-z0-9_-]{32,}\b/g, "[Kennung]");
+  return t.replace(/\t+/g, " ").slice(0, max);
 }
 
 function osName(): string {

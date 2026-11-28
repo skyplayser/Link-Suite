@@ -58,3 +58,17 @@ describe("Suite-Diagnose lesen", () => {
     expect(d.errors.map(e => e.text)).toEqual(["kaputt"]);
   });
 });
+
+describe("Vorlage v1.1: clean() beim Schreiben", () => {
+  it("entfernt, was nie hinein darf; lässt Show-Netz und Timecodes stehen", async () => {
+    const { clean } = await import("../design/diagnose/diagnose-writer");
+    const env = { home: "/Users/philipp", tmp: "/var/folders/x7/abc/T", host: "Philipps-MBP" };
+    const t = (s: string) => clean(s, 300, env);
+    expect(t("Fehler in /USERS/PHILIPP/Shows/a.mp4\n at f (x.js:1)")).toBe("Fehler in ~/Shows/a.mp4");
+    expect(t("C:\\Users\\PHILIP~1\\AppData\\x")).toBe("~\\AppData\\x");
+    expect(t("/private/var/folders/x7/abc/T/y.log")).toBe("[tmp]/y.log");
+    expect(t("NDI-Quelle PHILIPPS-MBP (VJ)")).toBe("NDI-Quelle [Rechner] (VJ)");
+    expect(t("fe80::1 und 93.184.216.34, Art-Net 2.0.0.1, TC 01:00:00:00")).toBe("[IPv6] und [IP], Art-Net 2.0.0.1, TC 01:00:00:00");
+    expect(t("max@example.com aa:bb:cc:dd:ee:ff \\\\nas\\shows file:///x")).toBe("[E-Mail] [MAC] [Freigabe] [Datei]");
+  });
+});
