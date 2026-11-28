@@ -689,7 +689,7 @@ handle("help:state", () => ({
 handle("help:diag", (_e, id) => {
   if (!helpOk() || typeof id !== "string" || !HELP_PROGRAMS.includes(id)) return null;
   const d = readDiag(id);
-  const text = d ? formatDiagnose(d, lang()) : null;
+  const text = d ? formatDiagnose(d, lang(), { host: os.hostname() }) : null;
   if (text) diagShown.set(id, text); else diagShown.delete(id);
   return text;
 });

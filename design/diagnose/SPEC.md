@@ -4,7 +4,8 @@ Stand 28.11.2026 · Auftrag des Entwicklers: „Der Chatbot soll direkt in die P
 bekommen mit dem nächsten Update eine Schnittstelle, um dem Chatbot Debugging-Infos zu geben.“
 
 Gemeinsamer Baustein – bitte nicht neu erfinden: Spezifikation hier, Schreiber zum Kopieren in `diagnose-writer.ts`.
-**Vorlage v1.1 (28.11.2026):** `clean()` filtert jetzt alles aus „Was nie hinein darf“ (vorher nur den exakten
+**Vorlage v1.2 (28.11.2026):** IPv4 wird nicht mehr in längeren Versionsnummern erkannt, der Ordner `Link-Suite` wird
+nie angelegt. **Vorlage v1.1:** `clean()` filtert jetzt alles aus „Was nie hinein darf“ (vorher nur den exakten
 Benutzerordner). Wer v1 kopiert hat (z. B. Crew Link), bitte `clean()` und `isShowIp()` aus v1.1 übernehmen.
 Der Leser steckt im Launcher (`src/main/diagnose.ts`, ab Link-Suite 1.0.7).
 
@@ -24,7 +25,8 @@ Derselbe Ordner, in dem `suite.json` liegt (alle Programme lesen ihn schon):
 | Windows | `%APPDATA%\Link-Suite\diagnose\<id>.json` |
 
 `<id>` ist die Kennung aus dem Katalog des Launchers: `lj`, `ljl`, `vj`, `vd`, `net`, `crew`, `pl`, `db`.
-Ordner bei Bedarf anlegen. Atomar schreiben (erst `<id>.json.tmp`, dann umbenennen). Ist der Ordner nicht
+Nur schreiben, wenn der Ordner `Link-Suite` schon existiert (also Link-Suite installiert ist) – nie anlegen; darin
+`diagnose/` bei Bedarf anlegen. Atomar schreiben (erst `<id>.json.tmp`, dann umbenennen). Ist der Ordner nicht
 beschreibbar: still weiter ohne Diagnose (nie die Show stören).
 
 ## Wann schreiben
@@ -69,6 +71,15 @@ beschreibbar: still weiter ohne Diagnose (nie die Show stören).
 | `errors` | nein | die letzten höchstens 20 Fehler/Warnungen `{at, text}` (je ≤ 300 Zeichen), neueste zuletzt |
 
 Unbekannte Felder ignoriert der Launcher. Was nicht passt (zu groß, falsches `id`, kein `v: 1`), zeigt er nicht.
+Er liest nur genau `<id>.json` (nie `.tmp`).
+
+**Präzisierungen (Fragen von LJ Link, 28.11.2026):**
+- Sprache von Schlüsseln und Texten ist frei (Deutsch oder Englisch, wie im Programm); der Assistent versteht beides.
+- `os` ist freier Text; ohne Build-Nummer (z. B. Java: „Windows 11 (10.0)“) ist in Ordnung.
+- Wiederholte Fehler dürfen zusammengefasst werden: `"text": "… (3x)"`, `at` = letztes Auftreten.
+- Nach einem Absturz bleibt `running: true` stehen. Der Launcher urteilt deshalb nach dem Alter von `at`: Wer läuft,
+  schreibt spätestens alle 30 s; ist `at` älter als 2 Minuten, gilt der Stand als veraltet (Programm vermutlich beendet
+  oder abgestürzt) – das sagt er auch dem Assistenten (ab Link-Suite 1.0.8).
 
 ## Was nie hinein darf (Datenschutz)
 

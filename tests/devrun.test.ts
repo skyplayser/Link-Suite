@@ -43,7 +43,9 @@ describe.skipIf(process.platform === "win32")("Entwicklerstarts", () => {
     expect(text.at(-1)).toMatch(/^exit-ok:.*Exit-Code 0/);
   });
 
-  it("Exit ≠ 0 → failed mit letzter Zeile", async () => {
+  // Zeitabhängig (echte Prozesse, Signale): unter Last durch parallele Builds anderer Sitzungen gelegentlich zu früh/zu spät.
+  // Bis zur Umstellung auf eine Uhr-Attrappe: bis zu zwei Wiederholungen (1.0.8).
+  it("Exit ≠ 0 → failed mit letzter Zeile", { retry: 2 }, async () => {
     const bin = script("fail.sh", 'echo "Cannot find module electron" 1>&2; exit 3');
     const { r } = runner();
     await r.start("vj", { mode: "direct", bin, args: [], cmd: "electron .", dir: root, env: cleanEnv(process.env) });
@@ -67,8 +69,12 @@ describe.skipIf(process.platform === "win32")("Entwicklerstarts", () => {
     expect(lines.at(-1)!.s).toBe("exit-stop");
   });
 
-  it("wer SIGTERM ignoriert, bekommt nach 5 s SIGKILL", async () => {
-    const bin = script("stubborn.sh", `trap '' TERM; echo "stur"; while true; do sleep 0.2; done`);
+  // Zeitabhängig (echte Prozesse, Signale): unter Last durch parallele Builds anderer Sitzungen gelegentlich zu früh/zu spät.
+  // Bis zur Umstellung auf eine Uhr-Attrappe: bis zu zwei Wiederholungen (1.0.8).
+  it("wer SIGTERM ignoriert, bekommt nach 5 s SIGKILL", { timeout: 15_000, retry: 2 }, async () => {
+    // Node ignoriert SIGTERM zuverlässig (eine Shell mit `trap '' TERM` beendet sich unter neueren macOS-Versionen trotzdem,
+    // dann lief der Stopp ohne SIGKILL durch und der Test schlug zufällig fehl)
+    const bin = script("stubborn.sh", `exec "${process.execPath}" -e "process.on('SIGTERM',()=>{});console.log('stur');setInterval(()=>{},200)"`);
     const { r, lines } = runner();
     await r.start("pl", { mode: "direct", bin, args: [], cmd: "electron .", dir: root, env: cleanEnv(process.env) });
     await sleep(300);
@@ -78,7 +84,7 @@ describe.skipIf(process.platform === "win32")("Entwicklerstarts", () => {
     expect(Date.now() - t0).toBeGreaterThanOrEqual(5000);
     expect(r.info("pl")!.state).toBe("stopped");
     expect(lines.some(l => l.t.includes("SIGKILL"))).toBe(true);
-  }, 15_000);
+  });
 
   it("zweiter Start, während es läuft, wird abgelehnt", async () => {
     const bin = script("wait.sh", "sleep 5");

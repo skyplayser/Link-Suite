@@ -1,6 +1,7 @@
 // Suite-Diagnose v1 – Schreiber für Electron/Node-Programme der Link-Suite.
 // Herkunft: Suite-Launcher/design/diagnose/diagnose-writer.ts (EPL-2.0). Spezifikation: SPEC.md daneben.
-// Kopieren, nicht ändern; Fragen an die Sitzung „Suite-Launcher“. Vorlage v1.1 (28.11.2026): Filter clean() erweitert.
+// Kopieren, nicht ändern; Fragen an die Sitzung „Suite-Launcher“. Vorlage v1.2 (28.11.2026): Filter clean() erweitert (v1.1), IPv4 nicht in
+// längeren Versionsnummern, Link-Suite-Ordner wird nie angelegt (v1.2).
 //
 // Einbau (Hauptprozess):
 //   import { startDiagnose } from "./diagnose-writer";
@@ -60,7 +61,7 @@ export function clean(s: unknown, max: number, env = { home, tmp, host }): strin
     .replace(/[\w.+-]+@[\w-]+\.[\w.-]+/g, "[E-Mail]")
     .replace(/\b[0-9a-f]{2}(?:[:-][0-9a-f]{2}){5}\b/gi, "[MAC]")
     .replace(/(?<![\w:.])[0-9a-f]*(?::[0-9a-f]*){2,}(?![\w:])/gi, m => (/::/.test(m) || m.split(":").length >= 6) && !/^\d{1,2}(?::\d{2}){1,3}$/.test(m) ? "[IPv6]" : m)
-    .replace(/\b\d{1,3}(?:\.\d{1,3}){3}\b/g, ip => (isShowIp(ip) ? ip : "[IP]"))
+    .replace(/(?<![\d.])\d{1,3}(?:\.\d{1,3}){3}(?!\.?\d)/g, ip => (isShowIp(ip) ? ip : "[IP]")) // nicht in Versionen wie 21.0.13.0.3
     .replace(/\b[\w-]+\.(?:local|lan|fritz\.box)\b/gi, "[Rechner]")
     .replace(/\b[A-Za-z0-9_-]{32,}\b/g, "[Kennung]");
   return t.replace(/\t+/g, " ").slice(0, max);
@@ -74,7 +75,8 @@ function osName(): string {
 }
 
 export function startDiagnose(o: { id: string; app: string; version: string; dir?: string }) {
-  const dir = path.join(o.dir ?? suiteDataDir(), "diagnose");
+  const base = o.dir ?? suiteDataDir();
+  const dir = path.join(base, "diagnose");
   const file = path.join(dir, `${o.id}.json`);
   let state: DiagState = {};
   const errors: { at: string; text: string }[] = [];
@@ -96,6 +98,7 @@ export function startDiagnose(o: { id: string; app: string; version: string; dir
     let text = JSON.stringify(doc, null, 1);
     while (Buffer.byteLength(text) > MAX_BYTES && doc.errors.length) { doc.errors.shift(); text = JSON.stringify(doc, null, 1); }
     try {
+      if (!fs.existsSync(base)) return; // Link-Suite nicht installiert: nichts anlegen (v1.2)
       fs.mkdirSync(dir, { recursive: true });
       fs.writeFileSync(file + ".tmp", text);
       fs.renameSync(file + ".tmp", file);

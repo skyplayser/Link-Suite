@@ -12,13 +12,13 @@
 </p>
 
 <p align="center">
-  <a href="#herunterladen-und-installieren"><img alt="Link-Suite 1.0.7 herunterladen" src="https://img.shields.io/badge/Download-Link--Suite%201.0.7-FF5C93?style=for-the-badge"></a>
+  <a href="#herunterladen-und-installieren"><img alt="Link-Suite 1.0.8 herunterladen" src="https://img.shields.io/badge/Download-Link--Suite%201.0.8-FF5C93?style=for-the-badge"></a>
 </p>
 
 <p align="center">
   <a href="https://github.com/skyplayser/Link-Suite/releases"><img alt="Neueste Version" src="https://img.shields.io/github/v/release/skyplayser/Link-Suite?include_prereleases&label=Release&color=FFB020"></a>
   <a href="https://github.com/skyplayser/Link-Suite/releases"><img alt="Downloads" src="https://img.shields.io/github/downloads/skyplayser/Link-Suite/total?label=Downloads&color=22C8F0"></a>
-  <img alt="Version 1.0.7" src="https://img.shields.io/badge/Version-1.0.7-FF5C93">
+  <img alt="Version 1.0.8" src="https://img.shields.io/badge/Version-1.0.8-FF5C93">
   <img alt="macOS 13+, Apple-Chip und Intel" src="https://img.shields.io/badge/macOS%2013%2B-Apple--Chip%20%7C%20Intel-3DDC84">
   <img alt="Windows 10/11, getestet auf Windows 11 (in einer VM)" src="https://img.shields.io/badge/Windows-getestet%20auf%20Windows%2011%20(VM)-3DDC84">
   <img alt="Kostenlos" src="https://img.shields.io/badge/Preis-kostenlos-B45CFF">
@@ -57,7 +57,7 @@ geht es zu GitHub (nach neuen Versionen fragen, die gewählten laden) und – nu
 auf `api.link-suite.de`. Keine Telemetrie, kein Konto.
 
 > [!NOTE]
-> **Version 1.0.7.** Für macOS hat die QA von 0.3.1 Link-Suite release-fertig genannt: Ein echtes Programm ließ sich
+> **Version 1.0.8.** Für macOS hat die QA von 0.3.1 Link-Suite release-fertig genannt: Ein echtes Programm ließ sich
 > installieren und zweimal hintereinander aktualisieren. Manches ist nur im Code oder in einem Entwickler-Build geprüft
 > (siehe [Was geprüft ist](#was-geprüft-ist)). Die Windows-Version ist **getestet auf Windows 11 (in einer VM)**.
 > Link-Suite ist nicht bei Apple oder Microsoft signiert. Deshalb warnen macOS und Windows einmal beim ersten Start
@@ -266,7 +266,7 @@ legt das Projekt fest, nicht Link-Suite. Deshalb fragt Link-Suite vorher.
 - Es schaltet Gatekeeper und SmartScreen nicht ab und ändert keine Systemeinstellung.
 - Es braucht keine Admin-Rechte und fragt nach keinem Passwort. Ohne Admin-Rechte landen Programme in `~/Applications`.
 
-## Stand der Version 1.0.7
+## Stand der Version 1.0.8
 
 ### Was neu ist in 0.3
 
@@ -404,7 +404,7 @@ Probleme im Netz? Dafür ist NET Link da. Es ist in Entwicklung; bis dahin sagt 
 
 ## Für Entwickler
 
-Version **1.0.7**: alles aus 0.1 und 0.2 (Programmliste, installierte Apps und Entwicklerprojekte starten, Suite-Chat
+Version **1.0.8**: alles aus 0.1 und 0.2 (Programmliste, installierte Apps und Entwicklerprojekte starten, Suite-Chat
 mit EMERGENCY, IM NETZ, Installieren und Aktualisieren aus GitHub, Club-Stick, Selbst-Update), dazu die neue Oberfläche,
 die Startanimation mit Launcher-Ende, der macOS-Feinschliff und der Windows-Installer pro Benutzer. 1.0.1 bringt die Korrekturen aus dem Windows-Test, 1.0.2 einen
 DE/EN-Umschalter in der Kopfleiste, 1.0.3 das Selbst-Update unter Windows.

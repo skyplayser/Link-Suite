@@ -15,7 +15,7 @@ describe("Suite-Diagnose lesen", () => {
     const d = parseDiagnose(JSON.stringify(ok), "vj")!;
     expect(d.summary).toEqual([["Ausgänge", "2"], ["Art-Net", "Universe 1–4"]]);
     expect(d.errors[0]!.text).toBe("WebGL context lost");
-    const txt = formatDiagnose(d, "de");
+    const txt = formatDiagnose(d, "de", { now: Date.parse(ok.at) + 30_000 });
     expect(txt.split("\n")[0]).toMatch(/^Diagnose VJ-Link 0\.1\.18 – Stand 2026-11-28 \d\d:\d\d, läuft, macOS 15\.1 arm64$/);
     expect(txt).toContain("- FEHLER Beamer – kein Bild");
     expect(txt).toContain("Letzte Fehler:");
@@ -44,6 +44,11 @@ describe("Suite-Diagnose lesen", () => {
     const log = "2026-11-28T10:00:00.000Z start Link-Suite\n2026-11-28T10:00:01.000Z release check done lj=ok\n2026-11-28T10:00:02.000Z help fetch failed ENOTFOUND\n2026-11-28T10:00:03.000Z uncaughtException TypeError: x ⏎ at f (/Users/max/a.js:1) ⏎ at g\n";
     expect(logErrors(log)).toEqual([{ at: "2026-11-28T10:00:02.000Z", text: "help fetch failed ENOTFOUND" }, { at: "2026-11-28T10:00:03.000Z", text: "uncaughtException TypeError: x" }]);
   });
+  it("Vorlage schreibt nichts, wenn der Link-Suite-Ordner fehlt", () => {
+    const dir = path.join(fs.mkdtempSync(path.join(os.tmpdir(), "linksuite-diag-")), "gibt-es-nicht");
+    startDiagnose({ id: "vj", app: "VJ-Link", version: "0.1.18", dir }).stop();
+    expect(fs.existsSync(dir)).toBe(false);
+  });
   it("Vorlage für die Programme schreibt eine Datei, die der Launcher liest", async () => {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), "linksuite-diag-"));
     const w = startDiagnose({ id: "vj", app: "VJ-Link", version: "0.1.18", dir });
@@ -70,5 +75,20 @@ describe("Vorlage v1.1: clean() beim Schreiben", () => {
     expect(t("NDI-Quelle PHILIPPS-MBP (VJ)")).toBe("NDI-Quelle [Rechner] (VJ)");
     expect(t("fe80::1 und 93.184.216.34, Art-Net 2.0.0.1, TC 01:00:00:00")).toBe("[IPv6] und [IP], Art-Net 2.0.0.1, TC 01:00:00:00");
     expect(t("max@example.com aa:bb:cc:dd:ee:ff \\\\nas\\shows file:///x")).toBe("[E-Mail] [MAC] [Freigabe] [Datei]");
+    expect(t("Java 21.0.13.0.3, Pult 93.184.216.34")).toBe("Java 21.0.13.0.3, Pult [IP]");
+  });
+});
+
+describe("Leser 1.0.8: strengerer Filter und veralteter Stand", () => {
+  it("Rechnername, /private/var, übrige Windows-Pfade, Versionsnummern", () => {
+    const t = scrubDiag("NDI STUDIO-MAC (VJ) /private/var/folders/x7/T/a.log D:\\Shows\\Kunde\\a.mp4 Java 21.0.13.0.3 von 93.184.216.34", "studio-mac.local");
+    expect(t).toBe("NDI <Rechner> (VJ) <tmp> <Pfad> Java 21.0.13.0.3 von <IP>");
+  });
+  it("älter als 2 Minuten und „läuft“ → veraltet", () => {
+    const d = parseDiagnose(JSON.stringify(ok), "vj")!;
+    const at = Date.parse(ok.at);
+    expect(formatDiagnose(d, "de", { now: at + 60_000 }).split("\n")[0]).toContain(", läuft,");
+    expect(formatDiagnose(d, "de", { now: at + 3 * 60_000 }).split("\n")[0]).toContain("Stand veraltet – Programm vermutlich beendet oder abgestürzt");
+    expect(formatDiagnose({ ...d, running: false }, "de", { now: at + 3 * 60_000 }).split("\n")[0]).toContain(", beendet,");
   });
 });

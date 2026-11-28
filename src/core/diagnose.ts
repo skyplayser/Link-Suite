@@ -51,17 +51,21 @@ function showNet(ip: string): boolean {
  * schreibt – Benutzerordner, file:-Adressen, Laufwerks- und Freigabenamen, E-Mail, MAC, IPv6, öffentliche IPv4,
  * Rechnernamen, lange Schlüssel. Vorschau und Senden laufen beide hierüber.
  */
-export function scrubDiag(t: string): string {
+export function scrubDiag(t: string, host = ""): string {
+  const h = host.replace(/\.local$/i, "");
+  if (h.length > 2) t = t.replace(new RegExp(h.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi"), "<Rechner>"); // z. B. in NDI-Quellnamen
   return t
     .replace(/file:\/\/\/?[^\s"'<>]*/gi, "<Datei>")
     .replace(/[A-Za-z]:[\\/]+(?:Users|Dokumente und Einstellungen|Documents and Settings)[\\/]+[^\\/\s"']+/gi, "~")
     .replace(/\/(?:Users|home)\/[^/\s"']+/g, "~")
+    .replace(/\/private\/var\/folders\/[^\s"']*/g, "<tmp>")
     .replace(/\/Volumes\/[^/\s"']+/g, "/Volumes/<Laufwerk>")
     .replace(/\\\\[^\\\s"']+\\[^\\\s"']+/g, "\\\\<Freigabe>")
+    .replace(/\b[A-Za-z]:[\\/][^\s"']*/g, "<Pfad>")                       // übrige Windows-Pfade
     .replace(/[\w.+-]+@[\w-]+(?:\.[\w-]+)+/g, "<E-Mail>")
     .replace(/\b(?:[0-9a-f]{2}[:-]){5}[0-9a-f]{2}\b/gi, "<MAC>")
     .replace(/\b(?:[0-9a-f]{1,4}:){4,7}[0-9a-f]{1,4}\b/gi, "<IPv6>")
-    .replace(/\b\d{1,3}(?:\.\d{1,3}){3}\b/g, ip => (showNet(ip) ? ip : "<IP>"))
+    .replace(/(?<![\d.])\d{1,3}(?:\.\d{1,3}){3}(?!\.?\d)/g, ip => (showNet(ip) ? ip : "<IP>")) // nicht in Versionen wie 21.0.13.0.3
     .replace(/\b[\w-]+\.(?:local|lan|fritz\.box)\b/gi, "<Rechner>")
     .replace(/\b[A-Za-z0-9_\-]{32,}\b/g, "<Schlüssel>");
 }
@@ -72,11 +76,16 @@ function hhmm(iso: string): string {
   return Number.isNaN(d.getTime()) ? iso : `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
 }
 
+/** Wer läuft, schreibt spätestens alle 30 s; älter als das gilt der Stand als veraltet (Absturz, kill -9). */
+export const DIAG_STALE_MS = 2 * 60_000;
+
 /** Kompakte Textfassung (so geht sie an den Assistenten und so sieht der Nutzer sie vorher). */
-export function formatDiagnose(d: Diag, lang: "de" | "en"): string {
+export function formatDiagnose(d: Diag, lang: "de" | "en", o: { now?: number; host?: string } = {}): string {
   const de = lang === "de";
   const head = `${d.app || d.id} ${d.version}`.trim();
-  const state = d.running ? (de ? "läuft" : "running") : (de ? "beendet" : "not running");
+  const stale = d.running && (o.now ?? Date.now()) - Date.parse(d.at) > DIAG_STALE_MS;
+  const state = stale ? (de ? "Stand veraltet – Programm vermutlich beendet oder abgestürzt" : "state outdated – program probably quit or crashed")
+    : d.running ? (de ? "läuft" : "running") : (de ? "beendet" : "not running");
   const lines = [`${de ? "Diagnose" : "Diagnostics"} ${head} – ${de ? "Stand" : "as of"} ${d.at.slice(0, 10)} ${hhmm(d.at)}, ${state}${d.os ? `, ${d.os}` : ""}${d.arch ? ` ${d.arch}` : ""}`];
   for (const [k, v] of d.summary) lines.push(`${k}: ${v}`);
   if (d.checks.length) {
@@ -87,7 +96,7 @@ export function formatDiagnose(d: Diag, lang: "de" | "en"): string {
     lines.push(de ? "Letzte Fehler:" : "Recent errors:");
     for (const e of d.errors) lines.push(`- ${e.at ? hhmm(e.at) + " " : ""}${e.text}`);
   }
-  return scrubDiag(lines.join("\n"));
+  return scrubDiag(lines.join("\n"), o.host);
 }
 
 /** Zeilen aus main.log, die nach Fehlern aussehen (für die Diagnose von Link-Suite selbst), die letzten `n`. */
